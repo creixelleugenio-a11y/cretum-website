@@ -33,7 +33,7 @@ const menuItems: MenuItem[] = [
       { labelKey: "nav.wealth", action: "wm" },
     ],
   },
-  { labelKey: "nav.equipo", action: "team" },
+  { labelKey: "nav.equipo", href: "#nuestro-equipo" },
   { labelKey: "nav.contacto", href: "#contacto" },
 ];
 
