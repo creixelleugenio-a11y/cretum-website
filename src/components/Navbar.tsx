@@ -2,11 +2,13 @@ import { useState, useRef, useEffect } from "react";
 import cretumLogo from "@/assets/Cretum_Logo.png";
 import { ChevronDown } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { GVVModal } from "@/components/GVVModal";
-import { MVPModal } from "@/components/MVPModal";
-import { TrendratingModal } from "@/components/TrendratingModal";
-import { WealthManagementModal } from "@/components/WealthManagementModal";
-import { TeamModal } from "@/components/TeamModal";
+import { lazy, Suspense } from "react";
+const GVVModal = lazy(() => import("@/components/GVVModal").then(m => ({ default: m.GVVModal })));
+const MVPModal = lazy(() => import("@/components/MVPModal").then(m => ({ default: m.MVPModal })));
+const TrendratingModal = lazy(() => import("@/components/TrendratingModal").then(m => ({ default: m.TrendratingModal })));
+const WealthManagementModal = lazy(() => import("@/components/WealthManagementModal").then(m => ({ default: m.WealthManagementModal })));
+const TeamModal = lazy(() => import("@/components/TeamModal").then(m => ({ default: m.TeamModal })));
+const CreditoPrivadoModal = lazy(() => import("@/components/CreditoPrivadoModal").then(m => ({ default: m.CreditoPrivadoModal })));
 
 interface SubMenuItem {
   labelKey: string;
@@ -23,6 +25,7 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { labelKey: "nav.inicio", href: "#inicio" },
+  { labelKey: "nav.nosotros", href: "#nosotros" },
   {
     labelKey: "nav.servicios",
     href: "#servicios",
@@ -33,6 +36,7 @@ const menuItems: MenuItem[] = [
       { labelKey: "nav.wealth", action: "wm" },
     ],
   },
+  { labelKey: "nav.trackrecord", href: "#metodologia" },
   { labelKey: "nav.equipo", href: "#nuestro-equipo" },
   { labelKey: "nav.contacto", href: "#contacto" },
 ];
@@ -44,30 +48,18 @@ export function Navbar() {
   const [mvpOpen, setMvpOpen] = useState(false);
   const [trOpen, setTrOpen] = useState(false);
   const [wmOpen, setWmOpen] = useState(false);
+  const [cpOpen, setCpOpen] = useState(false);
   const [teamOpen, setTeamOpen] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { lang, setLang, t } = useLanguage();
 
-  const [visible, setVisible] = useState(true);
-  const lastScrollY = useRef(0);
-
-  useEffect(() => {
-    const container = document.querySelector('.snap-y');
-    if (!container) return;
-    const handleScroll = () => {
-      const currentY = container.scrollTop;
-      setVisible(currentY < lastScrollY.current || currentY < 10);
-      lastScrollY.current = currentY;
-    };
-    container.addEventListener("scroll", handleScroll, { passive: true });
-    return () => container.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const modalActions: Record<string, () => void> = {
     gvv: () => setGvvOpen(true),
     mvp: () => setMvpOpen(true),
     tr: () => setTrOpen(true),
     wm: () => setWmOpen(true),
+    cp: () => setCpOpen(true),
     team: () => setTeamOpen(true),
   };
 
@@ -96,10 +88,10 @@ export function Navbar() {
 
   return (
     <>
-    <nav className={`bg-card/95 backdrop-blur-md border-b border-border fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ease-out ${visible ? 'translate-y-0' : '-translate-y-full'}`}>
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
+    <nav className="bg-card/95 backdrop-blur-md border-b border-border fixed top-0 left-0 right-0 z-50">
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-28">
         <a href="#inicio" className="flex items-center">
-          <img src={cretumLogo} alt="Cretum Partners" className="h-20 w-auto" />
+          <img src={cretumLogo} alt="Cretum Partners" className="h-24 w-auto" />
         </a>
 
         <div className="hidden md:flex items-center gap-1">
@@ -115,14 +107,14 @@ export function Navbar() {
                 {item.action && !item.submenu ? (
                   <button
                     onClick={() => modalActions[item.action!]?.()}
-                    className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-foreground border border-border rounded-md hover:bg-primary hover:text-primary-foreground active:scale-95 transition-all duration-200"
+                    className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-foreground/60 hover:text-primary transition-colors duration-200 relative after:absolute after:bottom-0 after:left-4 after:right-4 after:h-[2px] after:bg-primary after:scale-x-0 after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300"
                   >
                     {label}
                   </button>
                 ) : (
                   <a
                     href={item.href}
-                    className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-foreground border border-border rounded-md hover:bg-primary hover:text-primary-foreground active:scale-95 transition-all duration-200"
+                    className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-foreground/60 hover:text-primary transition-colors duration-200 relative after:absolute after:bottom-0 after:left-4 after:right-4 after:h-[2px] after:bg-primary after:scale-x-0 after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300"
                   >
                     {label}
                     {item.submenu && <ChevronDown className="w-3 h-3" />}
@@ -189,7 +181,7 @@ export function Navbar() {
     </nav>
 
     <div
-      className={`md:hidden fixed inset-x-0 top-16 bottom-0 z-[100] bg-[hsl(215,60%,30%)] px-8 py-10 flex flex-col gap-6 overflow-y-auto transition-all duration-300 ease-out ${
+      className={`md:hidden fixed inset-x-0 top-28 bottom-0 z-[100] bg-[hsl(215,60%,30%)] px-8 py-10 flex flex-col gap-6 overflow-y-auto transition-all duration-300 ease-out ${
         mobileOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 pointer-events-none'
       }`}
     >
@@ -230,11 +222,14 @@ export function Navbar() {
         </div>
       </div>
 
-    <GVVModal open={gvvOpen} onOpenChange={setGvvOpen} />
-    <MVPModal open={mvpOpen} onOpenChange={setMvpOpen} />
-    <TrendratingModal open={trOpen} onOpenChange={setTrOpen} />
-    <WealthManagementModal open={wmOpen} onOpenChange={setWmOpen} />
-    <TeamModal open={teamOpen} onOpenChange={setTeamOpen} />
+    <Suspense fallback={null}>
+      <GVVModal open={gvvOpen} onOpenChange={setGvvOpen} />
+      <MVPModal open={mvpOpen} onOpenChange={setMvpOpen} />
+      <TrendratingModal open={trOpen} onOpenChange={setTrOpen} />
+      <WealthManagementModal open={wmOpen} onOpenChange={setWmOpen} />
+      <TeamModal open={teamOpen} onOpenChange={setTeamOpen} />
+      <CreditoPrivadoModal open={cpOpen} onOpenChange={setCpOpen} />
+    </Suspense>
     </>
   );
 }
