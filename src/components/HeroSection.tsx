@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import heroImage from "@/assets/hero-skyline.jpg";
+import heroImage from "@/assets/hero-skyline-2.jpg";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export function HeroSection() {

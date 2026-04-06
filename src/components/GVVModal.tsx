@@ -213,6 +213,13 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
   const preIpo = lang === "es" ? preIpoEs : preIpoEn;
   const activePositions = lang === "es" ? activePositionsEs : activePositionsEn;
 
+  const chartData = lang === "es" ? cumulativeData : cumulativeData.map((d) => ({
+    ...d,
+    l: d.l
+      .replace(/^Ene /, "Jan ").replace(/^Abr /, "Apr ")
+      .replace(/^Ago /, "Aug ").replace(/^Dic /, "Dec "),
+  }));
+
   const structureItems = [
     { label: t("gvv.struct.legal"),     value: "Cretum Partners GVV Fund, LP", sub: "Ontario, Canadá"      },
     { label: "General Partner",         value: "Cretum Advisory LLC",           sub: "Delaware, USA"         },
@@ -318,7 +325,7 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
         <SectionTitle>{t("gvv.section.port_value")}</SectionTitle>
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={cumulativeData}>
+            <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(214 20% 88%)" />
               <XAxis
                 dataKey="l"
