@@ -107,8 +107,8 @@
 .reveal-hidden {
   opacity: 0;
   transform: translateY(28px);
-  transition: opacity 2.2s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 2.2s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .reveal-visible {
   opacity: 1;
@@ -119,8 +119,8 @@
 .reveal-left {
   opacity: 0;
   transform: translateX(-32px);
-  transition: opacity 2.2s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 2.2s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .reveal-left.reveal-visible {
   opacity: 1;

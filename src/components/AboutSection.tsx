@@ -3,12 +3,12 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Reveal } from "@/components/Reveal";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
-const aumData = [
-  { name: "Venture Capital US",       value: 25000, pct: "77.8%" },
-  { name: "Mandatos Gubernamentales", value: 5900,  pct: "18.4%" },
-  { name: "Crédito Privado",          value: 550,   pct: "1.7%"  },
-  { name: "HF GVV",                   value: 350,   pct: "1.1%"  },
-  { name: "Mandatos Familias",        value: 310,   pct: "1.0%"  },
+const aumDataBase = [
+  { nameKey: null,                    staticName: "Venture Capital US", value: 25000, pct: "77.8%" },
+  { nameKey: "aum.mandatos_gov",      staticName: "",                   value: 5900,  pct: "18.4%" },
+  { nameKey: "aum.credito_privado",   staticName: "",                   value: 550,   pct: "1.7%"  },
+  { nameKey: null,                    staticName: "HF GVV",             value: 350,   pct: "1.1%"  },
+  { nameKey: "aum.mandatos_familias", staticName: "",                   value: 310,   pct: "1.0%"  },
 ];
 
 const COLORS = ["hsl(214,60%,65%)", "hsl(214,50%,72%)", "hsl(214,40%,78%)", "hsl(214,30%,84%)", "hsl(214,20%,90%)"];
@@ -21,30 +21,39 @@ const advantages = [
   { icon: Settings, titleKey: "about.adv5.title", descKey: "about.adv5.desc" },
 ];
 
-const orgGroups = [
+const orgGroupsDef = [
   {
     parent: { name: "Cretum Capital Partners", sub: "SAPI de CV · LP Delaware" },
-    children: [
-      { name: "GVV", sub: "Hedge Fund" },
-    ],
+    children: [{ name: "GVV", sub: "Hedge Fund", subKey: null as string | null }],
   },
   {
     parent: { name: "Cretum Advisory Partners", sub: "SAPI de CV" },
     children: [
-      { name: "Manhattan Venture Partners", sub: "Pre-IPO" },
-      { name: "Wealth Management",          sub: "Gestión Patrimonial" },
+      { name: "Manhattan Venture Partners", sub: "Pre-IPO",             subKey: null as string | null },
+      { name: "Wealth Management",          sub: "Gestión Patrimonial", subKey: "org.gestion_patrimonial" },
     ],
   },
   {
     parent: { name: "Trendrating America's", sub: "SAPI de CV · Cayman" },
-    children: [
-      { name: "Trendrating", sub: "Investment Discipline" },
-    ],
+    children: [{ name: "Trendrating", sub: "Investment Discipline", subKey: null as string | null }],
   },
 ];
 
 export function AboutSection() {
   const { t } = useLanguage();
+
+  const aumData = aumDataBase.map((d) => ({
+    ...d,
+    name: d.nameKey ? t(d.nameKey) : d.staticName,
+  }));
+
+  const orgGroups = orgGroupsDef.map((g) => ({
+    ...g,
+    children: g.children.map((c) => ({
+      ...c,
+      sub: c.subKey ? t(c.subKey) : c.sub,
+    })),
+  }));
 
   return (
     <>
@@ -88,7 +97,7 @@ export function AboutSection() {
               <Reveal delay={0.75}>
                 <div className="bg-foreground rounded-2xl px-7 py-6 text-white">
                   <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1">
-                    Distribución
+                    {t("common.distribucion")}
                   </p>
                   <h3 className="font-serif text-base text-white mb-5">
                     {t("tr_section.aum.title")}

@@ -11,12 +11,12 @@ const aforesData = [
   { year: "2024", advantage: "+0.05%" },
 ];
 
-const aumData = [
-  { name: "Venture Capital US",       value: 25000, pct: "77.8%" },
-  { name: "Mandatos Gubernamentales", value: 5900,  pct: "18.4%" },
-  { name: "Crédito Privado",          value: 550,   pct: "1.7%"  },
-  { name: "HF GVV",                   value: 350,   pct: "1.1%"  },
-  { name: "Mandatos Familias",        value: 310,   pct: "1.0%"  },
+const aumDataBase = [
+  { nameKey: null,                    staticName: "Venture Capital US", value: 25000, pct: "77.8%" },
+  { nameKey: "aum.mandatos_gov",      staticName: "",                   value: 5900,  pct: "18.4%" },
+  { nameKey: "aum.credito_privado",   staticName: "",                   value: 550,   pct: "1.7%"  },
+  { nameKey: null,                    staticName: "HF GVV",             value: 350,   pct: "1.1%"  },
+  { nameKey: "aum.mandatos_familias", staticName: "",                   value: 310,   pct: "1.0%"  },
 ];
 
 const COLORS = ["hsl(214,60%,65%)", "hsl(214,50%,72%)", "hsl(214,40%,78%)", "hsl(214,30%,84%)", "hsl(214,20%,90%)"];
@@ -78,6 +78,11 @@ function Stat({ prefix = "", target, suffix = "", label, delay = 0, size = "lg" 
 export function TrackRecordSection() {
   const { t } = useLanguage();
 
+  const aumData = aumDataBase.map((d) => ({
+    ...d,
+    name: d.nameKey ? t(d.nameKey) : d.staticName,
+  }));
+
   return (
     <section id="track-record" className="min-h-screen bg-foreground text-white relative overflow-hidden">
       <img src={cityImg} alt="" className="absolute inset-0 w-full h-full object-cover object-center grayscale opacity-[0.07] scale-105 pointer-events-none select-none" />
@@ -109,7 +114,7 @@ export function TrackRecordSection() {
 
         {/* ── Fila 2: Stats secundarios ───────────────────── */}
         <div className="grid grid-cols-3 gap-6 py-8 border-y border-white/10 mb-8">
-          <Stat prefix="+" target={12}  suffix=" años" label={t("tr_section.stat2.label")} delay={0.9}  size="sm" />
+          <Stat prefix="+" target={12}  suffix={t("tr_section.stat2.suffix")} label={t("tr_section.stat2.label")} delay={0.9}  size="sm" />
           <Stat prefix="+$" target={370} suffix=" MDD"  label={t("tr_section.stat4.label")} delay={0.9}  size="sm" />
           <Stat prefix="+" target={400} suffix=""       label={t("tr_section.stat5.label")} delay={0.9}  size="sm" />
         </div>
@@ -143,7 +148,7 @@ export function TrackRecordSection() {
           <Reveal delay={0.4}>
             <div className="rounded-xl border border-white/10 bg-white/5 px-6 py-5 h-full">
               <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1">
-                Distribución
+                {t("common.distribucion")}
               </p>
               <h3 className="font-serif text-base text-white mb-4">
                 {t("tr_section.aum.title")}

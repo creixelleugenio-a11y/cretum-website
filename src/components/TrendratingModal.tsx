@@ -4,7 +4,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { BarChart3, Search, History, TrendingUp, Globe, Award, Cpu } from "lucide-react";
+import { Award } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -19,49 +19,41 @@ import {
 } from "recharts";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-// ── Static data ───────────────────────────────────────────────────────────
+// ── Static data (language-independent) ───────────────────────────────────
 
-const kpis = [
-  { value: "17,000+", label: "Activos monitoreados",      sub: "Acciones, ETFs, índices globales" },
-  { value: "300+",    label: "Clientes institucionales",  sub: "Fondos, bancos privados, family offices" },
-  { value: "8",       label: "Indicadores técnicos",      sub: "Evaluados diariamente con IA" },
-  { value: "25 años", label: "Historial de datos",        sub: "Backtesting con datos reales" },
-  { value: "350+",    label: "Indicadores probados",      sub: "En R&D antes de seleccionar los 8" },
-  { value: "6–18m",   label: "Horizonte de tendencia",    sub: "Ciclos institucionales de capital" },
+const kpiValues = ["17,000+", "300+", "8", "25 años", "350+", "6–18m"];
+
+const tcrGrades = [
+  { grade: "A", border: "#15803d", bg: "rgba(21,128,61,0.06)",  text: "#15803d", labelKey: "tr.tcr.a.label", descKey: "tr.tcr.a.desc" },
+  { grade: "B", border: "#16a34a", bg: "rgba(22,163,74,0.04)",  text: "#16a34a", labelKey: "tr.tcr.b.label", descKey: "tr.tcr.b.desc" },
+  { grade: "C", border: "#b45309", bg: "rgba(180,83,9,0.05)",   text: "#b45309", labelKey: "tr.tcr.c.label", descKey: "tr.tcr.c.desc" },
+  { grade: "D", border: "#b91c1c", bg: "rgba(185,28,28,0.05)",  text: "#b91c1c", labelKey: "tr.tcr.d.label", descKey: "tr.tcr.d.desc" },
 ];
 
-const tcrRatings = [
-  { grade: "A", label: "Tendencia alcista muy fuerte", border: "#15803d", bg: "rgba(21,128,61,0.06)",  text: "#15803d", desc: "Sobreponderación máxima. Capital institucional fluyendo fuertemente." },
-  { grade: "B", label: "Tendencia alcista",            border: "#16a34a", bg: "rgba(22,163,74,0.04)",  text: "#16a34a", desc: "Señal de compra / sobreponderación. Momentum positivo confirmado."   },
-  { grade: "C", label: "Fase bajista",                 border: "#b45309", bg: "rgba(180,83,9,0.05)",   text: "#b45309", desc: "Subponderación / evitar. Tendencia negativa en curso."              },
-  { grade: "D", label: "Tendencia bajista muy fuerte", border: "#b91c1c", bg: "rgba(185,28,28,0.05)",  text: "#b91c1c", desc: "Señal de venta / salida. Capital institucional saliendo."             },
+const indicatorDefs = [
+  { name: "Average Directional Index",    abbr: "ADX",  descKey: "tr.ind.adx.desc"  },
+  { name: "Triple Exp. Moving Averages",  abbr: "TEMA", descKey: "tr.ind.tema.desc" },
+  { name: "Klinger Oscillator",           abbr: "KVO",  descKey: "tr.ind.kvo.desc"  },
+  { name: "Money Flow Index",             abbr: "MFI",  descKey: "tr.ind.mfi.desc"  },
+  { name: "Polarized Fractal Efficiency", abbr: "PFE",  descKey: "tr.ind.pfe.desc"  },
+  { name: "Price Rate of Change",         abbr: "ROC",  descKey: "tr.ind.roc.desc"  },
+  { name: "Relative Vigor Index",         abbr: "RVI",  descKey: "tr.ind.rvi.desc"  },
+  { name: "Aroon Indicator",              abbr: "ARN",  descKey: "tr.ind.arn.desc"  },
 ];
 
-const indicators = [
-  { name: "Average Directional Index",       abbr: "ADX",  desc: "Mide la fuerza de la tendencia, independientemente de su dirección." },
-  { name: "Triple Exp. Moving Averages",     abbr: "TEMA", desc: "Suaviza precios eliminando ruido de corto plazo." },
-  { name: "Klinger Oscillator",              abbr: "KVO",  desc: "Analiza el flujo de volumen para anticipar reversiones de tendencia." },
-  { name: "Money Flow Index",                abbr: "MFI",  desc: "RSI ponderado por volumen — detecta sobrecompra/sobreventa." },
-  { name: "Polarized Fractal Efficiency",    abbr: "PFE",  desc: "Mide la eficiencia del movimiento del precio en el tiempo." },
-  { name: "Price Rate of Change",            abbr: "ROC",  desc: "Velocidad del movimiento de precios en un período determinado." },
-  { name: "Relative Vigor Index",            abbr: "RVI",  desc: "Compara precio de cierre vs rango de la vela para medir vigor." },
-  { name: "Aroon Indicator",                 abbr: "ARN",  desc: "Identifica inicio de nuevas tendencias y su fortaleza relativa." },
-];
-
-// S&P 500 constituent performance dispersion
-const dispersionData = [
-  { year: "2022", top: 23.9,  index: -18.7, bot: -44.3 },
-  { year: "2023", top: 50.3,  index: 23.9,  bot: -17.2 },
-  { year: "2024", top: 56.9,  index: 25.0,  bot: -20.4 },
-];
-
-const regions = [
-  { code: "🇺🇸", name: "USA" },   { code: "🇬🇧", name: "UK" },
-  { code: "🇯🇵", name: "Japón" }, { code: "🇨🇳", name: "China" },
-  { code: "🇩🇪", name: "Alemania" }, { code: "🇫🇷", name: "Francia" },
-  { code: "🇨🇦", name: "Canadá" }, { code: "🇮🇳", name: "India" },
-  { code: "🇨🇭", name: "Suiza" }, { code: "🇦🇺", name: "Australia" },
-  { code: "🇰🇷", name: "Corea" }, { code: "🇸🇦", name: "Arabia" },
+const regionDefs = [
+  { code: "🇺🇸", nameKey: null,               staticName: "USA"   },
+  { code: "🇬🇧", nameKey: null,               staticName: "UK"    },
+  { code: "🇯🇵", nameKey: "tr.region.japan",  staticName: ""      },
+  { code: "🇨🇳", nameKey: null,               staticName: "China" },
+  { code: "🇩🇪", nameKey: "tr.region.germany",staticName: ""      },
+  { code: "🇫🇷", nameKey: "tr.region.france", staticName: ""      },
+  { code: "🇨🇦", nameKey: "tr.region.canada", staticName: ""      },
+  { code: "🇮🇳", nameKey: null,               staticName: "India" },
+  { code: "🇨🇭", nameKey: "tr.region.swiss",  staticName: ""      },
+  { code: "🇦🇺", nameKey: "tr.region.australia" as null, staticName: "Australia" },
+  { code: "🇰🇷", nameKey: "tr.region.korea",  staticName: ""      },
+  { code: "🇸🇦", nameKey: "tr.region.arabia", staticName: ""      },
 ];
 
 const sectors = [
@@ -76,6 +68,21 @@ const awards = [
   { year: "2024", title: "Most Innovative Companies to Watch" },
   { year: "2022", title: "Best Strategy Management Solution Provider" },
   { year: "2021", title: "Best Data Analytics Company of the Year" },
+];
+
+const dispersionData = [
+  { year: "2022", top: 23.9,  index: -18.7, bot: -44.3 },
+  { year: "2023", top: 50.3,  index: 23.9,  bot: -17.2 },
+  { year: "2024", top: 56.9,  index: 25.0,  bot: -20.4 },
+];
+
+const kpiKeys = [
+  { labelKey: "tr.kpi1.label", subKey: "tr.kpi1.sub" },
+  { labelKey: "tr.kpi2.label", subKey: "tr.kpi2.sub" },
+  { labelKey: "tr.kpi3.label", subKey: "tr.kpi3.sub" },
+  { labelKey: "tr.kpi4.label", subKey: "tr.kpi4.sub" },
+  { labelKey: "tr.kpi5.label", subKey: "tr.kpi5.sub" },
+  { labelKey: "tr.kpi6.label", subKey: "tr.kpi6.sub" },
 ];
 
 // ── Helpers ───────────────────────────────────────────────────────────────
@@ -113,64 +120,64 @@ export function TrendratingModal({ open, onOpenChange }: TrendratingModalProps) 
           <p className="text-sm text-muted-foreground leading-relaxed mt-2">{t("tr.desc")}</p>
 
           <div className="bg-primary/5 border border-primary/15 rounded-lg px-4 py-3 mt-3 text-[12px] text-foreground leading-relaxed">
-            Fundada en 2013 por <span className="font-semibold">Rocco Pellegrinelli</span> — creador de Brainpower (adquirida por Bloomberg en 2006). Sede en Lugano, con oficinas en Londres y Boston. Socios estratégicos: <span className="font-semibold">Bloomberg, Euronext y FactSet</span>.
+            {t("tr.founded")}
           </div>
 
           {/* ── KPI Metrics ───────────────────────────────────────────── */}
           <div className="grid grid-cols-3 gap-x-8 gap-y-6 mt-6">
-            {kpis.map((k) => (
-              <div key={k.label} className="border-l-2 border-primary pl-4">
-                <p className="text-3xl font-bold text-foreground">{k.value}</p>
-                <p className="text-[11px] font-semibold text-primary uppercase tracking-wide mt-1">{k.label}</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">{k.sub}</p>
+            {kpiKeys.map((k, i) => (
+              <div key={k.labelKey} className="border-l-2 border-primary pl-4">
+                <p className="text-3xl font-bold text-foreground">{kpiValues[i]}</p>
+                <p className="text-[11px] font-semibold text-primary uppercase tracking-wide mt-1">{t(k.labelKey)}</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">{t(k.subKey)}</p>
               </div>
             ))}
           </div>
 
           {/* ── TCR Rating System ─────────────────────────────────────── */}
-          <SectionTitle>Sistema de calificación TCR — Trend Capture Rating</SectionTitle>
+          <SectionTitle>{t("tr.section.tcr")}</SectionTitle>
           <p className="text-[12px] text-muted-foreground mb-4 leading-relaxed">
-            El TCR mide la dirección y calidad de las tendencias en un horizonte de <strong>6 a 18 meses</strong> — capturando flujos institucionales de capital y filtrando el ruido de corto plazo.
+            {t("tr.tcr.desc")}
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {tcrRatings.map((r) => (
+            {tcrGrades.map((r) => (
               <div key={r.grade} className="rounded-xl border p-4"
                 style={{ borderColor: r.border, backgroundColor: r.bg, borderLeftWidth: 3 }}>
                 <p className="text-4xl font-bold" style={{ color: r.text }}>{r.grade}</p>
-                <p className="text-[10px] font-semibold uppercase tracking-wide mt-2 text-foreground">{r.label}</p>
-                <p className="text-[10px] mt-2 text-muted-foreground leading-tight">{r.desc}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wide mt-2 text-foreground">{t(r.labelKey)}</p>
+                <p className="text-[10px] mt-2 text-muted-foreground leading-tight">{t(r.descKey)}</p>
               </div>
             ))}
           </div>
           <div className="grid grid-cols-2 gap-3 mt-3">
             <div className="border border-border rounded-lg px-3 py-2.5 text-center bg-background">
-              <p className="text-xs font-semibold text-foreground">A + B = Señal positiva</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">Sobreponderación / Compra</p>
+              <p className="text-xs font-semibold text-foreground">{t("tr.signal.pos.title")}</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">{t("tr.signal.pos.sub")}</p>
             </div>
             <div className="border border-border rounded-lg px-3 py-2.5 text-center bg-background">
-              <p className="text-xs font-semibold text-foreground">C + D = Señal negativa</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">Subponderación / Venta / Evitar</p>
+              <p className="text-xs font-semibold text-foreground">{t("tr.signal.neg.title")}</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">{t("tr.signal.neg.sub")}</p>
             </div>
           </div>
 
           {/* ── Performance Dispersion ────────────────────────────────── */}
-          <SectionTitle>La oportunidad — dispersión en el S&P 500</SectionTitle>
+          <SectionTitle>{t("tr.section.oportunidad")}</SectionTitle>
           <p className="text-[12px] text-muted-foreground mb-4 leading-relaxed">
-            Dentro de cualquier índice existe una brecha de <strong>40–70 puntos porcentuales</strong> entre los mejores y peores activos cada año. El TCR permite identificar esa diferencia antes que el mercado.
+            {t("tr.oport.desc")}
           </p>
 
           <div className="grid grid-cols-3 gap-3 mb-5">
             <div className="border-l-2 pl-4" style={{ borderColor: "#15803d" }}>
               <p className="text-2xl font-bold text-foreground">+43.7%</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">Spread Top 25%<br/>vs Índice (promedio)</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5" style={{ whiteSpace: "pre-line" }}>{t("tr.oport.spread_top.sub")}</p>
             </div>
             <div className="border-l-2 border-primary pl-4">
               <p className="text-2xl font-bold text-foreground">93–95%</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">Fondos activos que<br/>no baten al benchmark</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5" style={{ whiteSpace: "pre-line" }}>{t("tr.oport.funds.sub")}</p>
             </div>
             <div className="border-l-2 pl-4" style={{ borderColor: "#b91c1c" }}>
               <p className="text-2xl font-bold text-foreground">−27%</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">Spread Bottom 25%<br/>vs Índice (promedio)</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5" style={{ whiteSpace: "pre-line" }}>{t("tr.oport.spread_bot.sub")}</p>
             </div>
           </div>
 
@@ -207,42 +214,45 @@ export function TrendratingModal({ open, onOpenChange }: TrendratingModalProps) 
               </span>
             ))}
           </div>
-          <p className="text-[10px] text-muted-foreground mt-1">Fuente: Trendrating / datos de constituyentes del S&P 500</p>
+          <p className="text-[10px] text-muted-foreground mt-1">{t("tr.source")}</p>
 
           {/* ── 8 Technical Indicators ────────────────────────────────── */}
-          <SectionTitle>8 indicadores técnicos — evaluados diariamente</SectionTitle>
+          <SectionTitle>{t("tr.section.indicadores")}</SectionTitle>
           <div className="bg-primary/5 border border-primary/15 rounded-lg px-4 py-3 mb-3 text-[12px] text-foreground">
-            De más de <strong>350 indicadores probados</strong> durante R&D, el algoritmo seleccionó estos 8 como los de mayor capacidad predictiva para identificar tendencias sostenidas de 6 a 18 meses.
+            {t("tr.ind.desc")}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {indicators.map((ind) => (
+            {indicatorDefs.map((ind) => (
               <div key={ind.abbr} className="flex items-start gap-3 border border-border rounded-lg px-3 py-3 bg-background hover:border-primary/40 transition-colors">
                 <div className="bg-primary text-primary-foreground rounded-md px-2 py-1 text-[10px] font-bold shrink-0 min-w-[40px] text-center">
                   {ind.abbr}
                 </div>
                 <div>
                   <p className="text-[11px] font-semibold text-foreground">{ind.name}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5 leading-tight">{ind.desc}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5 leading-tight">{t(ind.descKey)}</p>
                 </div>
               </div>
             ))}
           </div>
 
           {/* ── International Coverage ────────────────────────────────── */}
-          <SectionTitle>Cobertura internacional de mercados</SectionTitle>
+          <SectionTitle>{t("tr.section.cobertura")}</SectionTitle>
           <p className="text-[12px] text-muted-foreground mb-3 leading-relaxed">
-            La plataforma monitorea acciones, ETFs e índices en mercados globales, clasificando por sector e industria con calificaciones TCR en tiempo real para <strong>comparaciones entre países y sectores</strong>.
+            {t("tr.coverage.desc")}
           </p>
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-3">
-            {regions.map((r) => (
-              <div key={r.name} className="bg-secondary/50 border border-border rounded-lg py-2 text-center">
-                <p className="text-xl">{r.code}</p>
-                <p className="text-[10px] font-semibold text-foreground mt-1">{r.name}</p>
-              </div>
-            ))}
+            {regionDefs.map((r) => {
+              const name = r.nameKey ? t(r.nameKey) : r.staticName;
+              return (
+                <div key={name} className="bg-secondary/50 border border-border rounded-lg py-2 text-center">
+                  <p className="text-xl">{r.code}</p>
+                  <p className="text-[10px] font-semibold text-foreground mt-1">{name}</p>
+                </div>
+              );
+            })}
           </div>
           <div className="bg-secondary/30 border border-border rounded-lg p-3">
-            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">Sectores cubiertos</p>
+            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">{t("tr.coverage.sectores")}</p>
             <div className="flex flex-wrap gap-1.5">
               {sectors.map((s) => (
                 <span key={s} className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">{s}</span>
@@ -252,20 +262,20 @@ export function TrendratingModal({ open, onOpenChange }: TrendratingModalProps) 
           <div className="grid grid-cols-3 gap-2 mt-2">
             <div className="bg-background border border-border rounded-md px-2 py-2 text-center">
               <p className="text-[11px] font-semibold text-foreground">Stocks</p>
-              <p className="text-[10px] text-muted-foreground">Acciones comunes</p>
+              <p className="text-[10px] text-muted-foreground">{t("tr.coverage.stocks")}</p>
             </div>
             <div className="bg-background border border-border rounded-md px-2 py-2 text-center">
               <p className="text-[11px] font-semibold text-foreground">ETFs</p>
-              <p className="text-[10px] text-muted-foreground">Fondos cotizados</p>
+              <p className="text-[10px] text-muted-foreground">{t("tr.coverage.etfs")}</p>
             </div>
             <div className="bg-background border border-border rounded-md px-2 py-2 text-center">
-              <p className="text-[11px] font-semibold text-foreground">Índices</p>
-              <p className="text-[10px] text-muted-foreground">Benchmarks globales</p>
+              <p className="text-[11px] font-semibold text-foreground">{t("tr.coverage.indices")}</p>
+              <p className="text-[10px] text-muted-foreground">Benchmarks</p>
             </div>
           </div>
 
           {/* ── Recognition ───────────────────────────────────────────── */}
-          <SectionTitle>Reconocimientos</SectionTitle>
+          <SectionTitle>{t("tr.section.reconocimientos")}</SectionTitle>
           <div className="space-y-2">
             {awards.map((a) => (
               <div key={a.year} className="flex items-center gap-3 border border-border rounded-lg px-3 py-2.5 bg-background">

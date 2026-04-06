@@ -19,15 +19,24 @@ import {
 } from "recharts";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-// ── Static data ───────────────────────────────────────────────────────────
+// ── Static data (numbers, logos — not translated) ─────────────────────────
 
-const kpis = [
-  { value: "$1.7B",   label: "Capital desplegado",          sub: "En empresas privadas de tecnología" },
-  { value: "70+",     label: "Empresas en portafolio",       sub: "Activas y exitadas" },
-  { value: "~2.2x",  label: "DPI (fondos maduros)",         sub: "Distributed to paid-in capital" },
-  { value: "<4 años", label: "Holding period",               sub: "Retorno de capital más rápido" },
-  { value: "$2.7B",   label: "Volumen histórico ITD",        sub: "Transacciones facilitadas" },
-  { value: "1,100+",  label: "Inversores globales",          sub: "Clientes institucionales" },
+const kpiValues = ["$1.7B", "70+", "~2.2x", "<4 años", "$2.7B", "1,100+"];
+
+const kpiKeys = [
+  { labelKey: "mvp.kpi1.label", subKey: "mvp.kpi1.sub" },
+  { labelKey: "mvp.kpi2.label", subKey: "mvp.kpi2.sub" },
+  { labelKey: "mvp.kpi3.label", subKey: "mvp.kpi3.sub" },
+  { labelKey: "mvp.kpi4.label", subKey: "mvp.kpi4.sub" },
+  { labelKey: "mvp.kpi5.label", subKey: "mvp.kpi5.sub" },
+  { labelKey: "mvp.kpi6.label", subKey: "mvp.kpi6.sub" },
+];
+
+const platformDefs = [
+  { icon: Briefcase,  title: "Principal", descKey: "mvp.platform.principal.desc" },
+  { icon: TrendingUp, title: "Advisor",   descKey: "mvp.platform.advisor.desc"   },
+  { icon: Globe,      title: "Agent",     descKey: "mvp.platform.agent.desc"     },
+  { icon: Search,     title: "Research",  descKey: "mvp.platform.research.desc"  },
 ];
 
 const dpiData = [
@@ -81,126 +90,71 @@ const privMag7 = [
   { name: "Canva",      val: "$42B"    },
 ];
 
-const platforms = [
-  { icon: Briefcase, title: "Principal",  desc: "Fondos VC diversificados y co-inversiones vía RIA registrada ante la SEC."           },
-  { icon: TrendingUp,title: "Advisor",    desc: "Secondary-as-a-Service™ — soluciones de liquidez a compañías privadas."              },
-  { icon: Globe,     title: "Agent",      desc: "Brokerage institucional ($10M+) a través de VNTR Securities LLC (Broker-Dealer)."     },
-  { icon: Search,    title: "Research",   desc: "Manhattan Venture Research — informes privados y reporte mensual Venture Bytes."      },
-];
-
-interface CompanyDetail {
+interface CompanyBase {
   name: string;
   logo: string;
   darkBg?: boolean;
+  founded: string;
+  valuation: string;
+}
+
+interface CompanyTexts {
   sector: string;
   desc: string;
-  founded: string;
   status: string;
-  valuation: string;
   note: string;
 }
 
-// darkBg: logo blanco, necesita fondo oscuro
-const companies: CompanyDetail[] = [
-  {
-    name: "Spotify", logo: "/logos/mvp/spotify.svg",
-    sector: "Entretenimiento · Streaming",
-    desc: "Plataforma líder global de streaming de música y podcasts con más de 600M de usuarios activos.",
-    founded: "2006", status: "Pública (NYSE: SPOT)", valuation: "~$97B market cap",
-    note: "IPO directo en abril 2018. Primer año rentable en 2024.",
-  },
-  {
-    name: "Coinbase", logo: "/logos/mvp/coinbase.svg",
-    sector: "Fintech · Cripto",
-    desc: "Exchange de criptomonedas más grande de EE.UU. y principal plataforma regulada para activos digitales.",
-    founded: "2012", status: "Pública (NASDAQ: COIN)", valuation: "~$44B market cap",
-    note: "IPO directo en abril 2021 a $328/acción. Regulada por la SEC.",
-  },
-  {
-    name: "SpaceX", logo: "/logos/mvp/spacex.svg",
-    sector: "Aeroespacial · Defensa",
-    desc: "Empresa líder en cohetes reutilizables, satélites Starlink y la misión comercial a Marte.",
-    founded: "2002", status: "Privada (IPO esperado 2026)", valuation: "~$800B (dic 2025)",
-    note: "S-1 confidencial presentado ante la SEC en abril 2026. Starlink superó 10M suscriptores y $10B en ingresos.",
-  },
-  {
-    name: "Anthropic", logo: "/logos/mvp/anthropic.svg",
-    sector: "Inteligencia Artificial",
-    desc: "Laboratorio de IA de seguridad que desarrolla Claude, uno de los modelos de lenguaje más avanzados.",
-    founded: "2021", status: "Privada", valuation: "$380B (feb 2026)",
-    note: "Serie G de $30B — segunda ronda de VC más grande de la historia. Ingresos anualizados de $14B.",
-  },
-  {
-    name: "Airbnb", logo: "/logos/mvp/airbnb.svg",
-    sector: "Hospitalidad · Marketplace",
-    desc: "Marketplace global de alojamiento con 7M+ de listados activos en 220 países.",
-    founded: "2008", status: "Pública (NASDAQ: ABNB)", valuation: "~$75B market cap",
-    note: "IPO en diciembre 2020 a $68/acción, cerró el primer día en $144. Rentable desde 2022.",
-  },
-  {
-    name: "Palantir", logo: "/logos/mvp/palantir.svg",
-    sector: "Software · Análisis de datos",
-    desc: "Plataforma de análisis de datos para gobiernos y empresas Fortune 500. Clave en defensa y contrainteligencia.",
-    founded: "2003", status: "Pública (NASDAQ: PLTR)", valuation: "~$313B market cap",
-    note: "IPO directo en septiembre 2020. Ingresó al S&P 500 en 2024. Uno de los mejores desempeños del índice en 2025.",
-  },
-  {
-    name: "Pinterest", logo: "/logos/mvp/pinterest.svg",
-    sector: "Redes Sociales · E-commerce",
-    desc: "Red social visual con 500M+ usuarios mensuales enfocada en inspiración y descubrimiento de productos.",
-    founded: "2010", status: "Pública (NYSE: PINS)", valuation: "~$11.8B market cap",
-    note: "IPO en abril 2019 a $19/acción. Monetización vía publicidad y shopping integrado.",
-  },
-  {
-    name: "DraftKings", logo: "/logos/mvp/draftkings.png",
-    sector: "Gaming · Apuestas deportivas",
-    desc: "Plataforma líder de apuestas deportivas y fantasy sports en EE.UU. con 6M+ clientes activos.",
-    founded: "2012", status: "Pública (NASDAQ: DKNG)", valuation: "~$11B market cap",
-    note: "Salida a bolsa en marzo 2020 vía SPAC. Opera en 25+ estados de EE.UU.",
-  },
-  {
-    name: "Groq", logo: "/logos/mvp/groq.png",
-    sector: "Hardware · IA",
-    desc: "Diseña chips LPU (Language Processing Unit) para inferencia de IA ultrarrápida.",
-    founded: "2016", status: "Adquirida por Nvidia", valuation: "$20B (dic 2025)",
-    note: "Nvidia adquirió su IP y equipo directivo por ~$20B. El fundador Jonathan Ross se incorporó a Nvidia. Deal bajo revisión antimonopolio.",
-  },
-  {
-    name: "DocuSign", logo: "/logos/mvp/docusign.svg",
-    sector: "SaaS · Legal Tech",
-    desc: "Líder global en firma electrónica y gestión de acuerdos digitales con 1M+ clientes en 180 países.",
-    founded: "2003", status: "Pública (NASDAQ: DOCU)", valuation: "~$9.4B market cap",
-    note: "IPO en abril 2018. Controla ~70% del mercado de firma electrónica en EE.UU. Programa de recompra de $2.6B anunciado en 2026.",
-  },
-  {
-    name: "SoFi", logo: "/logos/mvp/sofi.svg",
-    sector: "Fintech · Banca digital",
-    desc: "Banco digital que ofrece préstamos estudiantiles, hipotecas, inversiones y tarjetas de crédito.",
-    founded: "2011", status: "Pública (NASDAQ: SOFI)", valuation: "~$20B market cap",
-    note: "Salida a bolsa en junio 2021 vía SPAC. Obtuvo licencia bancaria en 2022. Market cap duplicado en 2025.",
-  },
-  {
-    name: "Figure AI", logo: "/logos/mvp/figure-ai.svg",
-    sector: "Robótica · IA",
-    desc: "Desarrolla robots humanoides autónomos para trabajo industrial. Colaboración activa con BMW.",
-    founded: "2022", status: "Privada", valuation: "$39B (sep 2025)",
-    note: "Serie C de +$1B. Respaldada por Nvidia, Microsoft, Jeff Bezos y el OpenAI Startup Fund. Funding total: ~$1.9B.",
-  },
-  {
-    name: "Kodiak Robotics", logo: "/logos/mvp/kodiak.svg",
-    sector: "Transporte · Autonomía",
-    desc: "Desarrolla camiones autónomos de largo recorrido para logística comercial en EE.UU.",
-    founded: "2018", status: "Pública (NASDAQ: KDK)", valuation: "~$1.3B market cap",
-    note: "Salida a bolsa vía SPAC en septiembre 2025. Contratos activos con el Departamento de Defensa de EE.UU.",
-  },
-  {
-    name: "Epirus", logo: "/logos/mvp/epirus.svg", darkBg: true,
-    sector: "Defensa · Energía dirigida",
-    desc: "Fabrica sistemas de energía dirigida de alta potencia (HPM) para neutralizar drones y electrónica enemiga.",
-    founded: "2018", status: "Privada", valuation: ">$1B (mar 2025)",
-    note: "Serie D de $250M (mar 2025) con participación de General Dynamics. Financiamiento total: ~$595M.",
-  },
+const companiesBase: CompanyBase[] = [
+  { name: "Spotify",          logo: "/logos/mvp/spotify.svg",     founded: "2006", valuation: "~$97B market cap"      },
+  { name: "Coinbase",         logo: "/logos/mvp/coinbase.svg",    founded: "2012", valuation: "~$44B market cap"      },
+  { name: "SpaceX",           logo: "/logos/mvp/spacex.svg",      founded: "2002", valuation: "~$800B (dic 2025)"     },
+  { name: "Anthropic",        logo: "/logos/mvp/anthropic.svg",   founded: "2021", valuation: "$380B (feb 2026)"      },
+  { name: "Airbnb",           logo: "/logos/mvp/airbnb.svg",      founded: "2008", valuation: "~$75B market cap"      },
+  { name: "Palantir",         logo: "/logos/mvp/palantir.svg",    founded: "2003", valuation: "~$313B market cap"     },
+  { name: "Pinterest",        logo: "/logos/mvp/pinterest.svg",   founded: "2010", valuation: "~$11.8B market cap"    },
+  { name: "DraftKings",       logo: "/logos/mvp/draftkings.png",  founded: "2012", valuation: "~$11B market cap"      },
+  { name: "Groq",             logo: "/logos/mvp/groq.png",        founded: "2016", valuation: "$20B (dic 2025)"       },
+  { name: "DocuSign",         logo: "/logos/mvp/docusign.svg",    founded: "2003", valuation: "~$9.4B market cap"     },
+  { name: "SoFi",             logo: "/logos/mvp/sofi.svg",        founded: "2011", valuation: "~$20B market cap"      },
+  { name: "Figure AI",        logo: "/logos/mvp/figure-ai.svg",   founded: "2022", valuation: "$39B (sep 2025)"       },
+  { name: "Kodiak Robotics",  logo: "/logos/mvp/kodiak.svg",      founded: "2018", valuation: "~$1.3B market cap"     },
+  { name: "Epirus",           logo: "/logos/mvp/epirus.svg",      darkBg: true, founded: "2018", valuation: ">$1B (mar 2025)" },
 ];
+
+const companyTextsEs: Record<string, CompanyTexts> = {
+  "Spotify":         { sector: "Entretenimiento · Streaming",     desc: "Plataforma líder global de streaming de música y podcasts con más de 600M de usuarios activos.",               status: "Pública (NYSE: SPOT)",          note: "IPO directo en abril 2018. Primer año rentable en 2024." },
+  "Coinbase":        { sector: "Fintech · Cripto",                desc: "Exchange de criptomonedas más grande de EE.UU. y principal plataforma regulada para activos digitales.",       status: "Pública (NASDAQ: COIN)",        note: "IPO directo en abril 2021 a $328/acción. Regulada por la SEC." },
+  "SpaceX":          { sector: "Aeroespacial · Defensa",          desc: "Empresa líder en cohetes reutilizables, satélites Starlink y la misión comercial a Marte.",                   status: "Privada (IPO esperado 2026)",   note: "S-1 confidencial presentado ante la SEC en abril 2026. Starlink superó 10M suscriptores y $10B en ingresos." },
+  "Anthropic":       { sector: "Inteligencia Artificial",         desc: "Laboratorio de IA de seguridad que desarrolla Claude, uno de los modelos de lenguaje más avanzados.",         status: "Privada",                       note: "Serie G de $30B — segunda ronda de VC más grande de la historia. Ingresos anualizados de $14B." },
+  "Airbnb":          { sector: "Hospitalidad · Marketplace",      desc: "Marketplace global de alojamiento con 7M+ de listados activos en 220 países.",                               status: "Pública (NASDAQ: ABNB)",        note: "IPO en diciembre 2020 a $68/acción, cerró el primer día en $144. Rentable desde 2022." },
+  "Palantir":        { sector: "Software · Análisis de datos",    desc: "Plataforma de análisis de datos para gobiernos y empresas Fortune 500. Clave en defensa y contrainteligencia.", status: "Pública (NASDAQ: PLTR)",     note: "IPO directo en septiembre 2020. Ingresó al S&P 500 en 2024. Uno de los mejores desempeños del índice en 2025." },
+  "Pinterest":       { sector: "Redes Sociales · E-commerce",     desc: "Red social visual con 500M+ usuarios mensuales enfocada en inspiración y descubrimiento de productos.",       status: "Pública (NYSE: PINS)",          note: "IPO en abril 2019 a $19/acción. Monetización vía publicidad y shopping integrado." },
+  "DraftKings":      { sector: "Gaming · Apuestas deportivas",    desc: "Plataforma líder de apuestas deportivas y fantasy sports en EE.UU. con 6M+ clientes activos.",               status: "Pública (NASDAQ: DKNG)",        note: "Salida a bolsa en marzo 2020 vía SPAC. Opera en 25+ estados de EE.UU." },
+  "Groq":            { sector: "Hardware · IA",                   desc: "Diseña chips LPU (Language Processing Unit) para inferencia de IA ultrarrápida.",                            status: "Adquirida por Nvidia",          note: "Nvidia adquirió su IP y equipo directivo por ~$20B. El fundador Jonathan Ross se incorporó a Nvidia. Deal bajo revisión antimonopolio." },
+  "DocuSign":        { sector: "SaaS · Legal Tech",               desc: "Líder global en firma electrónica y gestión de acuerdos digitales con 1M+ clientes en 180 países.",          status: "Pública (NASDAQ: DOCU)",        note: "IPO en abril 2018. Controla ~70% del mercado de firma electrónica en EE.UU. Programa de recompra de $2.6B anunciado en 2026." },
+  "SoFi":            { sector: "Fintech · Banca digital",         desc: "Banco digital que ofrece préstamos estudiantiles, hipotecas, inversiones y tarjetas de crédito.",            status: "Pública (NASDAQ: SOFI)",        note: "Salida a bolsa en junio 2021 vía SPAC. Obtuvo licencia bancaria en 2022. Market cap duplicado en 2025." },
+  "Figure AI":       { sector: "Robótica · IA",                   desc: "Desarrolla robots humanoides autónomos para trabajo industrial. Colaboración activa con BMW.",                status: "Privada",                       note: "Serie C de +$1B. Respaldada por Nvidia, Microsoft, Jeff Bezos y el OpenAI Startup Fund. Funding total: ~$1.9B." },
+  "Kodiak Robotics": { sector: "Transporte · Autonomía",          desc: "Desarrolla camiones autónomos de largo recorrido para logística comercial en EE.UU.",                        status: "Pública (NASDAQ: KDK)",         note: "Salida a bolsa vía SPAC en septiembre 2025. Contratos activos con el Departamento de Defensa de EE.UU." },
+  "Epirus":          { sector: "Defensa · Energía dirigida",       desc: "Fabrica sistemas de energía dirigida de alta potencia (HPM) para neutralizar drones y electrónica enemiga.", status: "Privada",                       note: "Serie D de $250M (mar 2025) con participación de General Dynamics. Financiamiento total: ~$595M." },
+};
+
+const companyTextsEn: Record<string, CompanyTexts> = {
+  "Spotify":         { sector: "Entertainment · Streaming",       desc: "Leading global music and podcast streaming platform with over 600M active users.",                            status: "Public (NYSE: SPOT)",           note: "Direct IPO in April 2018. First profitable year in 2024." },
+  "Coinbase":        { sector: "Fintech · Crypto",                desc: "Largest US cryptocurrency exchange and leading regulated platform for digital assets.",                       status: "Public (NASDAQ: COIN)",         note: "Direct IPO in April 2021 at $328/share. Regulated by the SEC." },
+  "SpaceX":          { sector: "Aerospace · Defense",             desc: "Leading company in reusable rockets, Starlink satellites and the commercial mission to Mars.",                status: "Private (IPO expected 2026)",   note: "Confidential S-1 filed with the SEC in April 2026. Starlink surpassed 10M subscribers and $10B in revenue." },
+  "Anthropic":       { sector: "Artificial Intelligence",         desc: "AI safety laboratory developing Claude, one of the most advanced language models.",                           status: "Private",                       note: "Series G of $30B — second largest VC round in history. Annualized revenue of $14B." },
+  "Airbnb":          { sector: "Hospitality · Marketplace",       desc: "Global accommodation marketplace with 7M+ active listings in 220 countries.",                               status: "Public (NASDAQ: ABNB)",         note: "IPO in December 2020 at $68/share, closed the first day at $144. Profitable since 2022." },
+  "Palantir":        { sector: "Software · Data Analytics",       desc: "Data analytics platform for governments and Fortune 500 companies. Key in defense and counterintelligence.", status: "Public (NASDAQ: PLTR)",         note: "Direct IPO in September 2020. Added to S&P 500 in 2024. One of the index's best performers in 2025." },
+  "Pinterest":       { sector: "Social Media · E-commerce",       desc: "Visual social network with 500M+ monthly users focused on inspiration and product discovery.",               status: "Public (NYSE: PINS)",           note: "IPO in April 2019 at $19/share. Monetization via advertising and integrated shopping." },
+  "DraftKings":      { sector: "Gaming · Sports Betting",         desc: "Leading sports betting and fantasy sports platform in the US with 6M+ active customers.",                    status: "Public (NASDAQ: DKNG)",         note: "Went public in March 2020 via SPAC. Operates in 25+ US states." },
+  "Groq":            { sector: "Hardware · AI",                   desc: "Designs LPU (Language Processing Unit) chips for ultra-fast AI inference.",                                  status: "Acquired by Nvidia",            note: "Nvidia acquired its IP and executive team for ~$20B. Founder Jonathan Ross joined Nvidia. Deal under antitrust review." },
+  "DocuSign":        { sector: "SaaS · Legal Tech",               desc: "Global leader in e-signature and digital agreement management with 1M+ customers in 180 countries.",         status: "Public (NASDAQ: DOCU)",         note: "IPO in April 2018. Controls ~70% of the US e-signature market. $2.6B buyback program announced in 2026." },
+  "SoFi":            { sector: "Fintech · Digital Banking",       desc: "Digital bank offering student loans, mortgages, investments and credit cards.",                              status: "Public (NASDAQ: SOFI)",         note: "Went public in June 2021 via SPAC. Obtained banking license in 2022. Market cap doubled in 2025." },
+  "Figure AI":       { sector: "Robotics · AI",                   desc: "Develops autonomous humanoid robots for industrial work. Active collaboration with BMW.",                     status: "Private",                       note: "Series C of +$1B. Backed by Nvidia, Microsoft, Jeff Bezos and the OpenAI Startup Fund. Total funding: ~$1.9B." },
+  "Kodiak Robotics": { sector: "Transportation · Autonomy",       desc: "Develops long-haul autonomous trucks for commercial logistics in the US.",                                    status: "Public (NASDAQ: KDK)",          note: "Went public via SPAC in September 2025. Active contracts with the US Department of Defense." },
+  "Epirus":          { sector: "Defense · Directed Energy",       desc: "Manufactures high-power microwave (HPM) directed energy systems to neutralize drones and enemy electronics.", status: "Private",                      note: "Series D of $250M (Mar 2025) with General Dynamics participation. Total funding: ~$595M." },
+};
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -221,10 +175,20 @@ interface MVPModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
+interface SelectedCompany extends CompanyBase, CompanyTexts {}
+
 export function MVPModal({ open, onOpenChange }: MVPModalProps) {
+  const { t, lang } = useLanguage();
+  const [selected, setSelected] = useState<SelectedCompany | null>(null);
+
+  const companyTexts = lang === "es" ? companyTextsEs : companyTextsEn;
+  const companies: SelectedCompany[] = companiesBase.map((c) => ({
+    ...c,
+    ...(companyTexts[c.name] ?? { sector: "", desc: "", status: "", note: "" }),
+  }));
   const allCompanies = [...companies, ...companies];
-  const { t } = useLanguage();
-  const [selected, setSelected] = useState<CompanyDetail | null>(null);
+
+  const platforms = platformDefs.map((p) => ({ ...p, desc: t(p.descKey) }));
 
   return (
     <>
@@ -241,17 +205,17 @@ export function MVPModal({ open, onOpenChange }: MVPModalProps) {
 
           {/* ── KPI Metrics ───────────────────────────────────────────── */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5">
-            {kpis.map((k) => (
-              <div key={k.label} className="bg-primary text-primary-foreground rounded-xl p-4 text-center">
-                <p className="text-2xl font-bold">{k.value}</p>
-                <p className="text-[10px] font-semibold uppercase tracking-wide mt-1 opacity-80">{k.label}</p>
-                <p className="text-[10px] opacity-60 mt-0.5">{k.sub}</p>
+            {kpiKeys.map((k, i) => (
+              <div key={k.labelKey} className="bg-primary text-primary-foreground rounded-xl p-4 text-center">
+                <p className="text-2xl font-bold">{kpiValues[i]}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wide mt-1 opacity-80">{t(k.labelKey)}</p>
+                <p className="text-[10px] opacity-60 mt-0.5">{t(k.subKey)}</p>
               </div>
             ))}
           </div>
 
           {/* ── Platform Pillars ──────────────────────────────────────── */}
-          <SectionTitle>Plataforma integrada</SectionTitle>
+          <SectionTitle>{t("mvp.section.platform")}</SectionTitle>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {platforms.map((p) => (
               <div key={p.title} className="flex items-start gap-3 bg-secondary/60 border border-border rounded-md px-4 py-3">
@@ -265,7 +229,7 @@ export function MVPModal({ open, onOpenChange }: MVPModalProps) {
           </div>
 
           {/* ── Recognition ───────────────────────────────────────────── */}
-          <SectionTitle>Reconocimiento institucional</SectionTitle>
+          <SectionTitle>{t("mvp.section.recognition")}</SectionTitle>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="border border-border rounded-xl p-4 bg-background">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">Bloomberg</p>
@@ -287,7 +251,7 @@ export function MVPModal({ open, onOpenChange }: MVPModalProps) {
               <p className="text-base font-bold text-primary leading-tight">Top 10 Global Secondaries Buyer</p>
               <p className="text-[11px] text-muted-foreground mt-1">Top 5 en USA — Deal count 2015–2025</p>
               <div className="mt-3 bg-secondary/40 rounded-lg px-3 py-2">
-                <p className="text-[11px] text-foreground"><span className="font-bold text-primary">25 transacciones</span> como comprador institucional directo de VC secondaries a nivel global</p>
+                <p className="text-[11px] text-foreground">{t("mvp.pitchbook.desc")}</p>
               </div>
               <div className="mt-2 flex gap-2">
                 <div className="flex-1 bg-primary/5 border border-primary/15 rounded-md px-2 py-1.5 text-center">
@@ -303,9 +267,9 @@ export function MVPModal({ open, onOpenChange }: MVPModalProps) {
           </div>
 
           {/* ── Fund Performance ──────────────────────────────────────── */}
-          <SectionTitle>Track record — All-Star Funds</SectionTitle>
+          <SectionTitle>{t("mvp.section.trackrecord")}</SectionTitle>
           <div className="bg-primary/5 border border-primary/15 rounded-lg px-4 py-2.5 mb-4 text-[12px] text-foreground">
-            Consistentemente supera el top decil de los competidores <span className="font-bold text-primary">en la mitad del tiempo</span> — duración promedio de fondos: <span className="font-bold">3.7 años</span>
+            {t("mvp.trackrecord.desc")}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -371,19 +335,19 @@ export function MVPModal({ open, onOpenChange }: MVPModalProps) {
           </div>
 
           {/* ── Secondary Market Volume ────────────────────────────────── */}
-          <SectionTitle>Mercado secundario de VC — volumen directo</SectionTitle>
+          <SectionTitle>{t("mvp.section.secondary")}</SectionTitle>
           <div className="grid grid-cols-3 gap-2 mb-4">
             <div className="bg-primary/5 border border-primary/15 rounded-lg px-3 py-2.5">
               <p className="text-xl font-bold text-primary">$69B</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">Volumen en 2024</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">{t("mvp.vol.2024")}</p>
             </div>
             <div className="bg-primary/5 border border-primary/15 rounded-lg px-3 py-2.5">
               <p className="text-xl font-bold text-primary">~$3.4T</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">Universo de inversión MVP</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">{t("mvp.vol.universe")}</p>
             </div>
             <div className="bg-primary/5 border border-primary/15 rounded-lg px-3 py-2.5">
               <p className="text-xl font-bold text-primary">$311B</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">VC Dry Powder (Q1 2025)</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">{t("mvp.vol.drypowder")}</p>
             </div>
           </div>
 
@@ -395,7 +359,7 @@ export function MVPModal({ open, onOpenChange }: MVPModalProps) {
                 <YAxis tick={{ fontSize: 11 }} stroke="hsl(215 12% 60%)" tickFormatter={(v) => `$${v}B`} />
                 <Tooltip
                   contentStyle={{ fontSize: 12, borderRadius: 6, border: "1px solid hsl(214 20% 85%)" }}
-                  formatter={(v: number) => [`$${v}B`, "Volumen"]}
+                  formatter={(v: number) => [`$${v}B`, t("mvp.tooltip.volume")]}
                 />
                 <Bar dataKey="v" name="v" radius={[3,3,0,0]}>
                   {volumeData.map((_, i) => (
@@ -405,22 +369,22 @@ export function MVPModal({ open, onOpenChange }: MVPModalProps) {
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <p className="text-[10px] text-muted-foreground mt-1">Fuente: Industry Ventures, PitchBook</p>
+          <p className="text-[10px] text-muted-foreground mt-1">{t("mvp.source.iv")}</p>
 
           {/* ── Tender Offers + Sector Returns ────────────────────────── */}
-          <SectionTitle>Demanda institucional — Tender offers (últimos 24 meses)</SectionTitle>
+          <SectionTitle>{t("mvp.section.tender")}</SectionTitle>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2">
-            {tenderOffers.map((t) => (
-              <div key={t.company} className="border border-border rounded-lg p-3 text-center bg-background">
-                <p className="text-sm font-bold text-foreground">{t.company}</p>
-                <p className="text-base font-bold text-primary mt-1">${(t.volume / 1000).toFixed(1) === t.volume.toString() ? t.volume : (t.volume >= 1000 ? `${(t.volume/1000).toFixed(1)}B` : `${t.volume}M`)}</p>
+            {tenderOffers.map((item) => (
+              <div key={item.company} className="border border-border rounded-lg p-3 text-center bg-background">
+                <p className="text-sm font-bold text-foreground">{item.company}</p>
+                <p className="text-base font-bold text-primary mt-1">${item.volume >= 1000 ? `${(item.volume/1000).toFixed(1)}B` : `${item.volume}M`}</p>
               </div>
             ))}
           </div>
-          <p className="text-[10px] text-muted-foreground">Fuente: PitchBook, Bloomberg, CNBC</p>
+          <p className="text-[10px] text-muted-foreground">{t("mvp.source.pitchbook")}</p>
 
           {/* ── Tech Sector Returns ───────────────────────────────────── */}
-          <SectionTitle>Retorno anualizado a 10 años por sector</SectionTitle>
+          <SectionTitle>{t("mvp.section.returns")}</SectionTitle>
           <div className="h-48 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={sectorReturns} layout="vertical" barCategoryGap="20%">
@@ -429,7 +393,7 @@ export function MVPModal({ open, onOpenChange }: MVPModalProps) {
                 <YAxis type="category" dataKey="sector" tick={{ fontSize: 10 }} stroke="hsl(215 12% 60%)" width={100} />
                 <Tooltip
                   contentStyle={{ fontSize: 12, borderRadius: 6, border: "1px solid hsl(214 20% 85%)" }}
-                  formatter={(v: number) => [`${v}%`, "Retorno anualizado"]}
+                  formatter={(v: number) => [`${v}%`, t("mvp.tooltip.returns")]}
                 />
                 <Bar dataKey="ret" radius={[0,3,3,0]}>
                   {sectorReturns.map((_, i) => (
@@ -440,12 +404,12 @@ export function MVPModal({ open, onOpenChange }: MVPModalProps) {
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <p className="text-[10px] text-muted-foreground mt-1">Retorno anualizado de ETFs SPDR — 10 años a 10/31/2025</p>
+          <p className="text-[10px] text-muted-foreground mt-1">{t("mvp.source.spdr")}</p>
 
           {/* ── Private Mag 7 ─────────────────────────────────────────── */}
-          <SectionTitle>El nuevo "Magnificent 7" — privado</SectionTitle>
+          <SectionTitle>{t("mvp.section.mag7")}</SectionTitle>
           <div className="bg-primary/5 border border-primary/15 rounded-lg px-4 py-3 mb-3 text-[12px] text-foreground leading-relaxed">
-            Las empresas más valiosas del mundo ya no están en bolsa. El acceso a estas compañías requiere exposición en mercados privados — exactamente donde MVP opera.
+            {t("mvp.mag7.desc")}
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2">
             {privMag7.slice(0, 4).map((c) => (
@@ -465,12 +429,12 @@ export function MVPModal({ open, onOpenChange }: MVPModalProps) {
           </div>
           <div className="grid grid-cols-2 gap-3 mt-3">
             <div className="bg-secondary/40 rounded-lg p-3 text-center">
-              <p className="text-[11px] text-muted-foreground">Edad media en IPO — Mag 7 público</p>
-              <p className="text-xl font-bold text-foreground mt-1">6 años</p>
+              <p className="text-[11px] text-muted-foreground">{t("mvp.age.public.label")}</p>
+              <p className="text-xl font-bold text-foreground mt-1">6 {lang === "es" ? "años" : "years"}</p>
             </div>
             <div className="bg-primary/5 border border-primary/15 rounded-lg p-3 text-center">
-              <p className="text-[11px] text-muted-foreground">Edad media actual — Mag 7 privado</p>
-              <p className="text-xl font-bold text-primary mt-1">13 años</p>
+              <p className="text-[11px] text-muted-foreground">{t("mvp.age.private.label")}</p>
+              <p className="text-xl font-bold text-primary mt-1">13 {lang === "es" ? "años" : "years"}</p>
             </div>
           </div>
 
@@ -536,15 +500,15 @@ export function MVPModal({ open, onOpenChange }: MVPModalProps) {
 
             <div className="grid grid-cols-2 gap-2 mb-4">
               <div className="bg-muted/50 rounded-lg p-3">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">Fundada</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">{t("mvp.popup.founded")}</p>
                 <p className="text-sm font-bold text-foreground">{selected.founded}</p>
               </div>
               <div className="bg-muted/50 rounded-lg p-3">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">Estado</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">{t("mvp.popup.status")}</p>
                 <p className="text-sm font-bold text-foreground leading-tight">{selected.status}</p>
               </div>
               <div className="bg-primary/8 rounded-lg p-3 col-span-2">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">Valuación</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">{t("mvp.popup.valuation")}</p>
                 <p className="text-sm font-bold text-primary">{selected.valuation}</p>
               </div>
             </div>

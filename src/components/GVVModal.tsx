@@ -24,14 +24,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-// ── Static data from institutional presentation ───────────────────────────
-
-const kpis = [
-  { label: "CAGR 5Y", value: "14.57%", sub: "Rendimiento anualizado" },
-  { label: "Retorno histórico", value: "3.71x", sub: "Desde inicio (2014)" },
-  { label: "Sharpe Ratio", value: "0.69", sub: "Ajustado al riesgo" },
-  { label: "Vol. anualizada", value: "4.76%", sub: "Últimos 5 años" },
-];
+// ── Static data (language-independent) ───────────────────────────────────
 
 const annualComparison = [
   { year: "2021", gvv: 4.51, sp: 26.89 },
@@ -41,16 +34,7 @@ const annualComparison = [
   { year: "2025", gvv: 38.02, sp: 16.39 },
 ];
 
-const allocationData = [
-  { name: "Private Equity",   value: 29 },
-  { name: "Acciones USA",     value: 25 },
-  { name: "Cash",             value: 11 },
-  { name: "Acciones MX",      value: 10 },
-  { name: "Bonos MX",         value: 8  },
-  { name: "Bonos USA",        value: 3  },
-  { name: "Russell Strat.",   value: 3  },
-  { name: "Otros",            value: 11 },
-];
+const allocationValues = [29, 25, 11, 10, 8, 3, 3, 11];
 
 const PIE_COLORS = ["#1e3a5f","#2563a8","#6b9dd1","#4a7fb5","#8fb8d8","#b8d4ea","#c5ddf0","#dceef8"];
 
@@ -62,7 +46,8 @@ const currencies = [
   { name: "ASIA", value: 0.24  },
 ];
 
-const monthLabels = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+const monthLabelsEs = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+const monthLabelsEn = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
 const monthlyReturns = [
   { year:"2021", m:[7.70,5.16,-3.47,6.23,0.46,13.05,-8.71,-2.62,-5.46,1.57,-8.83,1.82],  ytd:4.51  },
@@ -73,10 +58,15 @@ const monthlyReturns = [
   { year:"2026", m:[0.17,-2.70,null,null,null,null,null,null,null,null,null,null],          ytd:-2.53 },
 ];
 
-const preIpo = [
+const preIpoEs = [
   { name:"Anthropic", year:"2021", focus:"IA ética y segura",       product:"Claude — modelo de lenguaje avanzado",   diff:"IA con límites claros. B2B y B2C."          },
   { name:"SpaceX",    year:"2002", focus:"Exploración espacial",    product:"Falcon 9, Starlink, Starship",           diff:"Cohetes reutilizables. Líder aeroespacial."  },
   { name:"Groq",      year:"2016", focus:"Chips de IA",             product:"LPU — acelerador de inferencia",        diff:"Más rápido y eficiente que NVIDIA."          },
+];
+const preIpoEn = [
+  { name:"Anthropic", year:"2021", focus:"Ethical and safe AI",     product:"Claude — advanced language model",      diff:"AI with clear limits. B2B and B2C."         },
+  { name:"SpaceX",    year:"2002", focus:"Space exploration",       product:"Falcon 9, Starlink, Starship",          diff:"Reusable rockets. Aerospace leader."         },
+  { name:"Groq",      year:"2016", focus:"AI chips",                product:"LPU — inference accelerator",           diff:"Faster and more efficient than NVIDIA."      },
 ];
 
 const successStories = [
@@ -93,7 +83,7 @@ const realizedReturns = [
   { name:"MédicaSur",         ret:"+45.11%"  },
 ];
 
-const activePositions = [
+const activePositionsEs = [
   {
     name: "Harley-Davidson (HOG)",
     thesis: "Marca icónica, FCF sólido, valuación comprimida. Exposición vía opciones a $17.45/acción.",
@@ -103,6 +93,18 @@ const activePositions = [
     name: "Nemak",
     thesis: "Líder en componentes automotrices, altas barreras de entrada. Entrada a $2.71/acción.",
     metrics: [["P/B","0.16x (1.19x)"],["P/E","3.51x (17x)"],["Retorno","+42% en 1 año"]],
+  },
+];
+const activePositionsEn = [
+  {
+    name: "Harley-Davidson (HOG)",
+    thesis: "Iconic brand, solid FCF, compressed valuation. Options exposure at $17.45/share.",
+    metrics: [["P/B","0.66x (1.09x)"],["P/E","4.85x (11.11x)"],["EV/EBITDA","8.43x (9.54x)"]],
+  },
+  {
+    name: "Nemak",
+    thesis: "Leader in automotive components, high barriers to entry. Entry at $2.71/share.",
+    metrics: [["P/B","0.16x (1.19x)"],["P/E","3.51x (17x)"],["Return","+42% in 1 year"]],
   },
 ];
 
@@ -149,14 +151,6 @@ const cumulativeData = [
   { l:"Ene '26", gvv:207.03, sp:190.20 },  { l:"Feb '26", gvv:201.43, sp:187.35 },
 ];
 
-const structureItems = [
-  { label:"Entidad legal",      value:"Cretum Partners GVV Fund, LP", sub:"Ontario, Canadá"         },
-  { label:"General Partner",    value:"Cretum Advisory LLC",           sub:"Delaware, USA"            },
-  { label:"Custodio",           value:"Bank of New York Mellon",       sub:"USA Custodian"            },
-  { label:"Administrador NAV",  value:"NAV Consulting",                sub:"Investment statements"    },
-  { label:"Auditor",            value:"Deloitte",                      sub:"Tax advisor & services"   },
-  { label:"Valorado en",        value:"USD",                           sub:"Fondo multidivisas"        },
-];
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -195,7 +189,38 @@ interface GVVModalProps {
 
 export function GVVModal({ open, onOpenChange }: GVVModalProps) {
   const [docFile, setDocFile] = useState<{ name: string; file_url: string } | null>(null);
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+
+  const kpis = [
+    { label: t("gvv.kpi1.label"), value: "14.57%", sub: t("gvv.kpi1.sub") },
+    { label: t("gvv.kpi2.label"), value: "3.71x",  sub: t("gvv.kpi2.sub") },
+    { label: t("gvv.kpi3.label"), value: "0.69",   sub: t("gvv.kpi3.sub") },
+    { label: t("gvv.kpi4.label"), value: "4.76%",  sub: t("gvv.kpi4.sub") },
+  ];
+
+  const allocationData = [
+    { name: "Private Equity",                  value: 29 },
+    { name: t("gvv.alloc.acciones_usa"),        value: 25 },
+    { name: "Cash",                             value: 11 },
+    { name: t("gvv.alloc.acciones_mx"),         value: 10 },
+    { name: t("gvv.alloc.bonos_mx"),            value: 8  },
+    { name: t("gvv.alloc.bonos_usa"),           value: 3  },
+    { name: "Russell Strat.",                   value: 3  },
+    { name: t("gvv.alloc.otros"),               value: 11 },
+  ];
+
+  const monthLabels = lang === "es" ? monthLabelsEs : monthLabelsEn;
+  const preIpo = lang === "es" ? preIpoEs : preIpoEn;
+  const activePositions = lang === "es" ? activePositionsEs : activePositionsEn;
+
+  const structureItems = [
+    { label: t("gvv.struct.legal"),     value: "Cretum Partners GVV Fund, LP", sub: "Ontario, Canadá"      },
+    { label: "General Partner",         value: "Cretum Advisory LLC",           sub: "Delaware, USA"         },
+    { label: t("gvv.struct.custodian"), value: "Bank of New York Mellon",       sub: "USA Custodian"         },
+    { label: t("gvv.struct.nav"),       value: "NAV Consulting",                sub: "Investment statements" },
+    { label: "Auditor",                 value: "Deloitte",                      sub: "Tax advisor & services"},
+    { label: t("gvv.struct.valued"),    value: "USD",                           sub: t("gvv.struct.multicurrency") },
+  ];
 
   useEffect(() => {
     if (!open) return;
@@ -244,7 +269,7 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
         </div>
 
         {/* ── Rendimiento Anual vs S&P 500 ────────────────────────────── */}
-        <SectionTitle>Rendimiento anual vs S&P 500</SectionTitle>
+        <SectionTitle>{t("gvv.section.annual")}</SectionTitle>
 
         <div className="grid grid-cols-3 gap-2 mb-4">
           <div className="bg-primary/5 border border-primary/15 rounded-lg px-3 py-2.5">
@@ -257,7 +282,7 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
           </div>
           <div className="bg-primary/5 border border-primary/15 rounded-lg px-3 py-2.5">
             <p className="text-xl font-bold text-primary">~130%</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Retorno acumulado 5 años</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">{t("gvv.hl3.sub")}</p>
           </div>
         </div>
 
@@ -290,7 +315,7 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
         </div>
 
         {/* ── Valor del Portafolio — 5Y vs S&P 500 ────────────────────── */}
-        <SectionTitle>Valor del Portafolio — últimos 5 años (base 100)</SectionTitle>
+        <SectionTitle>{t("gvv.section.port_value")}</SectionTitle>
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={cumulativeData}>
@@ -329,12 +354,12 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
         </div>
 
         {/* ── Portfolio Structure ──────────────────────────────────────── */}
-        <SectionTitle>Estructura del Portafolio</SectionTitle>
+        <SectionTitle>{t("gvv.section.port_struct")}</SectionTitle>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {/* Pie */}
           <div>
-            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Por clase de activo</p>
+            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">{t("gvv.alloc.by_asset")}</p>
             <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -364,7 +389,7 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
           {/* Currency + Skin in the game */}
           <div className="flex flex-col gap-4">
             <div>
-              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-3">Concentración de divisas</p>
+              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-3">{t("gvv.currency.label")}</p>
               <div className="space-y-2.5">
                 {currencies.map((c) => (
                   <div key={c.name} className="flex items-center gap-2">
@@ -380,20 +405,18 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
             <div className="bg-primary text-primary-foreground rounded-xl p-4 mt-auto">
               <p className="text-2xl font-bold">76%</p>
               <p className="text-[10px] font-semibold uppercase tracking-wide mt-1 opacity-80">Skin in the Game</p>
-              <p className="text-[11px] opacity-70 mt-1.5 leading-relaxed">
-                Cretum Capital Partners mantiene el 76% del fondo, alineando sus intereses directamente con los inversores.
-              </p>
+              <p className="text-[11px] opacity-70 mt-1.5 leading-relaxed">{t("gvv.skin.desc")}</p>
             </div>
           </div>
         </div>
 
         {/* ── Monthly Returns Table ────────────────────────────────────── */}
-        <SectionTitle>Retornos mensuales brutos</SectionTitle>
+        <SectionTitle>{t("gvv.section.monthly")}</SectionTitle>
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-[11px]">
             <thead>
               <tr className="bg-secondary/60">
-                <th className="text-left px-3 py-2 font-semibold text-foreground">Año</th>
+                <th className="text-left px-3 py-2 font-semibold text-foreground">{t("gvv.table.year")}</th>
                 {monthLabels.map((m) => (
                   <th key={m} className="px-1.5 py-2 font-semibold text-muted-foreground text-center">{m}</th>
                 ))}
@@ -423,34 +446,34 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
             </tbody>
           </table>
         </div>
-        <p className="text-[10px] text-muted-foreground mt-1.5">* Retornos brutos. El rendimiento pasado no garantiza resultados futuros.</p>
+        <p className="text-[10px] text-muted-foreground mt-1.5">{t("gvv.table.disclaimer")}</p>
 
         {/* ── Growth: Pre-IPO ──────────────────────────────────────────── */}
-        <SectionTitle>Growth — Posiciones Pre-IPO actuales</SectionTitle>
+        <SectionTitle>{t("gvv.section.preipo")}</SectionTitle>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {preIpo.map((p) => (
             <div key={p.name} className="border border-border rounded-xl p-4 bg-background hover:border-primary/40 transition-colors">
               <p className="text-base font-bold text-foreground">{p.name}</p>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wide mt-0.5">Fundada {p.year}</p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wide mt-0.5">{t("gvv.preipo.founded")} {p.year}</p>
               <div className="mt-2 space-y-1">
-                <p className="text-[11px] text-muted-foreground"><span className="font-semibold text-foreground">Enfoque:</span> {p.focus}</p>
-                <p className="text-[11px] text-muted-foreground"><span className="font-semibold text-foreground">Producto:</span> {p.product}</p>
-                <p className="text-[11px] text-muted-foreground"><span className="font-semibold text-foreground">Diferenciador:</span> {p.diff}</p>
+                <p className="text-[11px] text-muted-foreground"><span className="font-semibold text-foreground">{t("gvv.preipo.focus")}</span> {p.focus}</p>
+                <p className="text-[11px] text-muted-foreground"><span className="font-semibold text-foreground">{t("gvv.preipo.product")}</span> {p.product}</p>
+                <p className="text-[11px] text-muted-foreground"><span className="font-semibold text-foreground">{t("gvv.preipo.diff")}</span> {p.diff}</p>
               </div>
             </div>
           ))}
         </div>
 
         <div className="mt-4">
-          <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">Historias de éxito — Pre-IPO</p>
+          <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">{t("gvv.preipo.success")}</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {successStories.map((s) => (
               <div key={s.name} className="bg-secondary/40 rounded-lg p-3 text-center border border-border">
                 <p className="font-bold text-sm text-foreground">{s.name}</p>
                 <div className="mt-1.5 space-y-0.5">
-                  <p className="text-[10px] text-muted-foreground">Entrada: <span className="font-semibold text-foreground">{s.entry}</span></p>
+                  <p className="text-[10px] text-muted-foreground">{t("gvv.preipo.entry")} <span className="font-semibold text-foreground">{s.entry}</span></p>
                   <p className="text-[10px] text-muted-foreground">IPO: <span className="font-semibold text-foreground">{s.ipo}</span></p>
-                  <p className="text-[10px] text-muted-foreground">Cap. actual: <span className="font-semibold text-primary">{s.cap}</span></p>
+                  <p className="text-[10px] text-muted-foreground">{t("gvv.preipo.cap")} <span className="font-semibold text-primary">{s.cap}</span></p>
                 </div>
               </div>
             ))}
@@ -458,24 +481,24 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
         </div>
 
         {/* ── Value: Realized + Active ─────────────────────────────────── */}
-        <SectionTitle>Value — Retornos realizados</SectionTitle>
+        <SectionTitle>{t("gvv.section.realized")}</SectionTitle>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
           {realizedReturns.map((r) => (
             <div key={r.name} className="border border-border rounded-lg p-3 text-center bg-background">
               <p className="text-xl font-bold text-primary">{r.ret}</p>
               <p className="text-[11px] text-muted-foreground mt-1">{r.name}</p>
-              <p className="text-[10px] text-emerald-600 font-medium mt-0.5">Retorno realizado</p>
+              <p className="text-[10px] text-emerald-600 font-medium mt-0.5">{t("gvv.realized.label")}</p>
             </div>
           ))}
         </div>
 
-        <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">Posiciones activas</p>
+        <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">{t("gvv.active.title")}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {activePositions.map((p) => (
             <div key={p.name} className="border border-border rounded-xl p-4">
               <div className="flex items-center justify-between mb-2">
                 <p className="font-bold text-sm text-foreground">{p.name}</p>
-                <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-semibold">Activa</span>
+                <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-semibold">{t("gvv.active.badge")}</span>
               </div>
               <p className="text-[11px] text-muted-foreground leading-relaxed mb-2">{p.thesis}</p>
               <div className="grid grid-cols-3 gap-1">
@@ -491,10 +514,9 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
         </div>
 
         {/* ── Volatility: Algorithmic Strategies ──────────────────────── */}
-        <SectionTitle>Volatilidad — Estrategias algorítmicas</SectionTitle>
+        <SectionTitle>{t("gvv.section.algo")}</SectionTitle>
         <div className="bg-primary/5 border border-primary/15 rounded-lg px-4 py-3 mb-3 text-[12px] text-foreground leading-relaxed">
-          Delta Hedging dinámico mediante UVXY — elimina la exposición direccional manteniendo exposición a volatilidad.
-          Modelo propietario basado en Black-Scholes con gestión activa de Greeks (calls, covered calls, protective puts).
+          {t("gvv.algo.desc")}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {algoStrategies.map((s) => (
@@ -502,7 +524,7 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
               <p className="font-bold text-sm text-foreground mb-3">{s.name}</p>
               <div className="space-y-1.5">
                 <div className="flex justify-between">
-                  <span className="text-[11px] text-muted-foreground">CAGR Estrategia</span>
+                  <span className="text-[11px] text-muted-foreground">{t("gvv.algo.strategy_cagr")}</span>
                   <span className="text-[11px] font-bold text-primary">{s.cagr.toFixed(2)}%</span>
                 </div>
                 <div className="flex justify-between">
@@ -510,7 +532,7 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
                   <span className="text-[11px] text-muted-foreground">{s.bench.toFixed(2)}%</span>
                 </div>
                 <div className="flex justify-between border-t border-border pt-1.5 mt-1">
-                  <span className="text-[11px] font-semibold text-foreground">Alpha generado</span>
+                  <span className="text-[11px] font-semibold text-foreground">{t("gvv.algo.alpha")}</span>
                   <span className="text-[11px] font-bold text-emerald-600">{s.alpha}</span>
                 </div>
               </div>
@@ -527,7 +549,7 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
         </div>
 
         {/* ── Institutional Structure ──────────────────────────────────── */}
-        <SectionTitle>Estructura institucional</SectionTitle>
+        <SectionTitle>{t("gvv.section.inst")}</SectionTitle>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {structureItems.map((item) => (
             <div key={item.label} className="border border-border rounded-lg px-3 py-3 bg-background">

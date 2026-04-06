@@ -28,14 +28,6 @@ const aforesData = [
   { year: "2024", cretum: 3.50, afores: 3.46 },
 ];
 
-const ventajas = [
-  { title: "Agilidad", desc: "2–3× más rápido que otros manejadores para ejecutar decisiones de inversión." },
-  { title: "Independencia", desc: "No dependemos de ninguna casa de bolsa; trabajamos con todas ellas." },
-  { title: "Atención Personalizada", desc: "Update mensual y reuniones periódicas con cada cliente." },
-  { title: "Radar", desc: "Anticipamos cambios y tendencias antes que los demás." },
-  { title: "Flexibilidad", desc: "Nos adecuamos al régimen de inversión de cualquier mandato." },
-];
-
 const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: { value: number; name: string }[]; label?: string }) => {
   if (active && payload && payload.length) {
     return (
@@ -55,6 +47,41 @@ const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?:
 export function WealthManagementModal({ open, onOpenChange }: WealthManagementModalProps) {
   const { t } = useLanguage();
 
+  const ventajas = [
+    { title: t("wm.ventaja.1.title"), desc: t("wm.ventaja.1.desc") },
+    { title: t("wm.ventaja.2.title"), desc: t("wm.ventaja.2.desc") },
+    { title: t("wm.ventaja.3.title"), desc: t("wm.ventaja.3.desc") },
+    { title: t("wm.ventaja.4.title"), desc: t("wm.ventaja.4.desc") },
+    { title: t("wm.ventaja.5.title"), desc: t("wm.ventaja.5.desc") },
+  ];
+
+  const analysisItems = [
+    { title: t("wm.analisis.topdown.title"), desc: t("wm.analisis.topdown.desc") },
+    { title: t("wm.analisis.valrel.title"),  desc: t("wm.analisis.valrel.desc")  },
+  ];
+
+  const execSteps = [
+    { step: "01", title: t("wm.exec.01.title"), desc: t("wm.exec.01.desc") },
+    { step: "02", title: t("wm.exec.02.title"), desc: t("wm.exec.02.desc") },
+    { step: "03", title: t("wm.exec.03.title"), desc: t("wm.exec.03.desc") },
+    { step: "04", title: t("wm.exec.04.title"), desc: t("wm.exec.04.desc") },
+  ];
+
+  const monItems = [
+    { title: t("wm.mon.emisoras.title"),    desc: t("wm.mon.emisoras.desc")    },
+    { title: t("wm.mon.parametros.title"),  desc: t("wm.mon.parametros.desc")  },
+    { title: t("wm.mon.medidas.title"),     desc: t("wm.mon.medidas.desc")     },
+    { title: t("wm.mon.duracion.title"),    desc: t("wm.mon.duracion.desc")    },
+    { title: t("wm.mon.performance.title"), desc: t("wm.mon.performance.desc") },
+  ];
+
+  const structureNodes = [
+    { label: t("wm.node.cliente.label"),    sub: t("wm.node.cliente.sub")    },
+    { label: t("wm.node.fiduciaria.label"), sub: t("wm.node.fiduciaria.sub") },
+    { label: t("wm.node.mandato.label"),    sub: t("wm.node.mandato.sub")    },
+    { label: t("wm.node.custodio.label"),   sub: t("wm.node.custodio.sub")   },
+  ];
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] max-h-[90vh] overflow-y-auto overflow-x-hidden">
@@ -69,33 +96,22 @@ export function WealthManagementModal({ open, onOpenChange }: WealthManagementMo
 
           {/* Metodología de Análisis */}
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">Metodología de Análisis</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">{t("wm.section.analisis")}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="border-l-2 border-primary/40 pl-4">
-                <p className="text-xs font-semibold text-foreground mb-1">Enfoque Top-Down</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Partimos del análisis macroeconómico global y local para identificar los sectores y activos con mayor potencial, filtrando de lo general a lo particular.
-                </p>
-              </div>
-              <div className="border-l-2 border-primary/40 pl-4">
-                <p className="text-xs font-semibold text-foreground mb-1">Valor Relativo</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Comparamos emisoras y clases de activos dentro de su universo para seleccionar los instrumentos con la mejor relación riesgo-rendimiento en cada momento del ciclo.
-                </p>
-              </div>
+              {analysisItems.map((item) => (
+                <div key={item.title} className="border-l-2 border-primary/40 pl-4">
+                  <p className="text-xs font-semibold text-foreground mb-1">{item.title}</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Metodología de Ejecución */}
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">Metodología de Ejecución</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">{t("wm.section.ejecucion")}</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {[
-                { step: "01", title: "Precio", desc: "Determinamos niveles de entrada y salida con base en análisis técnico y fundamental." },
-                { step: "02", title: "Modelación", desc: "Construimos modelos de portafolio que optimizan el binomio riesgo-rendimiento del mandato." },
-                { step: "03", title: "Ejecución", desc: "Operamos con agilidad a través de múltiples intermediarios bursátiles para obtener el mejor precio." },
-                { step: "04", title: "Control de Riesgos", desc: "Aplicamos límites de concentración, stop-loss y métricas de drawdown en tiempo real." },
-              ].map((s) => (
+              {execSteps.map((s) => (
                 <div key={s.step} className="bg-muted/40 border border-border rounded-lg p-3">
                   <p className="text-[10px] font-bold text-primary/60 mb-1">{s.step}</p>
                   <p className="text-xs font-semibold text-foreground mb-1">{s.title}</p>
@@ -107,15 +123,9 @@ export function WealthManagementModal({ open, onOpenChange }: WealthManagementMo
 
           {/* Monitoreo de Riesgos */}
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">Monitoreo de Riesgos</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">{t("wm.section.monitoreo")}</h3>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
-              {[
-                { title: "Emisoras", desc: "Seguimiento continuo de fundamentales, calificaciones y eventos corporativos." },
-                { title: "Parámetros", desc: "VaR, CVaR, tracking error y límites de concentración por emisora y sector." },
-                { title: "Medidas de Riesgo", desc: "Volatilidad, correlaciones y análisis de escenarios de stress." },
-                { title: "Duración y Convexidad", desc: "Gestión activa de la sensibilidad a tasas de interés en carteras de renta fija." },
-                { title: "Performance", desc: "Alpha, Sharpe, Sortino y atribución de retornos vs. benchmark." },
-              ].map((item) => (
+              {monItems.map((item) => (
                 <div key={item.title} className="border-l-2 border-primary/30 pl-3">
                   <p className="text-[11px] font-semibold text-foreground mb-0.5">{item.title}</p>
                   <p className="text-[10px] text-muted-foreground leading-relaxed">{item.desc}</p>
@@ -126,8 +136,8 @@ export function WealthManagementModal({ open, onOpenChange }: WealthManagementMo
 
           {/* Cretum vs AFORES */}
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-1">Rendimiento vs. AFORES</h3>
-            <p className="text-[10px] text-muted-foreground mb-4">Retorno anual neto del portafolio Cretum vs. promedio AFORES Siefore Básica Pensiones.</p>
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-1">{t("wm.section.afores")}</h3>
+            <p className="text-[10px] text-muted-foreground mb-4">{t("wm.afores.subtitle")}</p>
             <div className="h-52">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={aforesData} barCategoryGap="30%" barGap={4}>
@@ -161,7 +171,7 @@ export function WealthManagementModal({ open, onOpenChange }: WealthManagementMo
                     <p className={`text-xs font-bold ${diff >= 0 ? "text-primary" : "text-destructive"}`}>
                       {diff >= 0 ? "+" : ""}{diff.toFixed(2)}%
                     </p>
-                    <p className="text-[9px] text-muted-foreground">vs. AFORES</p>
+                    <p className="text-[9px] text-muted-foreground">{t("wm.afores.note")}</p>
                   </div>
                 );
               })}
@@ -170,7 +180,7 @@ export function WealthManagementModal({ open, onOpenChange }: WealthManagementMo
 
           {/* Ventajas Competitivas */}
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">Ventajas Competitivas</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">{t("wm.section.ventajas")}</h3>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
               {ventajas.map((v) => (
                 <div key={v.title} className="bg-primary/5 border border-primary/15 rounded-lg p-3">
@@ -181,16 +191,11 @@ export function WealthManagementModal({ open, onOpenChange }: WealthManagementMo
             </div>
           </div>
 
-          {/* Estructura */}
+          {/* Estructura Operativa */}
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">Estructura Operativa</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">{t("wm.section.estructura")}</h3>
             <div className="flex flex-col md:flex-row items-center gap-2 justify-center">
-              {[
-                { label: "Cliente", sub: "Institución o persona" },
-                { label: "Entidad Fiduciaria", sub: "Administración del fideicomiso" },
-                { label: "Mandato / Intermediario", sub: "Ejecución bursátil" },
-                { label: "Custodio", sub: "Resguardo de valores" },
-              ].map((node, i, arr) => (
+              {structureNodes.map((node, i, arr) => (
                 <div key={node.label} className="flex items-center gap-2">
                   <div className="bg-muted border border-border rounded-lg px-3 py-2 text-center min-w-[110px]">
                     <p className="text-[11px] font-semibold text-foreground">{node.label}</p>
@@ -207,7 +212,7 @@ export function WealthManagementModal({ open, onOpenChange }: WealthManagementMo
             </div>
             <div className="mt-4 bg-primary/5 border border-primary/15 rounded-lg px-4 py-3 text-center">
               <p className="text-xs font-semibold text-primary">Cretum Advisory Partners</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">Planeación de Riesgos y Estrategia de Inversión</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">{t("wm.cretum.role")}</p>
             </div>
           </div>
 

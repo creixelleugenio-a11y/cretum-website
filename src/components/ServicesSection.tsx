@@ -7,71 +7,21 @@ import { useLanguage } from "@/contexts/LanguageContext";
 interface Partner {
   name: string;
   logo: string;
-  role: string;
-  desc: string;
+  roleKey: string;
+  descKey: string;
 }
 
-const partners: Partner[] = [
-  {
-    name: "BNY Mellon",
-    logo: "/logos/bny-mellon.png",
-    role: "Custodia y administración de activos",
-    desc: "Uno de los bancos custodios más grandes del mundo con $50T+ en activos bajo custodia. Provee servicios de liquidación, custodia y administración de fondos para Cretum.",
-  },
-  {
-    name: "NAV Consulting",
-    logo: "/logos/nav-consulting-alt.svg",
-    role: "Administración de fondos",
-    desc: "Firma especializada en cálculo de NAV (Net Asset Value), contabilidad de fondos y reporting para gestoras de activos. Garantiza precisión y transparencia en la valuación diaria.",
-  },
-  {
-    name: "Deloitte",
-    logo: "/logos/deloitte.png",
-    role: "Auditoría externa",
-    desc: "Big 4 global con presencia en 150+ países. Provee auditoría independiente de los estados financieros de los fondos de Cretum, garantizando estándares internacionales.",
-  },
-  {
-    name: "Bloomberg",
-    logo: "/logos/bloomberg.png",
-    role: "Datos de mercado y análisis",
-    desc: "Proveedor líder de datos financieros en tiempo real, noticias y analítica. La terminal Bloomberg es la herramienta central del equipo de inversión de Cretum.",
-  },
-  {
-    name: "Goldman Sachs",
-    logo: "/logos/goldman-sachs.png",
-    role: "Prime broker y ejecución",
-    desc: "Banco de inversión global líder. Actúa como prime broker y contraparte de ejecución para operaciones de renta variable y derivados.",
-  },
-  {
-    name: "UBS",
-    logo: "/logos/ubs.png",
-    role: "Prime broker y custodia",
-    desc: "Banco suizo con presencia en 50+ países. Provee servicios de prime brokerage, custodia internacional y acceso a mercados globales.",
-  },
-  {
-    name: "Morgan Stanley",
-    logo: "/logos/morgan-stanley.svg",
-    role: "Ejecución y brokerage",
-    desc: "Banco de inversión global con capacidad de ejecución en todos los mercados. Cretum lo utiliza como intermediario bursátil para optimizar el precio de ejecución.",
-  },
-  {
-    name: "Capital Economics",
-    logo: "/logos/capital-economics.png",
-    role: "Investigación macroeconómica",
-    desc: "Firma independiente de análisis macroeconómico con cobertura de 200+ economías. Sus reportes fundamentan el análisis top-down del equipo de inversión de Cretum.",
-  },
-  {
-    name: "RGA Consulting",
-    logo: "/logos/rga-consulting.png",
-    role: "Asesoría fiscal y contable",
-    desc: "Firma de consultoría especializada en contabilidad y planeación fiscal para empresas del sector financiero. Provee asesoría regulatoria y cumplimiento fiscal.",
-  },
-  {
-    name: "Trendrating",
-    logo: "/logos/trendrating.png",
-    role: "Plataforma de análisis cuantitativo",
-    desc: "Fintech suiza con algoritmos de machine learning para identificar tendencias en 17,000+ activos. Cretum licencia su plataforma para análisis cuantitativo sistemático.",
-  },
+const partnerDefs: Partner[] = [
+  { name: "BNY Mellon",        logo: "/logos/bny-mellon.png",          roleKey: "partner.bny.role",       descKey: "partner.bny.desc"       },
+  { name: "NAV Consulting",    logo: "/logos/nav-consulting-alt.svg",  roleKey: "partner.nav.role",       descKey: "partner.nav.desc"       },
+  { name: "Deloitte",          logo: "/logos/deloitte.png",            roleKey: "partner.deloitte.role",  descKey: "partner.deloitte.desc"  },
+  { name: "Bloomberg",         logo: "/logos/bloomberg.png",           roleKey: "partner.bloomberg.role", descKey: "partner.bloomberg.desc" },
+  { name: "Goldman Sachs",     logo: "/logos/goldman-sachs.png",       roleKey: "partner.gs.role",        descKey: "partner.gs.desc"        },
+  { name: "UBS",               logo: "/logos/ubs.png",                 roleKey: "partner.ubs.role",       descKey: "partner.ubs.desc"       },
+  { name: "Morgan Stanley",    logo: "/logos/morgan-stanley.svg",      roleKey: "partner.ms.role",        descKey: "partner.ms.desc"        },
+  { name: "Capital Economics", logo: "/logos/capital-economics.png",   roleKey: "partner.ce.role",        descKey: "partner.ce.desc"        },
+  { name: "RGA Consulting",    logo: "/logos/rga-consulting.png",      roleKey: "partner.rga.role",       descKey: "partner.rga.desc"       },
+  { name: "Trendrating",       logo: "/logos/trendrating.png",         roleKey: "partner.tr.role",        descKey: "partner.tr.desc"        },
 ];
 
 const GVVModal = lazy(() => import("@/components/GVVModal").then(m => ({ default: m.GVVModal })));
@@ -80,13 +30,17 @@ const TrendratingModal = lazy(() => import("@/components/TrendratingModal").then
 const WealthManagementModal = lazy(() => import("@/components/WealthManagementModal").then(m => ({ default: m.WealthManagementModal })));
 
 
+interface SelectedPartner { name: string; logo: string; role: string; desc: string; }
+
 export function ServicesSection() {
   const [gvvOpen, setGvvOpen] = useState(false);
   const [mvpOpen, setMvpOpen] = useState(false);
   const [trOpen, setTrOpen] = useState(false);
   const [wmOpen, setWmOpen] = useState(false);
-  const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
+  const [selectedPartner, setSelectedPartner] = useState<SelectedPartner | null>(null);
   const { t } = useLanguage();
+
+  const partners = partnerDefs.map((p) => ({ ...p, role: t(p.roleKey), desc: t(p.descKey) }));
 
   const services = [
   { title: "GVV", subtitle: "Growth · Value · Volatility", onClick: () => setGvvOpen(true) },
@@ -154,7 +108,7 @@ export function ServicesSection() {
               {[...partners, ...partners].map((p, i) => (
                 <button
                   key={i}
-                  onClick={() => setSelectedPartner(partners.find(x => x.name === p.name) ?? null)}
+                  onClick={() => { setSelectedPartner(partners.find(x => x.name === p.name) ?? null); }}
                   className="shrink-0 h-14 w-40 rounded-xl flex items-center justify-center px-4 shadow-sm hover:shadow-md hover:scale-[1.04] transition-all duration-200"
                   style={{ backgroundColor: "#ffffff", border: "1px solid #e5e7eb" }}
                 >
