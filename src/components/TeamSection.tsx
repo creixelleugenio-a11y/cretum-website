@@ -18,7 +18,7 @@ const operativo = [
   { id: "o4", nameKey: "team.o4.name", roleKey: "team.o4.role", bioKey: null, photo: "/team/o4.jpg" },
   { id: "o5", nameKey: "team.o5.name", roleKey: "team.o5.role", bioKey: null, photo: "/team/o5.jpg" },
   { id: "o6", nameKey: "team.o6.name", roleKey: "team.o6.role", bioKey: null, photo: "/team/o6.jpg" },
-  { id: "o7", nameKey: "team.o7.name", roleKey: "team.o7.role", bioKey: "team.o7.bio", photo: "" },
+  { id: "o7", nameKey: "team.o7.name", roleKey: "team.o7.role", bioKey: "team.o7.bio", photo: "/team/o7.jpg" },
   { id: "o8", nameKey: "team.o8.name", roleKey: "team.o8.role", bioKey: null, photo: "" },
 ];
 
