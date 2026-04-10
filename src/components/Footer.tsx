@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import cretumLogo from "@/assets/Cretum_Logo.png";
 
@@ -6,19 +7,17 @@ export function Footer() {
 
   const links = lang === "es"
     ? [
-        { label: "Inicio", href: "#inicio" },
-        { label: "Nosotros", href: "#nosotros" },
-        { label: "Servicios", href: "#servicios" },
-        { label: "Track Record", href: "#track-record" },
-        { label: "Nuestro Equipo", href: "#nuestro-equipo" },
+        { label: "Inicio", href: "/" },
+        { label: "Nosotros", href: "/nosotros" },
+        { label: "Servicios", href: "/servicios" },
+        { label: "Nuestro Equipo", href: "/nuestro-equipo" },
         { label: "Contacto", href: "#contacto" },
       ]
     : [
-        { label: "Home", href: "#inicio" },
-        { label: "About", href: "#nosotros" },
-        { label: "Services", href: "#servicios" },
-        { label: "Track Record", href: "#track-record" },
-        { label: "Our Team", href: "#nuestro-equipo" },
+        { label: "Home", href: "/" },
+        { label: "About", href: "/nosotros" },
+        { label: "Services", href: "/servicios" },
+        { label: "Our Team", href: "/nuestro-equipo" },
         { label: "Contact", href: "#contacto" },
       ];
 
@@ -35,7 +34,11 @@ export function Footer() {
             <ul className="space-y-2">
               {links.map((l) => (
                 <li key={l.label}>
-                  <a href={l.href} className="text-sm text-background/60 hover:text-background transition-colors">{l.label}</a>
+                  {l.href.startsWith("/") ? (
+                    <Link to={l.href} className="text-sm text-background/60 hover:text-background transition-colors">{l.label}</Link>
+                  ) : (
+                    <a href={l.href} className="text-sm text-background/60 hover:text-background transition-colors">{l.label}</a>
+                  )}
                 </li>
               ))}
             </ul>

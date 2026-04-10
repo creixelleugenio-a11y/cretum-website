@@ -10,6 +10,7 @@ const CARDS = [
     icon: Rocket,
     name: "Manhattan Venture Partners",
     split: false,
+    nameMb: "mb-10",
     bullets: [
       { label: "",    text: "Invirtiendo en empresas tecnológicas de alto potencial en etapas pre-IPO, aprovechando nuestra red para identificar tendencias clave de forma anticipada" },
     ],
@@ -18,6 +19,8 @@ const CARDS = [
     icon: Activity,
     name: "GVV Fund",
     split: false,
+    span: 2,
+    subgrid: true,
     bullets: [
       { label: "Growth",     text: "Late-Stage Secondaries & Pre-IPO Investments" },
       { label: "Value",      text: "Value Investing Thesis with Margin of Safety" },
@@ -25,19 +28,10 @@ const CARDS = [
     ],
   },
   {
-    icon: TrendingUp,
-    name: "Trendrating",
-    split: false,
-    bullets: [
-      { label: "Cobertura", text: "17,000+ activos en 12 regiones globales" },
-      { label: "Señales",   text: "8 indicadores cuantitativos propietarios" },
-      { label: "Adopción",  text: "350+ instituciones" },
-    ],
-  },
-  {
     icon: Landmark,
     name: "Gestión Patrimonial",
     split: false,
+    nameMb: "mb-10",
     bullets: [
       { label: "", text: "Construyendo portafolios estructurados a partir de análisis macro y fundamental, con ejecución disciplinada y cobertura en periodos de volatilidad." },
     ],
@@ -49,7 +43,7 @@ export function CorporateStructureSection() {
   const { t } = useLanguage();
 
   return (
-    <section id="estructura" className="pt-24 pb-44 bg-background relative overflow-hidden">
+    <section id="estructura" className="pt-16 pb-44 bg-background relative overflow-hidden">
       {/* Building image — right edge of section, behind everything */}
       <div className="hidden lg:block absolute inset-0 pointer-events-none select-none">
         <img src={buildingImg} alt="" className="absolute left-0 top-0 w-[35%] h-full object-cover object-center grayscale opacity-[0.07]" style={{ WebkitMaskImage: "radial-gradient(ellipse 80% 80% at 20% 50%, black 30%, transparent 100%)", maskImage: "radial-gradient(ellipse 80% 80% at 20% 50%, black 30%, transparent 100%)" }} />
@@ -80,13 +74,13 @@ export function CorporateStructureSection() {
           {/* Left — Privado (covers 0–37 % from right) */}
           <div
             className="absolute z-20 rounded-2xl border-2 border-dashed border-foreground/20 pointer-events-none"
-            style={{ left: 0, right: "50%", top: "2.5rem", bottom: "1rem" }}
+            style={{ left: 0, right: "57%", top: "2.5rem", bottom: "1rem" }}
           />
 
           {/* Right — Público (above cards) */}
           <div
             className="absolute z-20 rounded-2xl border-2 border-dashed border-foreground/20 pointer-events-none"
-            style={{ left: "25.8%", right: 0, top: 0, bottom: 0 }}
+            style={{ left: "30.2%", right: 0, top: 0, bottom: 0 }}
           />
 
           {/* Zone label — Privado (top-left of left box) */}
@@ -117,10 +111,36 @@ export function CorporateStructureSection() {
           <div style={{ height: "7rem" }} aria-hidden />
 
           {/* Cards — 4 equal columns, z above both boxes */}
-          <div className="relative z-10 grid gap-6 px-8 pt-8 pb-12 items-stretch" style={{ gridTemplateColumns: "1fr 1fr 1fr 1fr" }}>
+          <div className="relative z-10 grid gap-6 px-8 pt-8 pb-0 items-stretch" style={{ gridTemplateColumns: "3fr 2fr 2fr 3fr" }}>
             {CARDS.map((card, i) => (
-              <Reveal key={i} delay={i * 0.08} className="h-full">
-                <div className="bg-background border border-border/40 rounded-xl px-8 pt-8 pb-28 flex flex-col h-full">
+              <div key={i} style={"span" in card ? { gridColumn: `span ${card.span}` } : undefined} className="h-full">
+              <Reveal delay={i * 0.08} className="h-full">
+                {"subgrid" in card ? (
+                  /* GVV card: title centered inside, horizontal divider, 3 columns */
+                  <div className="border border-border/40 rounded-xl flex flex-col h-full overflow-hidden" style={{ background: "hsl(215,60%,95%)" }}>
+                    {/* Header: icon + title centered */}
+                    <div className="flex items-center justify-center gap-3 px-8 pt-7 pb-5">
+                      <card.icon className="w-8 h-8 text-primary shrink-0" strokeWidth={1.4} />
+                      <p className="font-semibold text-[1.05rem] text-foreground leading-snug">{card.name}</p>
+                    </div>
+                    {/* Horizontal divider */}
+                    <div className="h-px bg-foreground/15 mx-6" />
+                    {/* 3 columns */}
+                    <div className="grid grid-cols-3 flex-1 pt-2 pb-16">
+                      {card.bullets.map((b, bi) => (
+                        <div key={b.label} className="relative px-6 flex flex-col gap-9">
+                          {bi > 0 && <div className="absolute left-0 top-0 bottom-0 w-px bg-foreground/15" />}
+                          <span className="font-semibold text-[1rem] text-foreground/80">{b.label}</span>
+                          <span className="text-[0.85rem] text-muted-foreground leading-relaxed">{b.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                <div
+                  className="border border-border/40 rounded-xl px-8 pt-8 pb-16 flex flex-col h-full"
+                  style={{ background: "var(--background)" }}
+                >
                   {card.split ? (
                     <div className="flex gap-4 flex-1">
                       {/* Left side: Growth */}
@@ -146,13 +166,29 @@ export function CorporateStructureSection() {
                         </ul>
                       </div>
                     </div>
+                  ) : "subgrid" in card ? (
+                    <>
+                      <div className="flex items-center gap-3 mb-6">
+                        <card.icon className="w-8 h-8 text-primary shrink-0" strokeWidth={1.4} />
+                        <p className="font-semibold text-[1.05rem] text-foreground leading-snug">{card.name}</p>
+                      </div>
+                      <div className="grid grid-cols-3 flex-1">
+                        {card.bullets.map((b, bi) => (
+                          <div key={b.label} className="relative px-5 flex flex-col gap-2">
+                            {bi > 0 && <div className="absolute left-0 top-2 bottom-2 w-px bg-foreground/15" />}
+                            <span className="font-semibold text-[1rem] text-foreground/80">{b.label}</span>
+                            <span className="text-[0.85rem] text-muted-foreground leading-relaxed">{b.text}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </>
                   ) : (
                     <>
-                      <card.icon className="w-9 h-9 text-primary mb-6" strokeWidth={1.3} />
-                      <p className="font-semibold text-[1.15rem] text-foreground leading-snug mb-5">{card.name}</p>
-                      <ul className="space-y-3.5">
+                      <card.icon className="w-8 h-8 text-primary mb-5" strokeWidth={1.4} />
+                      <p className={`font-semibold text-[1.05rem] text-foreground leading-snug ${"nameMb" in card ? card.nameMb : "mb-4"}`}>{card.name}</p>
+                      <ul className="space-y-3">
                         {card.bullets.map((b) => (
-                          <li key={b.label} className="text-[0.9rem] text-muted-foreground leading-relaxed">
+                          <li key={b.label} className="text-[0.85rem] text-muted-foreground leading-relaxed">
                             {b.label && <><span className="font-semibold text-foreground/70">{b.label}</span>{" · "}</>}
                             {b.text}
                           </li>
@@ -161,12 +197,14 @@ export function CorporateStructureSection() {
                     </>
                   )}
                 </div>
+                )}
               </Reveal>
+              </div>
             ))}
           </div>
 
           {/* CTA — bottom-left inside Privado region */}
-          <div className="relative z-20 pl-8 pb-5">
+          <div className="relative z-20 pl-8 pt-4 pb-4">
             <Reveal delay={0.3}>
               <Link
                 to="/servicios"

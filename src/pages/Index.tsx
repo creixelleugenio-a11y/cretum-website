@@ -1,29 +1,20 @@
-import { lazy, Suspense } from "react";
 import { Navbar } from "@/components/Navbar";
 import { HeroSection } from "@/components/HeroSection";
-import { ServicesSection } from "@/components/ServicesSection";
+import { HomeKPIsSection } from "@/components/HomeKPIsSection";
 import { MethodologySection } from "@/components/MethodologySection";
-import { TeamSection } from "@/components/TeamSection";
+import { CorporateStructureSection } from "@/components/CorporateStructureSection";
 import { Footer } from "@/components/Footer";
-import { LanguageProvider } from "@/contexts/LanguageContext";
-
-const AboutSection = lazy(() => import("@/components/AboutSection").then(m => ({ default: m.AboutSection })));
 
 const Index = () => {
   return (
-    <LanguageProvider>
-      <div className="h-screen overflow-y-auto [scroll-padding-top:7rem]">
-        <Navbar />
-        <HeroSection />
-        <Suspense fallback={<div className="snap-start min-h-screen" />}>
-          <AboutSection />
-        </Suspense>
-        <ServicesSection />
-        <MethodologySection />
-        <TeamSection />
-        <Footer />
-      </div>
-    </LanguageProvider>
+    <div className="h-screen overflow-y-auto [scroll-padding-top:7rem]">
+      <Navbar />
+      <HeroSection />
+      <HomeKPIsSection />
+      <MethodologySection />
+      <CorporateStructureSection />
+      <Footer />
+    </div>
   );
 };
 

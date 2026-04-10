@@ -56,7 +56,7 @@ export function TeamSection() {
   const [selected, setSelected] = useState<Member | null>(null);
 
   return (
-    <section id="nuestro-equipo" className="min-h-screen pt-32 pb-24 bg-background relative overflow-hidden">
+    <section id="nuestro-equipo" className="min-h-screen pt-56 pb-44 bg-background relative overflow-hidden">
       <div className="hidden lg:block absolute right-0 top-0 w-[28%] h-full pointer-events-none select-none">
         <img src={officeImg} alt="" className="w-full h-full object-cover object-center grayscale opacity-20" />
         <div className="absolute inset-0 bg-gradient-to-l from-transparent via-background/60 to-background" />

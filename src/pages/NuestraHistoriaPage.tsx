@@ -1,18 +1,20 @@
-import { useLanguage } from "@/contexts/LanguageContext";
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { Reveal } from "@/components/Reveal";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
 const aumDataBase = [
-  { nameKey: null,                    staticName: "Venture Capital US", value: 25000, pct: "77.8%" },
-  { nameKey: "aum.mandatos_gov",      staticName: "",                   value: 5900,  pct: "18.4%" },
-  { nameKey: "aum.credito_privado",   staticName: "",                   value: 550,   pct: "1.7%"  },
-  { nameKey: null,                    staticName: "HF GVV",             value: 350,   pct: "1.1%"  },
-  { nameKey: "aum.mandatos_familias", staticName: "",                   value: 310,   pct: "1.0%"  },
+  { nameKey: null,                    staticName: "Venture Capital US", value: 25000 },
+  { nameKey: "aum.mandatos_gov",      staticName: "",                   value: 5900  },
+  { nameKey: "aum.credito_privado",   staticName: "",                   value: 550   },
+  { nameKey: null,                    staticName: "HF GVV",             value: 350   },
+  { nameKey: "aum.mandatos_familias", staticName: "",                   value: 310   },
 ];
 
 const COLORS = ["hsl(214,60%,65%)", "hsl(214,50%,72%)", "hsl(214,40%,78%)", "hsl(214,30%,84%)", "hsl(214,20%,90%)"];
 
-export function AboutSection() {
+export default function NuestraHistoriaPage() {
   const { t } = useLanguage();
 
   const aumData = aumDataBase.map((d) => ({
@@ -21,9 +23,10 @@ export function AboutSection() {
   }));
 
   return (
-    <section id="nosotros" className="pt-28 pb-20 bg-muted/20">
-      <div className="max-w-6xl mx-auto px-6 w-full">
-
+    <>
+      <Navbar />
+      <main className="min-h-screen pt-56 pb-44 bg-background">
+        <div className="max-w-6xl mx-auto px-8">
           <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start">
 
             {/* Left: label + title + description + mission */}
@@ -33,12 +36,12 @@ export function AboutSection() {
                   {t("about.founded")}
                 </p>
               </Reveal>
-              <Reveal delay={0.45}>
-                <h2 className="text-5xl md:text-6xl font-serif text-foreground mb-8 max-w-xl leading-tight">
+              <Reveal delay={0.15}>
+                <h1 className="text-5xl md:text-6xl font-serif text-foreground mb-8 leading-tight">
                   {t("about.title")}
-                </h2>
+                </h1>
               </Reveal>
-              <Reveal delay={0.45} className="reveal-left">
+              <Reveal delay={0.25}>
                 <p className="text-lg text-foreground/60 leading-relaxed mb-4">
                   {t("about.brief1")}
                 </p>
@@ -56,9 +59,10 @@ export function AboutSection() {
               </Reveal>
             </div>
 
-            {/* Right: AUM chart + stats */}
+            {/* Right: AUM chart + stats grid */}
             <div className="flex flex-col gap-6 self-end">
-              <Reveal delay={0.75}>
+              <Reveal delay={0.4}>
+                {/* Donut chart card */}
                 <div className="bg-foreground rounded-2xl px-7 py-6 text-white">
                   <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1">
                     {t("common.distribucion")}
@@ -92,13 +96,32 @@ export function AboutSection() {
                     </div>
                   </div>
                 </div>
-              </Reveal>
 
+                {/* Stats grid */}
+                <div className="grid grid-cols-2 gap-x-0 gap-y-6 mt-6">
+                  {[
+                    { num: "+12",      desc: t("about.stat.years")    },
+                    { num: "+$32,110", desc: t("about.stat.aum")      },
+                    { num: "+400",     desc: t("about.stat.investors") },
+                    { num: t("about.stat.one"), desc: t("about.stat.philosophy") },
+                  ].map((s, i) => (
+                    <Reveal key={i} delay={0.4 + i * 0.32}>
+                      <div className="border-l-2 border-primary pl-5">
+                        <p className="text-4xl md:text-5xl font-light text-foreground leading-none" style={{ fontFamily: "'Source Serif 4', serif" }}>
+                          {s.num}
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-3 leading-relaxed">{s.desc}</p>
+                      </div>
+                    </Reveal>
+                  ))}
+                </div>
+              </Reveal>
             </div>
 
           </div>
-
-      </div>
-    </section>
+        </div>
+      </main>
+      <Footer />
+    </>
   );
 }
