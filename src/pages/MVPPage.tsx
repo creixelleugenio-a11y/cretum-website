@@ -18,6 +18,7 @@ import {
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { MVPWorldMap } from "@/components/MVPWorldMap";
 
 // ── Static data (numbers, logos — not translated) ─────────────────────────
 
@@ -251,6 +252,11 @@ export default function MVPPage() {
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* ── Global Reach Map ──────────────────────────────────────── */}
+            <div className="mt-16">
+              <MVPWorldMap />
             </div>
 
             {/* ── Platform Pillars ──────────────────────────────────────── */}
