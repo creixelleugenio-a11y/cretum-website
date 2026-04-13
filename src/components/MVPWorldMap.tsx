@@ -26,7 +26,7 @@ export function MVPWorldMap() {
   return (
     <div className="w-full">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-1">
         <h2 className="text-2xl md:text-3xl font-serif text-foreground">
           Alcance Global de MVP
         </h2>
@@ -35,8 +35,8 @@ export function MVPWorldMap() {
         </p>
       </div>
 
-      {/* Map container — viewBox crops SVG to remove whitespace */}
-      <div className="w-full overflow-hidden rounded-lg">
+      {/* Map container — negative margin pulls SVG up to eliminate internal whitespace */}
+      <div className="w-full overflow-hidden rounded-lg" style={{ marginTop: "-40px" }}>
         <ComposableMap
           width={800}
           height={380}
