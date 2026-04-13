@@ -420,19 +420,6 @@ export default function MVPPage() {
               <p className="text-[10px] text-muted-foreground mt-4">{t("mvp.source.iv")}</p>
             </AccordionSection>
 
-            {/* ── Tender Offers ─────────────────────────────────────────── */}
-            <AccordionSection title={t("mvp.section.tender")}>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-2">
-                {tenderOffers.map((item) => (
-                  <div key={item.company} className="border border-border rounded-lg p-5 text-center bg-background">
-                    <p className="text-sm font-bold text-foreground">{item.company}</p>
-                    <p className="text-base font-bold text-primary mt-4">${item.volume >= 1000 ? `${(item.volume/1000).toFixed(1)}B` : `${item.volume}M`}</p>
-                  </div>
-                ))}
-              </div>
-              <p className="text-[10px] text-muted-foreground">{t("mvp.source.pitchbook")}</p>
-            </AccordionSection>
-
             {/* ── Tech Sector Returns ───────────────────────────────────── */}
             <AccordionSection title={t("mvp.section.returns")}>
               <div className="h-64 w-full">
@@ -455,39 +442,6 @@ export default function MVPPage() {
                 </ResponsiveContainer>
               </div>
               <p className="text-[10px] text-muted-foreground mt-4">{t("mvp.source.spdr")}</p>
-            </AccordionSection>
-
-            {/* ── Private Mag 7 ─────────────────────────────────────────── */}
-            <AccordionSection title={t("mvp.section.mag7")}>
-              <div className="bg-primary/5 border border-primary/15 rounded-lg px-6 py-5 mb-3 text-[12px] text-foreground leading-relaxed">
-                {t("mvp.mag7.desc")}
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-2">
-                {privMag7.slice(0, 4).map((c) => (
-                  <div key={c.name} className="border border-border rounded-lg p-5 text-center bg-background hover:border-primary/40 transition-colors">
-                    <p className="text-sm font-bold text-foreground">{c.name}</p>
-                    <p className="text-base font-bold text-primary mt-4">{c.val}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="grid grid-cols-3 gap-4">
-                {privMag7.slice(4).map((c) => (
-                  <div key={c.name} className="border border-border rounded-lg p-5 text-center bg-background hover:border-primary/40 transition-colors">
-                    <p className="text-sm font-bold text-foreground">{c.name}</p>
-                    <p className="text-base font-bold text-primary mt-4">{c.val}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="grid grid-cols-2 gap-5 mt-6">
-                <div className="bg-secondary/40 rounded-lg p-5 text-center">
-                  <p className="text-[11px] text-muted-foreground">{t("mvp.age.public.label")}</p>
-                  <p className="text-xl font-bold text-foreground mt-4">6 {lang === "es" ? "años" : "years"}</p>
-                </div>
-                <div className="bg-primary/5 border border-primary/15 rounded-lg p-5 text-center">
-                  <p className="text-[11px] text-muted-foreground">{t("mvp.age.private.label")}</p>
-                  <p className="text-xl font-bold text-primary mt-4">13 {lang === "es" ? "años" : "years"}</p>
-                </div>
-              </div>
             </AccordionSection>
 
             {/* ── Portfolio Marquee ──────────────────────────────────────── */}
