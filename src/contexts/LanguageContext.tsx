@@ -698,8 +698,10 @@ const translations: Record<string, Record<Lang, string>> = {
   "mvp.section.tender":          { es: "Demanda institucional — Tender offers (últimos 24 meses)", en: "Institutional demand — Tender offers (last 24 months)" },
   "mvp.section.returns":         { es: "¿Por qué tecnología?",                        en: "Why technology?"                             },
   "mvp.section.returns.sub":     { es: "Retorno anualizado por sector en la última década", en: "Annualized return by sector over the last decade" },
-  "mvp.section.portfolio":       { es: "Nuestras inversiones",                        en: "Our investments"                             },
-  "mvp.section.portfolio.sub":   { es: "Empresas en las que hemos invertido en etapa privada", en: "Companies we've invested in at the private stage" },
+  "mvp.section.portfolio":           { es: "Nuestras inversiones",                                    en: "Our investments"                                       },
+  "mvp.section.portfolio.sub":       { es: "Empresas en las que hemos invertido en etapa privada",      en: "Companies we've invested in at the private stage"          },
+  "mvp.section.portfolio.current":   { es: "Portafolio actual",                                         en: "Current portfolio"                                         },
+  "mvp.section.portfolio.exits":     { es: "Distribuidas",                                              en: "Exits / Distributed"                                       },
   "mvp.section.mag7":            { es: "El nuevo \"Magnificent 7\" — privado",        en: "The new \"Magnificent 7\" — private"         },
   "mvp.trackrecord.desc": {
     es: "Consistentemente supera el top decil de los competidores en la mitad del tiempo — duración promedio de fondos: 3.7 años",
