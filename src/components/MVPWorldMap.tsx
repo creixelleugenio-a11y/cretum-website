@@ -67,7 +67,7 @@ const cities = [
 ];
 
 const DOT_COLOR   = "hsl(214,72%,40%)";
-const LABEL_COLOR = "hsl(214,55%,22%)";
+const LABEL_COLOR = "hsl(0,0%,8%)";
 const LINE_COLOR  = "hsl(214,55%,48%)";
 
 export function MVPWorldMap() {
@@ -162,7 +162,7 @@ export function MVPWorldMap() {
                     fontFamily: "'Playfair Display', serif",
                     fontSize: "10.5px",
                     fontWeight: 700,
-                    fill: isHovered ? "hsl(214,72%,28%)" : LABEL_COLOR,
+                    fill: isHovered ? "hsl(0,0%,0%)" : LABEL_COLOR,
                     pointerEvents: "none",
                     letterSpacing: "0.01em",
                   }}
