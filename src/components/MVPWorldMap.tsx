@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   ComposableMap,
   Geographies,
@@ -13,6 +13,7 @@ type CityType = "hq" | "office";
 interface City {
   name: string;
   info: string;
+  address: string | null;
   type: CityType;
   coords: [number, number];
   lx1: number; ly1: number; lx2: number; ly2: number;
@@ -21,55 +22,56 @@ interface City {
 
 const cities: City[] = [
   {
-    name: "San Francisco", info: "West Coast Headquarters", type: "office",
+    name: "San Francisco", info: "West Coast Headquarters", address: null, type: "office",
     coords: [-122.419, 37.775],
     lx1: -5, ly1: -3, lx2: -22, ly2: -13,
     tx: -25, ty: -16, anchor: "end",
   },
   {
-    name: "Los Angeles", info: "West Coast Office", type: "office",
+    name: "Los Angeles", info: "West Coast Office", address: null, type: "office",
     coords: [-118.244, 34.052],
     lx1: -5, ly1: 0, lx2: -18, ly2: 0,
     tx: -21, ty: 3, anchor: "end",
   },
   {
     name: "Mexico City", info: "Latam Operations", type: "office",
+    address: "Av. Prol. Paseo de la Reforma 1015\nEdificio Punta Santa Fe, Piso 22\nCol. Desarrollo Santa Fe 01376\nCiudad de México",
     coords: [-99.133, 19.433],
     lx1: -5, ly1: 0, lx2: -18, ly2: 0,
     tx: -21, ty: 3, anchor: "end",
   },
   {
-    name: "New York", info: "Global Headquarters", type: "hq",
+    name: "New York", info: "Global Headquarters", address: null, type: "hq",
     coords: [-74.006, 40.713],
     lx1: 6, ly1: 0, lx2: 20, ly2: 0,
     tx: 23, ty: 3, anchor: "start",
   },
   {
-    name: "London", info: "European Operations", type: "office",
+    name: "London", info: "European Operations", address: null, type: "office",
     coords: [-0.128, 51.507],
     lx1: -3, ly1: -5, lx2: -12, ly2: -18,
     tx: -15, ty: -21, anchor: "end",
   },
   {
-    name: "Milan", info: "European Office", type: "office",
+    name: "Milan", info: "European Office", address: null, type: "office",
     coords: [9.190, 45.465],
     lx1: 5, ly1: 0, lx2: 16, ly2: 0,
     tx: 19, ty: 3, anchor: "start",
   },
   {
-    name: "Istanbul", info: "European Office", type: "office",
+    name: "Istanbul", info: "European Office", address: null, type: "office",
     coords: [28.978, 41.008],
     lx1: 5, ly1: 0, lx2: 16, ly2: 0,
     tx: 19, ty: 3, anchor: "start",
   },
   {
-    name: "Paris", info: "European Office", type: "office",
+    name: "Paris", info: "European Office", address: null, type: "office",
     coords: [2.352, 48.857],
     lx1: -3, ly1: 4, lx2: -12, ly2: 16,
     tx: -15, ty: 20, anchor: "end",
   },
   {
-    name: "Dubai", info: "Middle East Operations", type: "office",
+    name: "Dubai", info: "Middle East Operations", address: null, type: "office",
     coords: [55.271, 25.205],
     lx1: 5, ly1: 0, lx2: 20, ly2: 0,
     tx: 23, ty: 3, anchor: "start",
@@ -80,31 +82,39 @@ const HQ_COLOR     = "hsl(214,80%,32%)";
 const OFFICE_COLOR = "hsl(214,60%,52%)";
 const LINE_COLOR   = "hsl(214,40%,55%)";
 
-export function MVPWorldMap() {
-  const [hovered, setHovered] = useState<City | null>(null);
+interface Popup { city: City; x: number; y: number }
 
-  const dotColor  = (c: City) => c.type === "hq" ? HQ_COLOR : OFFICE_COLOR;
-  const outerR    = (c: City, isHov: boolean) => c.type === "hq" ? (isHov ? 9 : 7.5) : (isHov ? 7 : 5.5);
-  const coreR     = (c: City, isHov: boolean) => c.type === "hq" ? (isHov ? 5.5 : 4.5) : (isHov ? 4 : 3);
-  const pulseR    = (c: City) => c.type === "hq" ? 14 : 10;
+export function MVPWorldMap() {
+  const [hovered, setHovered]   = useState<string | null>(null);
+  const [popup, setPopup]       = useState<Popup | null>(null);
+  const containerRef            = useRef<HTMLDivElement>(null);
+
+  const dotColor = (c: City) => c.type === "hq" ? HQ_COLOR : OFFICE_COLOR;
+  const outerR   = (c: City, h: boolean) => c.type === "hq" ? (h ? 9 : 7.5) : (h ? 7 : 5.5);
+  const coreR    = (c: City, h: boolean) => c.type === "hq" ? (h ? 5.5 : 4.5) : (h ? 4 : 3);
+  const pulseR   = (c: City) => c.type === "hq" ? 14 : 10;
+
+  const handleClick = (city: City, e: React.MouseEvent) => {
+    if (popup?.city.name === city.name) { setPopup(null); return; }
+    const rect = containerRef.current!.getBoundingClientRect();
+    setPopup({ city, x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
 
   return (
     <div className="w-full">
-      {/* Header */}
       <div className="mb-1">
-        <h2 className="text-2xl md:text-3xl font-serif text-foreground">
-          Alcance Global de MVP
-        </h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          30+ Investment Professionals Worldwide
-        </p>
+        <h2 className="text-2xl md:text-3xl font-serif text-foreground">Alcance Global de MVP</h2>
+        <p className="text-sm text-muted-foreground mt-1">30+ Investment Professionals Worldwide</p>
       </div>
 
-      {/* Map */}
-      <div className="relative w-full overflow-hidden rounded-lg" style={{ marginTop: "-40px" }}>
+      <div
+        ref={containerRef}
+        className="relative w-full overflow-hidden rounded-lg"
+        style={{ marginTop: "-40px" }}
+        onClick={(e) => { if (e.target === e.currentTarget) setPopup(null); }}
+      >
         <ComposableMap
-          width={800}
-          height={380}
+          width={800} height={380}
           projectionConfig={{ scale: 140, center: [10, 20] }}
           style={{ width: "100%", height: "auto", display: "block" }}
         >
@@ -117,71 +127,42 @@ export function MVPWorldMap() {
           <Geographies geography={GEO_URL}>
             {({ geographies }) =>
               geographies.map((geo) => (
-                <Geography
-                  key={geo.rsmKey}
-                  geography={geo}
-                  fill="url(#dot-pattern)"
-                  stroke="none"
-                  style={{
-                    default: { outline: "none" },
-                    hover:   { outline: "none" },
-                    pressed: { outline: "none" },
-                  }}
+                <Geography key={geo.rsmKey} geography={geo} fill="url(#dot-pattern)" stroke="none"
+                  style={{ default: { outline: "none" }, hover: { outline: "none" }, pressed: { outline: "none" } }}
                 />
               ))
             }
           </Geographies>
 
           {cities.map((city) => {
-            const isHov = hovered?.name === city.name;
-            const color = dotColor(city);
+            const isHov   = hovered === city.name;
+            const isOpen  = popup?.city.name === city.name;
+            const color   = dotColor(city);
             return (
               <Marker
                 key={city.name}
                 coordinates={city.coords}
-                onMouseEnter={() => setHovered(city)}
+                onMouseEnter={() => setHovered(city.name)}
                 onMouseLeave={() => setHovered(null)}
+                onClick={(e) => handleClick(city, e as unknown as React.MouseEvent)}
+                style={{ cursor: "pointer" }}
               >
-                {/* Radar pulse */}
-                <circle
-                  r={pulseR(city)}
-                  fill={color}
-                  fillOpacity={0.12}
-                  className="animate-ping origin-center"
-                  style={{ transformBox: "fill-box" }}
-                />
-                {/* Outer ring */}
-                <circle
-                  r={outerR(city, isHov)}
-                  fill="white"
-                  stroke={color}
+                <circle r={pulseR(city)} fill={color} fillOpacity={0.12}
+                  className="animate-ping origin-center" style={{ transformBox: "fill-box" }} />
+                <circle r={outerR(city, isHov || isOpen)} fill="white" stroke={isOpen ? color : color}
                   strokeWidth={city.type === "hq" ? 2.2 : 1.6}
-                  style={{ transition: "r 0.2s" }}
-                />
-                {/* Core dot */}
-                <circle r={coreR(city, isHov)} fill={color} style={{ transition: "r 0.2s" }} />
-
-                {/* Connector line */}
-                <line
-                  x1={city.lx1} y1={city.ly1}
-                  x2={city.lx2} y2={city.ly2}
-                  stroke={LINE_COLOR}
-                  strokeWidth={0.9}
-                  strokeOpacity={0.65}
-                />
-
-                {/* Label */}
-                <text
-                  textAnchor={city.anchor}
-                  x={city.tx}
-                  y={city.ty}
+                  strokeOpacity={isOpen ? 1 : 0.85}
+                  style={{ transition: "r 0.2s" }} />
+                <circle r={coreR(city, isHov || isOpen)} fill={color} style={{ transition: "r 0.2s" }} />
+                <line x1={city.lx1} y1={city.ly1} x2={city.lx2} y2={city.ly2}
+                  stroke={LINE_COLOR} strokeWidth={0.9} strokeOpacity={0.65} />
+                <text textAnchor={city.anchor} x={city.tx} y={city.ty}
                   style={{
                     fontFamily: "'Playfair Display', serif",
                     fontSize: city.type === "hq" ? "11px" : "10px",
                     fontWeight: city.type === "hq" ? 800 : 700,
-                    fill: isHov ? "hsl(0,0%,0%)" : "hsl(0,0%,10%)",
+                    fill: isHov || isOpen ? "hsl(0,0%,0%)" : "hsl(0,0%,10%)",
                     pointerEvents: "none",
-                    letterSpacing: "0.01em",
                   }}
                 >
                   {city.name}
@@ -191,11 +172,26 @@ export function MVPWorldMap() {
           })}
         </ComposableMap>
 
-        {/* Tooltip */}
-        {hovered && (
-          <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm border border-primary/20 rounded-lg px-4 py-2.5 shadow-sm pointer-events-none">
-            <p className="text-xs font-semibold text-foreground font-serif">{hovered.name}</p>
-            <p className="text-[11px] text-primary/80 mt-0.5">{hovered.info}</p>
+        {/* Click popup */}
+        {popup && (
+          <div
+            className="absolute z-10 bg-white border border-border rounded-lg shadow-lg px-4 py-3 w-52 pointer-events-auto"
+            style={{
+              left: Math.min(popup.x + 12, (containerRef.current?.offsetWidth ?? 800) - 220),
+              top: Math.max(popup.y - 80, 8),
+            }}
+          >
+            <button
+              className="absolute top-2 right-2 text-muted-foreground hover:text-foreground text-xs leading-none"
+              onClick={() => setPopup(null)}
+            >✕</button>
+            <p className="text-sm font-bold text-foreground font-serif pr-4">{popup.city.name}</p>
+            <p className="text-[11px] text-primary font-medium mt-0.5">{popup.city.info}</p>
+            {popup.city.address && (
+              <p className="text-[11px] text-muted-foreground mt-2 leading-relaxed whitespace-pre-line">
+                {popup.city.address}
+              </p>
+            )}
           </div>
         )}
 
