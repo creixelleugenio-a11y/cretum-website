@@ -24,13 +24,13 @@ export function MVPWorldMap() {
   const [tooltip, setTooltip] = useState<string | null>(null);
 
   return (
-    <div className="relative w-full bg-[hsl(214,40%,10%)] rounded-xl overflow-hidden py-10 px-6">
+    <div className="relative w-full bg-white border border-border rounded-xl overflow-hidden py-10 px-6">
       {/* Header */}
       <div className="mb-2 px-2">
-        <h2 className="text-2xl md:text-3xl font-serif text-white">
+        <h2 className="text-2xl md:text-3xl font-serif text-foreground">
           Alcance Global de MVP
         </h2>
-        <p className="text-sm text-white/50 mt-1">
+        <p className="text-sm text-muted-foreground mt-1">
           30+ Investment Professionals Worldwide
         </p>
       </div>
@@ -42,7 +42,7 @@ export function MVPWorldMap() {
       >
         <defs>
           <pattern id="dot-pattern" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
-            <circle cx="1.5" cy="1.5" r="1" fill="hsl(214,60%,52%)" fillOpacity="0.45" />
+            <circle cx="1.5" cy="1.5" r="1" fill="hsl(214,60%,32%)" fillOpacity="0.35" />
           </pattern>
         </defs>
 
@@ -72,11 +72,11 @@ export function MVPWorldMap() {
             onMouseLeave={() => setTooltip(null)}
           >
             {/* Pulse ring */}
-            <circle r={8} fill="hsl(214,60%,52%)" fillOpacity={0.2} className="animate-ping origin-center" style={{ transformBox: "fill-box" }} />
+            <circle r={8} fill="hsl(214,60%,32%)" fillOpacity={0.15} className="animate-ping origin-center" style={{ transformBox: "fill-box" }} />
             {/* Outer ring */}
-            <circle r={5} fill="none" stroke="hsl(214,60%,72%)" strokeWidth={1} strokeOpacity={0.7} />
+            <circle r={5} fill="none" stroke="hsl(214,60%,32%)" strokeWidth={1.2} strokeOpacity={0.6} />
             {/* Core dot */}
-            <circle r={3} fill="hsl(214,60%,72%)" />
+            <circle r={3} fill="hsl(214,60%,32%)" />
             {/* Label */}
             <text
               textAnchor={city.anchor}
@@ -85,8 +85,9 @@ export function MVPWorldMap() {
               style={{
                 fontFamily: "Inter, sans-serif",
                 fontSize: "9px",
-                fill: "rgba(255,255,255,0.85)",
+                fill: "hsl(214,60%,22%)",
                 pointerEvents: "none",
+                fontWeight: 500,
               }}
             >
               {city.name}
@@ -97,7 +98,7 @@ export function MVPWorldMap() {
 
       {/* Tooltip */}
       {tooltip && (
-        <div className="absolute bottom-6 left-6 bg-white/10 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full border border-white/20">
+        <div className="absolute bottom-6 left-6 bg-primary/10 text-primary text-xs px-3 py-1.5 rounded-full border border-primary/20">
           {tooltip}
         </div>
       )}
