@@ -194,7 +194,7 @@ interface SelectedCompany extends CompanyBase, CompanyTexts {}
 type GPMember = { name: string; role: string; img: string; bio: string | null };
 
 const gpTeam: GPMember[] = [
-  { name: "Eric Brachfeld",  role: "Managing Partner & General Partner", img: "/team/mvp-eric-brachfeld.png",  bio: null },
+  { name: "Eric Brachfeld",  role: "Managing Partner & General Partner", img: "/team/mvp-eric-brachfeld.png",  bio: "Con más de 30 años de experiencia como banquero de inversión y emprendedor, Eric Brachfeld es cofundador y Managing Partner de Manhattan Venture Partners. A lo largo de su carrera ha asesorado y estructurado transacciones para una amplia gama de empresas e inversionistas. Anteriormente fue Partner en Citizen VC, cofundó Gentry New York y lideró esfuerzos de banca de inversión en Ledgemont Capital Group e Indigo Ventures. Es licenciado en Economía por la Universidad de Pennsylvania y cuenta con un MBA con honores de la Stern School of Business de NYU." },
   { name: "Jared Carmel",    role: "Managing Partner & General Partner", img: "/team/mvp-jared-carmel.png",    bio: null },
   { name: "Bradley Fishman", role: "Managing Partner & General Partner", img: "/team/mvp-bradley-fishman.png", bio: null },
   { name: "Adam Ingram",     role: "Chief Operating Officer",            img: "/team/mvp-adam-ingram.png",     bio: null },
