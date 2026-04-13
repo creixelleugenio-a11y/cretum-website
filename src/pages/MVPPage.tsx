@@ -441,42 +441,41 @@ export default function MVPPage() {
               <p className="text-[10px] text-muted-foreground mt-4">{t("mvp.source.spdr")}</p>
             </AccordionSection>
 
-            {/* ── Portfolio Marquee ──────────────────────────────────────── */}
-            <AccordionSection index={5} title={t("mvp.section.portfolio")} subtitle={t("mvp.section.portfolio.sub")}>
-              <div className="overflow-hidden rounded-xl border border-border bg-slate-50 py-4 px-2">
-                <div className="flex animate-marquee-slow gap-4 w-max items-center">
-                  {allCompanies.map((company, i) => (
+            {/* ── Portfolio Grid ─────────────────────────────────────────── */}
+            <div className="mt-4">
+              <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">{t("mvp.section.portfolio")}</p>
+              <p className="text-xs text-muted-foreground -mt-2 mb-6">{t("mvp.section.portfolio.sub")}</p>
+              <div className="rounded-xl border border-border overflow-hidden">
+                <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6">
+                  {companies.map((company, i) => (
                     <button
-                      key={`${company.name}-${i}`}
-                      onClick={() => setSelected(companies.find(c => c.name === company.name) ?? null)}
-                      className="shrink-0 flex flex-col items-center gap-2 group cursor-pointer"
+                      key={company.name}
+                      onClick={() => setSelected(company)}
+                      className={`flex flex-col items-center justify-center gap-3 py-6 px-4 hover:bg-muted/40 transition-colors duration-200 cursor-pointer border-border ${i % 6 !== 5 ? "border-r" : ""} ${i < companies.length - 6 ? "border-b" : ""}`}
                     >
                       <div
-                        className="h-14 w-36 rounded-xl border flex items-center justify-center px-4 shadow-sm group-hover:shadow-md group-hover:scale-[1.04] transition-all duration-200"
-                        style={{
-                          backgroundColor: company.darkBg ? "#111827" : "#ffffff",
-                          borderColor: company.darkBg ? "#374151" : "#e5e7eb",
-                        }}
+                        className="h-10 w-full flex items-center justify-center px-2"
+                        style={{ backgroundColor: company.darkBg ? "#111827" : "transparent" }}
                       >
                         <img
                           src={company.logo}
                           alt={company.name}
                           className="object-contain"
-                          style={{ maxHeight: "32px", maxWidth: "112px" }}
+                          style={{ maxHeight: "28px", maxWidth: "90px" }}
                           onError={(e) => {
                             const el = e.currentTarget;
                             el.style.display = "none";
                             if (el.parentElement)
-                              el.parentElement.innerHTML = `<span style="font-size:12px;font-weight:600;color:#64748b">${company.name}</span>`;
+                              el.parentElement.innerHTML = `<span style="font-size:11px;font-weight:600;color:#64748b">${company.name}</span>`;
                           }}
                         />
                       </div>
-                      <span className="text-[11px] text-muted-foreground text-center leading-tight w-36 truncate px-1 group-hover:text-primary transition-colors">{company.name}</span>
+                      <span className="text-[11px] text-muted-foreground text-center leading-tight">{company.name}</span>
                     </button>
                   ))}
                 </div>
               </div>
-            </AccordionSection>
+            </div>
 
           </div>
         </div>
