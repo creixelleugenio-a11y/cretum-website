@@ -159,7 +159,14 @@ const companyTextsEn: Record<string, CompanyTexts> = {
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 
-function AccordionSection({ title, children, defaultOpen = false, className = "mt-4" }: { title: React.ReactNode; children: React.ReactNode; defaultOpen?: boolean; className?: string }) {
+function AccordionSection({ title, subtitle, index, children, defaultOpen = false, className = "mt-4" }: {
+  title: React.ReactNode;
+  subtitle?: React.ReactNode;
+  index?: number;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+  className?: string;
+}) {
   const [open, setOpen] = useState(defaultOpen);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -167,13 +174,18 @@ function AccordionSection({ title, children, defaultOpen = false, className = "m
     <div className={className}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center gap-4 py-3 px-4 rounded-lg border border-border bg-secondary/40 hover:bg-secondary/70 transition-colors duration-200 group"
+        className={`w-full flex items-center gap-4 py-4 px-5 rounded-lg border transition-colors duration-200 hover:bg-muted/30 ${open ? "border-primary bg-white" : "border-border bg-secondary/40"}`}
       >
-        <div className="h-[1.5px] w-4 bg-primary shrink-0" />
-        <h3 className="text-[11px] font-semibold uppercase tracking-widest text-primary whitespace-nowrap flex-1 text-left">{title}</h3>
-        <ChevronDown
-          className={`w-4 h-4 text-primary transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-        />
+        {index !== undefined && (
+          <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-sm font-medium transition-colors duration-200 ${open ? "bg-primary text-white" : "bg-primary/10 text-primary"}`}>
+            {String(index).padStart(2, "0")}
+          </div>
+        )}
+        <div className="flex-1 text-left">
+          <h3 className="text-base font-bold text-foreground leading-snug">{title}</h3>
+          {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
+        </div>
+        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-250 shrink-0 ${open ? "rotate-180" : ""}`} />
       </button>
       <div
         ref={contentRef}
@@ -260,7 +272,7 @@ export default function MVPPage() {
             </div>
 
             {/* ── Recognition ───────────────────────────────────────────── */}
-            <AccordionSection title={t("mvp.section.recognition")} className="mt-16">
+            <AccordionSection index={1} title={t("mvp.section.recognition")} subtitle={t("mvp.section.recognition.sub")} className="mt-16">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className="border border-border rounded-xl p-6 bg-background">
                   <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">Bloomberg</p>
@@ -299,7 +311,7 @@ export default function MVPPage() {
             </AccordionSection>
 
             {/* ── Fund Performance ──────────────────────────────────────── */}
-            <AccordionSection title={t("mvp.section.trackrecord")}>
+            <AccordionSection index={2} title={t("mvp.section.trackrecord")} subtitle={t("mvp.section.trackrecord.sub")}>
               <div className="bg-primary/5 border border-primary/15 rounded-lg px-4 py-2.5 mb-4 text-[12px] text-foreground">
                 {t("mvp.trackrecord.desc")}
               </div>
@@ -368,7 +380,7 @@ export default function MVPPage() {
             </AccordionSection>
 
             {/* ── Secondary Market Volume ────────────────────────────────── */}
-            <AccordionSection title={t("mvp.section.secondary")}>
+            <AccordionSection index={3} title={t("mvp.section.secondary")} subtitle={t("mvp.section.secondary.sub")}>
               <div className="grid grid-cols-3 gap-4 mb-6">
                 <div className="bg-primary/5 border border-primary/15 rounded-lg px-5 py-4">
                   <p className="text-xl font-bold text-primary">$69B</p>
@@ -406,7 +418,7 @@ export default function MVPPage() {
             </AccordionSection>
 
             {/* ── Tech Sector Returns ───────────────────────────────────── */}
-            <AccordionSection title={t("mvp.section.returns")}>
+            <AccordionSection index={4} title={t("mvp.section.returns")} subtitle={t("mvp.section.returns.sub")}>
               <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={sectorReturns} layout="vertical" barCategoryGap="20%">
@@ -430,7 +442,7 @@ export default function MVPPage() {
             </AccordionSection>
 
             {/* ── Portfolio Marquee ──────────────────────────────────────── */}
-            <AccordionSection title={t("mvp.portfolio")}>
+            <AccordionSection index={5} title={t("mvp.section.portfolio")} subtitle={t("mvp.section.portfolio.sub")}>
               <div className="overflow-hidden rounded-xl border border-border bg-slate-50 py-4 px-2">
                 <div className="flex animate-marquee-slow gap-4 w-max items-center">
                   {allCompanies.map((company, i) => (
