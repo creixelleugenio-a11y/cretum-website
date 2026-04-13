@@ -8,26 +8,25 @@ import {
 
 const GEO_URL = "/world-110m.json";
 
-// anchor: text-anchor, dx/dy: label offset from dot
 const cities = [
-  { name: "New York",      coords: [-74.006,  40.713] as [number, number], dx:  9, dy: -7  },
-  { name: "San Francisco", coords: [-122.419, 37.775] as [number, number], dx: -9, dy: -7  },
-  { name: "Los Angeles",   coords: [-118.244, 34.052] as [number, number], dx: -9, dy:  14 },
-  { name: "Mexico City",   coords: [-99.133,  19.433] as [number, number], dx: -9, dy: -7  },
-  { name: "London",        coords: [-0.128,   51.507] as [number, number], dx:  9, dy: -7  },
-  { name: "Paris",         coords: [2.352,    48.857] as [number, number], dx:  9, dy:  14 },
-  { name: "Milan",         coords: [9.190,    45.465] as [number, number], dx:  9, dy: -7  },
-  { name: "Istanbul",      coords: [28.978,   41.008] as [number, number], dx:  9, dy: -7  },
-  { name: "Dubai",         coords: [55.271,   25.205] as [number, number], dx:  9, dy: -7  },
+  { name: "New York",      coords: [-74.006,  40.713] as [number, number], dx:  10, dy: -9,  anchor: "start" },
+  { name: "San Francisco", coords: [-122.419, 37.775] as [number, number], dx: -10, dy: -9,  anchor: "end"   },
+  { name: "Los Angeles",   coords: [-118.244, 34.052] as [number, number], dx: -10, dy:  16, anchor: "end"   },
+  { name: "Mexico City",   coords: [-99.133,  19.433] as [number, number], dx: -10, dy: -9,  anchor: "end"   },
+  { name: "London",        coords: [-0.128,   51.507] as [number, number], dx: -10, dy: -9,  anchor: "end"   },
+  { name: "Paris",         coords: [2.352,    48.857] as [number, number], dx:  10, dy:  16, anchor: "start" },
+  { name: "Milan",         coords: [9.190,    45.465] as [number, number], dx:  10, dy: -9,  anchor: "start" },
+  { name: "Istanbul",      coords: [28.978,   41.008] as [number, number], dx:  10, dy: -9,  anchor: "start" },
+  { name: "Dubai",         coords: [55.271,   25.205] as [number, number], dx:  10, dy: -9,  anchor: "start" },
 ];
 
 export function MVPWorldMap() {
-  const [tooltip, setTooltip] = useState<string | null>(null);
+  const [hovered, setHovered] = useState<string | null>(null);
 
   return (
-    <div className="relative w-full py-8 px-2">
+    <div className="w-full">
       {/* Header */}
-      <div className="mb-4 px-4">
+      <div className="mb-6">
         <h2 className="text-2xl md:text-3xl font-serif text-foreground">
           Alcance Global de MVP
         </h2>
@@ -36,15 +35,17 @@ export function MVPWorldMap() {
         </p>
       </div>
 
-      {/* Map — cropped to remove excess bottom (Antarctica) */}
-      <div className="w-full overflow-hidden" style={{ maxHeight: "420px" }}>
+      {/* Map container — viewBox crops SVG to remove whitespace */}
+      <div className="w-full overflow-hidden rounded-lg">
         <ComposableMap
-          projectionConfig={{ scale: 160, center: [10, 15] }}
-          style={{ width: "100%", height: "auto", marginBottom: "-80px" }}
+          width={800}
+          height={380}
+          projectionConfig={{ scale: 140, center: [10, 20] }}
+          style={{ width: "100%", height: "auto", display: "block" }}
         >
           <defs>
-            <pattern id="dot-pattern" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
-              <circle cx="1.5" cy="1.5" r="1.1" fill="hsl(214,70%,42%)" fillOpacity="0.6" />
+            <pattern id="dot-pattern" x="0" y="0" width="5" height="5" patternUnits="userSpaceOnUse">
+              <circle cx="2" cy="2" r="1.3" fill="hsl(214,72%,40%)" fillOpacity="0.65" />
             </pattern>
           </defs>
 
@@ -66,51 +67,54 @@ export function MVPWorldMap() {
             }
           </Geographies>
 
-          {cities.map((city) => (
-            <Marker
-              key={city.name}
-              coordinates={city.coords}
-              onMouseEnter={() => setTooltip(city.name)}
-              onMouseLeave={() => setTooltip(null)}
-            >
-              {/* Pulse ring */}
-              <circle
-                r={10}
-                fill="hsl(214,70%,42%)"
-                fillOpacity={0.18}
-                className="animate-ping origin-center"
-                style={{ transformBox: "fill-box" }}
-              />
-              {/* Outer ring */}
-              <circle r={6} fill="none" stroke="hsl(214,70%,42%)" strokeWidth={1.5} strokeOpacity={0.8} />
-              {/* Core dot */}
-              <circle r={3.5} fill="hsl(214,70%,42%)" />
-              {/* Label */}
-              <text
-                textAnchor={city.dx < 0 ? "end" : "start"}
-                x={city.dx}
-                y={city.dy}
-                style={{
-                  fontFamily: "'Playfair Display', serif",
-                  fontSize: "10px",
-                  fill: "hsl(214,60%,22%)",
-                  pointerEvents: "none",
-                  fontWeight: 700,
-                }}
+          {cities.map((city) => {
+            const isHovered = hovered === city.name;
+            return (
+              <Marker
+                key={city.name}
+                coordinates={city.coords}
+                onMouseEnter={() => setHovered(city.name)}
+                onMouseLeave={() => setHovered(null)}
               >
-                {city.name}
-              </text>
-            </Marker>
-          ))}
+                {/* Pulse ring */}
+                <circle
+                  r={10}
+                  fill="hsl(214,72%,40%)"
+                  fillOpacity={0.15}
+                  className="animate-ping origin-center"
+                  style={{ transformBox: "fill-box" }}
+                />
+                {/* Outer ring */}
+                <circle
+                  r={isHovered ? 7 : 5.5}
+                  fill="hsl(214,72%,95%)"
+                  stroke="hsl(214,72%,40%)"
+                  strokeWidth={1.8}
+                  style={{ transition: "r 0.2s" }}
+                />
+                {/* Core dot */}
+                <circle r={isHovered ? 4 : 3} fill="hsl(214,72%,40%)" style={{ transition: "r 0.2s" }} />
+                {/* Label */}
+                <text
+                  textAnchor={city.anchor}
+                  x={city.dx}
+                  y={city.dy}
+                  style={{
+                    fontFamily: "'Playfair Display', serif",
+                    fontSize: "10.5px",
+                    fontWeight: 700,
+                    fill: isHovered ? "hsl(214,72%,30%)" : "hsl(214,55%,25%)",
+                    pointerEvents: "none",
+                    letterSpacing: "0.01em",
+                  }}
+                >
+                  {city.name}
+                </text>
+              </Marker>
+            );
+          })}
         </ComposableMap>
       </div>
-
-      {/* Tooltip */}
-      {tooltip && (
-        <div className="absolute bottom-10 left-6 bg-primary/10 text-primary text-xs px-3 py-1.5 rounded-full border border-primary/20 font-medium">
-          {tooltip}
-        </div>
-      )}
     </div>
   );
 }
