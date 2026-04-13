@@ -3,7 +3,7 @@ import {
   Dialog,
   DialogContent,
 } from "@/components/ui/dialog";
-import { Building2, Globe, FileText, TrendingUp, Shield, Search, Briefcase, ChevronDown } from "lucide-react";
+import { Building2, Globe, FileText, TrendingUp, Shield, Search, Briefcase, ChevronDown, X } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -97,6 +97,7 @@ interface CompanyBase {
   darkBg?: boolean;
   founded: string;
   valuation: string;
+  services: string[];
 }
 
 interface CompanyTexts {
@@ -107,20 +108,20 @@ interface CompanyTexts {
 }
 
 const companiesBase: CompanyBase[] = [
-  { name: "Spotify",          logo: "/logos/mvp/spotify.svg",     founded: "2006", valuation: "~$97B market cap"      },
-  { name: "Coinbase",         logo: "/logos/mvp/coinbase.svg",    founded: "2012", valuation: "~$44B market cap"      },
-  { name: "SpaceX",           logo: "/logos/mvp/spacex.svg",      founded: "2002", valuation: "~$800B (dic 2025)"     },
-  { name: "Anthropic",        logo: "/logos/mvp/anthropic.svg",   founded: "2021", valuation: "$380B (feb 2026)"      },
-  { name: "Airbnb",           logo: "/logos/mvp/airbnb.svg",      founded: "2008", valuation: "~$75B market cap"      },
-  { name: "Palantir",         logo: "/logos/mvp/palantir.svg",    founded: "2003", valuation: "~$313B market cap"     },
-  { name: "Pinterest",        logo: "/logos/mvp/pinterest.svg",   founded: "2010", valuation: "~$11.8B market cap"    },
-  { name: "DraftKings",       logo: "/logos/mvp/draftkings.png",  founded: "2012", valuation: "~$11B market cap"      },
-  { name: "Groq",             logo: "/logos/mvp/groq.png",        founded: "2016", valuation: "$20B (dic 2025)"       },
-  { name: "DocuSign",         logo: "/logos/mvp/docusign.svg",    founded: "2003", valuation: "~$9.4B market cap"     },
-  { name: "SoFi",             logo: "/logos/mvp/sofi.svg",        founded: "2011", valuation: "~$20B market cap"      },
-  { name: "Figure AI",        logo: "/logos/mvp/figure-ai.svg",   founded: "2022", valuation: "$39B (sep 2025)"       },
-  { name: "Kodiak Robotics",  logo: "/logos/mvp/kodiak.svg",      founded: "2018", valuation: "~$1.3B market cap"     },
-  { name: "Epirus",           logo: "/logos/mvp/epirus.png",      founded: "2018", valuation: ">$1B (mar 2025)" },
+  { name: "Spotify",         logo: "/logos/mvp/spotify.svg",    founded: "2006", valuation: "~$97B",   services: ["Music Streaming", "Podcasts", "Audiobooks", "Creator Tools", "Ad Platform"] },
+  { name: "Coinbase",        logo: "/logos/mvp/coinbase.svg",   founded: "2012", valuation: "~$44B",   services: ["Crypto Exchange", "Institutional Custody", "DeFi", "Staking", "NFT Marketplace"] },
+  { name: "SpaceX",          logo: "/logos/mvp/spacex.svg",     founded: "2002", valuation: "~$800B",  services: ["Rocket Launch", "Starlink", "Satellite Services", "Space Tourism", "Govt. Contracts"] },
+  { name: "Anthropic",       logo: "/logos/mvp/anthropic.svg",  founded: "2021", valuation: "$380B",   services: ["Claude AI", "API Access", "Enterprise AI", "AI Safety Research", "Model Development"] },
+  { name: "Airbnb",          logo: "/logos/mvp/airbnb.svg",     founded: "2008", valuation: "~$75B",   services: ["Short-term Rentals", "Experiences", "Host Platform", "Travel Insurance", "Rooms"] },
+  { name: "Palantir",        logo: "/logos/mvp/palantir.svg",   founded: "2003", valuation: "~$313B",  services: ["Palantir Gotham", "Palantir Foundry", "AIP (AI Platform)", "Govt. Analytics", "Commercial Data"] },
+  { name: "Pinterest",       logo: "/logos/mvp/pinterest.svg",  founded: "2010", valuation: "~$11.8B", services: ["Visual Discovery", "Shoppable Pins", "Creator Tools", "Advertising", "Idea Pins"] },
+  { name: "DraftKings",      logo: "/logos/mvp/draftkings.png", founded: "2012", valuation: "~$11B",   services: ["Sports Betting", "Daily Fantasy", "Casino Games", "Online Lottery", "NFT Gaming"] },
+  { name: "Groq",            logo: "/logos/mvp/groq.png",       founded: "2016", valuation: "$20B",    services: ["LPU Chips", "AI Inference API", "Cloud Inference", "LLM Acceleration", "Enterprise AI"] },
+  { name: "DocuSign",        logo: "/logos/mvp/docusign.svg",   founded: "2003", valuation: "~$9.4B",  services: ["eSignature", "Contract Lifecycle", "Identity Verification", "Notary", "Payments"] },
+  { name: "SoFi",            logo: "/logos/mvp/sofi.svg",       founded: "2011", valuation: "~$20B",   services: ["Student Loans", "Personal Loans", "Investing", "Digital Banking", "Credit Cards"] },
+  { name: "Figure AI",       logo: "/logos/mvp/figure-ai.svg",  founded: "2022", valuation: "$39B",    services: ["Humanoid Robots", "Warehouse Automation", "AI Motor Control", "Manufacturing", "Industrial AI"] },
+  { name: "Kodiak Robotics", logo: "/logos/mvp/kodiak.svg",     founded: "2018", valuation: "~$1.3B",  services: ["Autonomous Trucks", "Long-haul Logistics", "Defense Vehicles", "Fleet Software", "Safety Systems"] },
+  { name: "Epirus",          logo: "/logos/mvp/epirus.png",     founded: "2018", valuation: ">$1B",    services: ["HPM Systems", "Counter-Drone", "Electronic Warfare", "Power Electronics", "Defense Tech"] },
 ];
 
 const companyTextsEs: Record<string, CompanyTexts> = {
@@ -487,45 +488,66 @@ export default function MVPPage() {
       </main>
 
       {/* ── Company detail popup ─────────────────────────────────────────── */}
-      <Dialog open={!!selected} onOpenChange={(v) => !v && setSelected(null)}>
-        <DialogContent className="max-w-sm w-[calc(100vw-2rem)]">
-          {selected && (
-            <div className="pt-1">
-              <div className="flex items-center gap-4 mb-6">
-                <div
-                  className="h-12 w-20 rounded-lg border flex items-center justify-center px-2 shrink-0"
-                  style={{ backgroundColor: selected.darkBg ? "#111827" : "#f8fafc", borderColor: selected.darkBg ? "#374151" : "#e5e7eb" }}
-                >
-                  <img src={selected.logo} alt={selected.name} className="object-contain" style={{ maxHeight: "28px", maxWidth: "68px" }} />
-                </div>
-                <div>
-                  <h3 className="font-bold text-foreground text-base leading-tight">{selected.name}</h3>
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-primary/70">{selected.sector}</span>
-                </div>
+      {selected && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-6"
+          style={{ background: "rgba(0,0,0,0.5)" }}
+          onClick={() => setSelected(null)}
+        >
+          <div
+            className="bg-card rounded-2xl shadow-2xl w-full max-w-2xl relative overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center gap-6 px-8 pt-8 pb-6 border-b border-border/40">
+              <div
+                className="border border-border/40 rounded-xl flex items-center justify-center w-28 h-16 shrink-0 overflow-hidden"
+                style={{ backgroundColor: selected.darkBg ? "#111827" : "#f8fafc" }}
+              >
+                <img src={selected.logo} alt={selected.name} className="w-20 h-10 object-contain" />
               </div>
-
-              <p className="text-sm text-muted-foreground leading-relaxed mb-6">{selected.desc}</p>
-
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="bg-muted/50 rounded-lg p-5">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">{t("mvp.popup.founded")}</p>
-                  <p className="text-sm font-bold text-foreground">{selected.founded}</p>
-                </div>
-                <div className="bg-muted/50 rounded-lg p-5">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">{t("mvp.popup.status")}</p>
-                  <p className="text-sm font-bold text-foreground leading-tight">{selected.status}</p>
-                </div>
-                <div className="bg-primary/8 rounded-lg p-5 col-span-2">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">{t("mvp.popup.valuation")}</p>
-                  <p className="text-sm font-bold text-primary">{selected.valuation}</p>
-                </div>
+              <div className="flex-1">
+                <p className="text-2xl font-semibold text-foreground leading-snug">{selected.name}</p>
+                <p className="text-[0.7rem] font-bold uppercase tracking-[0.15em] text-primary mt-1">{selected.sector}</p>
               </div>
-
-              <p className="text-xs text-muted-foreground/80 border-t border-border pt-3 leading-relaxed">{selected.note}</p>
+              <button
+                onClick={() => setSelected(null)}
+                className="w-8 h-8 flex items-center justify-center rounded-full border border-border/40 text-foreground/50 hover:text-foreground hover:border-foreground/40 transition-colors shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
-          )}
-        </DialogContent>
-      </Dialog>
+            {/* Body */}
+            <div className="px-8 py-6 space-y-6">
+              <p className="text-[0.9rem] text-muted-foreground leading-relaxed">{selected.desc}</p>
+              <div className="grid grid-cols-4 gap-4">
+                {[
+                  { label: t("mvp.popup.founded"),   value: selected.founded   },
+                  { label: t("mvp.popup.sector"),    value: selected.sector    },
+                  { label: t("mvp.popup.status"),    value: selected.status    },
+                  { label: t("mvp.popup.valuation"), value: selected.valuation },
+                ].map((f) => (
+                  <div key={f.label} className="bg-muted/30 rounded-xl px-4 py-3">
+                    <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary mb-1">{f.label}</p>
+                    <p className="text-[0.85rem] font-semibold text-foreground leading-snug">{f.value}</p>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-foreground/40 mb-3">{t("mvp.popup.services")}</p>
+                <div className="flex flex-wrap gap-2">
+                  {selected.services.map((s) => (
+                    <span key={s} className="text-[0.75rem] px-3 py-1 rounded-full border border-border/40 text-foreground/60 bg-background">
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground/70 border-t border-border/40 pt-4 leading-relaxed">{selected.note}</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── GP popup ─────────────────────────────────────────────────────── */}
       <Dialog open={!!selectedGP} onOpenChange={(v) => !v && setSelectedGP(null)}>

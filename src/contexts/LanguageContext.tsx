@@ -721,8 +721,10 @@ const translations: Record<string, Record<Lang, string>> = {
   "mvp.tooltip.volume":    { es: "Volumen",            en: "Volume"            },
   "mvp.tooltip.returns":   { es: "Retorno anualizado", en: "Annualized return" },
   "mvp.popup.founded":     { es: "Fundada",            en: "Founded"           },
+  "mvp.popup.sector":      { es: "Sector",             en: "Sector"            },
   "mvp.popup.status":      { es: "Estado",             en: "Status"            },
   "mvp.popup.valuation":   { es: "Valuación",          en: "Valuation"         },
+  "mvp.popup.services":    { es: "Servicios principales", en: "Main services"  },
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
