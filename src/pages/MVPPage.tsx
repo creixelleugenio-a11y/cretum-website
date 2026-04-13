@@ -443,36 +443,41 @@ export default function MVPPage() {
 
             {/* ── Portfolio Grid ─────────────────────────────────────────── */}
             <div className="mt-4">
-              <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">{t("mvp.section.portfolio")}</p>
-              <p className="text-xs text-muted-foreground -mt-2 mb-6">{t("mvp.section.portfolio.sub")}</p>
-              <div className="rounded-xl border border-border overflow-hidden">
-                <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6">
-                  {companies.map((company, i) => (
-                    <button
-                      key={company.name}
-                      onClick={() => setSelected(company)}
-                      className={`flex flex-col items-center justify-center gap-3 py-6 px-4 hover:bg-muted/40 transition-colors duration-200 cursor-pointer border-border ${i % 6 !== 5 ? "border-r" : ""} ${i < companies.length - 6 ? "border-b" : ""}`}
-                    >
-                      <div
-                        className="h-10 w-full flex items-center justify-center px-2"
-                        style={{ backgroundColor: company.darkBg ? "#111827" : "transparent" }}
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary mb-6">{t("mvp.section.portfolio")}</p>
+              <div className="border border-border/40 rounded-2xl overflow-hidden">
+                <div className="grid grid-cols-2 md:grid-cols-4">
+                  {companies.map((company, i) => {
+                    const COLS = 4;
+                    const remainder = companies.length % COLS || COLS;
+                    const lastRowStart = companies.length - remainder;
+                    const isLastCol = (i + 1) % COLS === 0 || i === companies.length - 1;
+                    const isLastRow = i >= lastRowStart;
+                    return (
+                      <button
+                        key={company.name}
+                        onClick={() => setSelected(company)}
+                        className={[
+                          "text-left group cursor-pointer",
+                          !isLastCol ? "border-r border-border/40" : "",
+                          !isLastRow ? "border-b border-border/40" : "",
+                        ].join(" ")}
                       >
-                        <img
-                          src={company.logo}
-                          alt={company.name}
-                          className="object-contain"
-                          style={{ maxHeight: "28px", maxWidth: "90px" }}
-                          onError={(e) => {
-                            const el = e.currentTarget;
-                            el.style.display = "none";
-                            if (el.parentElement)
-                              el.parentElement.innerHTML = `<span style="font-size:11px;font-weight:600;color:#64748b">${company.name}</span>`;
-                          }}
-                        />
-                      </div>
-                      <span className="text-[11px] text-muted-foreground text-center leading-tight">{company.name}</span>
-                    </button>
-                  ))}
+                        <div
+                          className="flex items-center justify-center h-36 px-10 group-hover:bg-muted/30 transition-colors duration-200"
+                          style={{ backgroundColor: company.darkBg ? "#111827" : "transparent" }}
+                        >
+                          <img
+                            src={company.logo}
+                            alt={company.name}
+                            className="w-36 h-10 object-contain"
+                          />
+                        </div>
+                        <div className="border-t border-border/40 px-6 py-5 bg-muted/20 group-hover:bg-muted/40 transition-colors duration-200 flex items-center justify-center">
+                          <p className="text-[0.95rem] font-semibold text-foreground/70 text-center">{company.name}</p>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
