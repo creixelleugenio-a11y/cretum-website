@@ -259,21 +259,6 @@ export default function MVPPage() {
               <MVPWorldMap />
             </div>
 
-            {/* ── Platform Pillars ──────────────────────────────────────── */}
-            <AccordionSection title={t("mvp.section.platform")} className="mt-16">
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-                {platforms.map((p) => (
-                  <div key={p.title} className="flex items-start gap-5 bg-secondary/60 border border-border rounded-md px-5 py-4">
-                    <p.icon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-xs font-bold text-foreground">{p.title}</p>
-                      <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">{p.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </AccordionSection>
-
             {/* ── Recognition ───────────────────────────────────────────── */}
             <AccordionSection title={t("mvp.section.recognition")}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
