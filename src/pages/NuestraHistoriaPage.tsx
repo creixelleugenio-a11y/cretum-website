@@ -25,7 +25,7 @@ export default function NuestraHistoriaPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-56 pb-44 bg-background">
+      <main className="min-h-screen pt-56 pb-40 bg-background">
         <div className="max-w-6xl mx-auto px-8">
           <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start">
 

@@ -108,15 +108,15 @@ const SOCIOS: Socio[] = [
     name: "RGA Consulting",
     logo: "/logos/rga-new.png",
     scale: 1.4,
-    category: "CONSULTORÍA FISCAL Y CONTABLE",
-    description: "Firma de contabilidad y consultoría especializada en servicios fiscales, cumplimiento regulatorio y estructuración corporativa. Atiende a empresas e individuos de alto patrimonio con necesidades complejas en planificación tributaria, auditoría contable y administración financiera en mercados de Norteamérica.",
+    category: "GESTIÓN DE ESTRATEGIAS DE INVERSIÓN",
+    description: "Firma basada en Canadá con amplia experiencia en el manejo de diferentes estrategias de inversión enfocadas principalmente en generar alfa — exceso de retorno sobre los índices de referencia del mercado bursátil. Cuenta con más de 10 años de experiencia y un track record sorprendente, con retornos muy superiores a los de los índices de referencia para cada estrategia.",
     facts: [
-      { label: "Especialidad", value: "Fiscal y contable" },
-      { label: "Mercado",      value: "Norteamérica" },
-      { label: "Enfoque",      value: "Empresas e individuos" },
-      { label: "Servicios",    value: "Integrales" },
+      { label: "Sede",         value: "Canadá" },
+      { label: "Experiencia",  value: "+10 años" },
+      { label: "Enfoque",      value: "Generación de alfa" },
+      { label: "Track record", value: "Superior al índice" },
     ],
-    services: ["Planeación fiscal", "Auditoría contable", "Estructuración corporativa", "Cumplimiento regulatorio", "Administración financiera"],
+    services: ["Estrategias de inversión", "Generación de alfa", "Gestión activa", "Análisis bursátil", "Optimización de portafolio"],
     url: "https://www.rgaconsultinginc.com",
   },
   {
@@ -204,7 +204,7 @@ export default function NuestrosSociosPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-56 pb-44 bg-background">
+      <main className="min-h-screen pt-56 pb-40 bg-background">
 
         {/* ── Header ─────────────────────────────────────────── */}
         <div className="max-w-4xl mx-auto px-8 mb-16">

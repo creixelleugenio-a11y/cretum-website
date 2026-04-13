@@ -43,7 +43,7 @@ export function CorporateStructureSection() {
   const { t } = useLanguage();
 
   return (
-    <section id="estructura" className="pt-16 pb-64 bg-background relative overflow-hidden">
+    <section id="estructura" className="pt-16 pb-40 bg-background relative overflow-hidden">
       {/* Building image — right edge of section, behind everything */}
       <div className="hidden lg:block absolute inset-0 pointer-events-none select-none">
         <img src={buildingImg} alt="" className="absolute left-0 top-0 w-[35%] h-full object-cover object-center grayscale opacity-[0.07]" style={{ WebkitMaskImage: "radial-gradient(ellipse 80% 80% at 20% 50%, black 30%, transparent 100%)", maskImage: "radial-gradient(ellipse 80% 80% at 20% 50%, black 30%, transparent 100%)" }} />

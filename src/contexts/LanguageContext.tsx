@@ -687,6 +687,7 @@ const translations: Record<string, Record<Lang, string>> = {
   "mvp.platform.advisor.desc":   { es: "Secondary-as-a-Service™ — soluciones de liquidez a compañías privadas.", en: "Secondary-as-a-Service™ — liquidity solutions for private companies." },
   "mvp.platform.agent.desc":     { es: "Brokerage institucional ($10M+) a través de VNTR Securities LLC (Broker-Dealer).", en: "Institutional brokerage ($10M+) through VNTR Securities LLC (Broker-Dealer)." },
   "mvp.platform.research.desc":  { es: "Manhattan Venture Research — informes privados y reporte mensual Venture Bytes.", en: "Manhattan Venture Research — private reports and monthly Venture Bytes report." },
+  "mvp.leadership.title":    { es: "Equipo de Liderazgo",            en: "Leadership Team"              },
   "mvp.section.platform":    { es: "Plataforma integrada",           en: "Integrated platform"          },
   "mvp.section.recognition": { es: "Reconocimiento institucional",   en: "Institutional recognition"    },
   "mvp.section.trackrecord": { es: "Track record — All-Star Funds",  en: "Track record — All-Star Funds" },

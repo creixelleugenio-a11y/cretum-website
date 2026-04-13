@@ -21,7 +21,7 @@ export function AboutSection() {
   }));
 
   return (
-    <section id="nosotros" className="pt-28 pb-20 bg-muted/20">
+    <section id="nosotros" className="pt-28 pb-40 bg-muted/20">
       <div className="max-w-6xl mx-auto px-6 w-full">
 
           <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start">

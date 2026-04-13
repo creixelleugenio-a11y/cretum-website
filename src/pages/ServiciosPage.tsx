@@ -6,7 +6,7 @@ const ServiciosPage = () => {
   return (
     <div className="min-h-screen">
       <Navbar />
-      <div className="pt-36 pb-24">
+      <div className="pt-36 pb-40">
         <ServicesSection />
       </div>
       <Footer />

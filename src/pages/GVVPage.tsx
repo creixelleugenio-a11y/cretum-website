@@ -229,7 +229,7 @@ export default function GVVPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-48 pb-32 bg-background">
+      <main className="min-h-screen pt-48 pb-40 bg-background">
         <div className="max-w-6xl mx-auto px-8">
 
           {/* ── Header ──────────────────────────────────────────────────── */}
@@ -259,10 +259,9 @@ export default function GVVPage() {
           {/* ── KPI Metrics ─────────────────────────────────────────────── */}
           <div className="grid grid-cols-4 gap-4 mt-10">
             {kpis.map((k) => (
-              <div key={k.label} className="bg-primary text-primary-foreground rounded-xl p-6 text-center">
-                <p className="text-2xl font-bold">{k.value}</p>
-                <p className="text-[10px] font-semibold uppercase tracking-wide mt-1 opacity-80">{k.label}</p>
-                <p className="text-[10px] opacity-60 mt-0.5">{k.sub}</p>
+              <div key={k.label} className="border-l-2 border-primary pl-5 py-3">
+                <p className="text-[30px] font-bold text-primary leading-none">{k.value}</p>
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mt-3 leading-snug">{k.label}</p>
               </div>
             ))}
           </div>

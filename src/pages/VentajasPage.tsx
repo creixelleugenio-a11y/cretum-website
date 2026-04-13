@@ -25,7 +25,7 @@ export default function VentajasPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-40 pb-24 bg-background">
+      <main className="min-h-screen pt-40 pb-40 bg-background">
         <div className="max-w-4xl mx-auto px-8">
           <Reveal>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">Metodología</p>

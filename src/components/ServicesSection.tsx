@@ -50,7 +50,7 @@ export function ServicesSection() {
 
 
   return (
-    <section id="servicios" className="pt-24 pb-16 bg-background relative overflow-hidden">
+    <section id="servicios" className="pt-24 pb-40 bg-background relative overflow-hidden">
       <div className="hidden lg:block absolute right-0 top-0 w-[32%] h-full pointer-events-none select-none">
         <img src={skyscrapersImg} alt="" className="w-full h-full object-cover object-center grayscale opacity-15 blur-[1px]" />
         <div className="absolute inset-0 bg-gradient-to-l from-transparent via-background/60 to-background" />

@@ -101,7 +101,7 @@ export default function TrendratingPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-48 pb-32 bg-background">
+      <main className="min-h-screen pt-48 pb-40 bg-background">
         <div className="max-w-6xl mx-auto px-8">
           <div className="w-full min-w-0">
 

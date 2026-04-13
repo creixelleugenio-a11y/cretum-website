@@ -20,7 +20,7 @@ export function HeroSection() {
 
         <div className="relative z-10 text-center px-6">
           <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif tracking-tight animate-fade-in mt-12">
-            <em className="not-italic font-serif font-medium block text-7xl relative -top-4" style={{color:"red"}}>
+            <em className="text-primary not-italic font-serif font-medium block text-7xl relative -top-4">
               {t("hero.title.1")}
             </em>
             <span className="text-foreground text-6xl block mt-6">{t("hero.title.2")}</span>

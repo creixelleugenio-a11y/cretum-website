@@ -22,7 +22,7 @@ export function Footer() {
       ];
 
   return (
-    <footer id="contacto" className="min-h-screen flex flex-col justify-center bg-foreground py-16">
+    <footer id="contacto" className="bg-foreground pt-64 pb-28">
       <div className="max-w-6xl mx-auto px-6 w-full">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           <div>

@@ -207,7 +207,7 @@ export default function MVPPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-48 pb-32 bg-background">
+      <main className="min-h-screen pt-48 pb-40 bg-background">
         <div className="max-w-6xl mx-auto px-8">
           <div className="w-full min-w-0">
 
@@ -219,12 +219,33 @@ export default function MVPPage() {
             {/* ── KPI Metrics ───────────────────────────────────────────── */}
             <div className="grid grid-cols-3 lg:grid-cols-6 gap-4">
               {kpiKeys.map((k, i) => (
-                <div key={k.labelKey} className="bg-primary text-primary-foreground rounded-xl p-6 text-center">
-                  <p className="text-2xl font-bold">{kpiValues[i]}</p>
-                  <p className="text-[10px] font-semibold uppercase tracking-wide mt-1 opacity-80">{t(k.labelKey)}</p>
-                  <p className="text-[10px] opacity-60 mt-0.5">{t(k.subKey)}</p>
+                <div key={k.labelKey} className="border-l-2 border-primary pl-5 py-3">
+                  <p className="text-[30px] font-bold text-primary leading-none">{kpiValues[i]}</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mt-3 leading-snug">{t(k.labelKey)}</p>
                 </div>
               ))}
+            </div>
+
+            {/* ── Leadership Team ───────────────────────────────────────── */}
+            <div className="mt-16">
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground mb-10">{t("mvp.leadership.title")}</h2>
+              <div className="grid grid-cols-5 gap-6">
+                {[
+                  { name: "Eric Brachfeld",  role: "Managing Partner & General Partner", img: "/team/mvp-eric-brachfeld.png"  },
+                  { name: "Jared Carmel",    role: "Managing Partner & General Partner", img: "/team/mvp-jared-carmel.png"    },
+                  { name: "Bradley Fishman", role: "Managing Partner & General Partner", img: "/team/mvp-bradley-fishman.png" },
+                  { name: "Adam Ingram",     role: "Chief Operating Officer",            img: "/team/mvp-adam-ingram.png"     },
+                  { name: "SooMan Wolffs",   role: "General Partner",                    img: "/team/mvp-sooman-wolffs.png"   },
+                ].map((gp) => (
+                  <div key={gp.name} className="flex flex-col items-center text-center">
+                    <div className="w-36 h-36 rounded-full overflow-hidden border-2 border-primary/20 mb-4 shrink-0">
+                      <img src={gp.img} alt={gp.name} className="w-full h-full object-cover object-top" />
+                    </div>
+                    <h4 className="font-bold text-foreground text-sm md:text-base leading-tight">{gp.name}</h4>
+                    <p className="text-xs text-muted-foreground/70 mt-1">{gp.role}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* ── Platform Pillars ──────────────────────────────────────── */}
