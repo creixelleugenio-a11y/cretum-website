@@ -520,12 +520,11 @@ export default function MVPPage() {
             {/* Body */}
             <div className="px-8 py-6 space-y-6">
               <p className="text-[0.9rem] text-muted-foreground leading-relaxed">{selected.desc}</p>
-              <div className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 {[
-                  { label: t("mvp.popup.founded"),   value: selected.founded   },
-                  { label: t("mvp.popup.sector"),    value: selected.sector    },
-                  { label: t("mvp.popup.status"),    value: selected.status    },
-                  { label: t("mvp.popup.valuation"), value: selected.valuation },
+                  { label: t("mvp.popup.founded"), value: selected.founded },
+                  { label: t("mvp.popup.sector"),  value: selected.sector  },
+                  { label: t("mvp.popup.status"),  value: selected.status  },
                 ].map((f) => (
                   <div key={f.label} className="bg-muted/30 rounded-xl px-4 py-3">
                     <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary mb-1">{f.label}</p>
