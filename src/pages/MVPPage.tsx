@@ -260,7 +260,7 @@ export default function MVPPage() {
             </div>
 
             {/* ── Recognition ───────────────────────────────────────────── */}
-            <AccordionSection title={t("mvp.section.recognition")}>
+            <AccordionSection title={t("mvp.section.recognition")} className="mt-16">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className="border border-border rounded-xl p-6 bg-background">
                   <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">Bloomberg</p>
