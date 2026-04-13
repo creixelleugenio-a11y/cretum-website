@@ -191,9 +191,25 @@ function AccordionSection({ title, children, defaultOpen = false, className = "m
 
 interface SelectedCompany extends CompanyBase, CompanyTexts {}
 
+type GPMember = { name: string; role: string; img: string; bio: string | null };
+
+const gpTeam: GPMember[] = [
+  {
+    name: "Eric Brachfeld",
+    role: "Managing Partner & General Partner",
+    img: "/team/mvp-eric-brachfeld.png",
+    bio: "Eric has more than 30 years of experience as an investment banker and entrepreneur and has provided financial and strategic advice and structuring transactions for a broad range of companies and investors. Prior to launching Manhattan Venture Partners, Eric was a Partner at Citizen VC, Inc., a financial technology and investment firm, where he led the firm's investment banking efforts. Prior to Citizen VC, Eric cofounded Gentry New York, which he merged with Gentry Financial Holdings Group. At Gentry, Eric was head of investment banking and CEO of Gentry Securities, their broker-dealer subsidiary. Prior to Gentry, Eric cofounded and led investment banking efforts at Ledgemont Capital Group and Indigo Ventures, firms which raised capital for and invested in early and growth stage companies. Prior to those firms, Eric was an Associate and then General Partner at McFarland Dewey & Co., a boutique investment banking firm. Eric began his career at McKinney Advertising. Eric received a BA in Economics from the University of Pennsylvania and an MBA, with Honors, from the Stern School of Business, New York University. He holds FINRA Series 7, Series 63, Series 24, Series 79 and Series 99 licenses.",
+  },
+  { name: "Jared Carmel",    role: "Managing Partner & General Partner", img: "/team/mvp-jared-carmel.png",    bio: null },
+  { name: "Bradley Fishman", role: "Managing Partner & General Partner", img: "/team/mvp-bradley-fishman.png", bio: null },
+  { name: "Adam Ingram",     role: "Chief Operating Officer",            img: "/team/mvp-adam-ingram.png",     bio: null },
+  { name: "SooMan Wolffs",   role: "General Partner",                    img: "/team/mvp-sooman-wolffs.png",   bio: null },
+];
+
 export default function MVPPage() {
   const { t, lang } = useLanguage();
   const [selected, setSelected] = useState<SelectedCompany | null>(null);
+  const [selectedGP, setSelectedGP] = useState<GPMember | null>(null);
 
   const companyTexts = lang === "es" ? companyTextsEs : companyTextsEn;
   const companies: SelectedCompany[] = companiesBase.map((c) => ({
@@ -230,20 +246,18 @@ export default function MVPPage() {
             <div className="mt-16">
               <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground mb-10">{t("mvp.leadership.title")}</h2>
               <div className="grid grid-cols-5 gap-6">
-                {[
-                  { name: "Eric Brachfeld",  role: "Managing Partner & General Partner", img: "/team/mvp-eric-brachfeld.png"  },
-                  { name: "Jared Carmel",    role: "Managing Partner & General Partner", img: "/team/mvp-jared-carmel.png"    },
-                  { name: "Bradley Fishman", role: "Managing Partner & General Partner", img: "/team/mvp-bradley-fishman.png" },
-                  { name: "Adam Ingram",     role: "Chief Operating Officer",            img: "/team/mvp-adam-ingram.png"     },
-                  { name: "SooMan Wolffs",   role: "General Partner",                    img: "/team/mvp-sooman-wolffs.png"   },
-                ].map((gp) => (
-                  <div key={gp.name} className="flex flex-col items-center text-center">
-                    <div className="w-36 h-36 rounded-full overflow-hidden border-2 border-primary/20 mb-4 shrink-0">
+                {gpTeam.map((gp) => (
+                  <button
+                    key={gp.name}
+                    onClick={() => gp.bio && setSelectedGP(gp)}
+                    className={`flex flex-col items-center text-center group border border-border rounded-xl p-5 hover:bg-muted/50 transition-all duration-300 active:scale-95 ${gp.bio ? "cursor-pointer" : "cursor-default"}`}
+                  >
+                    <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-primary/20 mb-4 shrink-0 ring-2 ring-primary/20 group-hover:ring-primary/50 transition-all">
                       <img src={gp.img} alt={gp.name} className="w-full h-full object-cover object-top" />
                     </div>
                     <h4 className="font-bold text-foreground text-sm md:text-base leading-tight">{gp.name}</h4>
                     <p className="text-xs text-muted-foreground/70 mt-1">{gp.role}</p>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
@@ -556,6 +570,24 @@ export default function MVPPage() {
               </div>
 
               <p className="text-xs text-muted-foreground/80 border-t border-border pt-3 leading-relaxed">{selected.note}</p>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* ── GP detail popup ──────────────────────────────────────────────── */}
+      <Dialog open={!!selectedGP} onOpenChange={(v) => !v && setSelectedGP(null)}>
+        <DialogContent className="max-w-md w-[calc(100vw-2rem)]">
+          {selectedGP && (
+            <div className="flex flex-col items-center text-center pt-2">
+              <div className="w-20 h-20 rounded-full overflow-hidden mb-4 ring-2 ring-primary/20">
+                <img src={selectedGP.img} alt={selectedGP.name} className="w-full h-full object-cover object-top" />
+              </div>
+              <h3 className="text-lg font-bold text-foreground">{selectedGP.name}</h3>
+              <p className="text-sm text-primary/80 mb-4">{selectedGP.role}</p>
+              {selectedGP.bio && (
+                <p className="text-sm text-muted-foreground leading-relaxed text-left">{selectedGP.bio}</p>
+              )}
             </div>
           )}
         </DialogContent>
