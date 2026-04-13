@@ -120,7 +120,7 @@ const companiesBase: CompanyBase[] = [
   { name: "SoFi",             logo: "/logos/mvp/sofi.svg",        founded: "2011", valuation: "~$20B market cap"      },
   { name: "Figure AI",        logo: "/logos/mvp/figure-ai.svg",   founded: "2022", valuation: "$39B (sep 2025)"       },
   { name: "Kodiak Robotics",  logo: "/logos/mvp/kodiak.svg",      founded: "2018", valuation: "~$1.3B market cap"     },
-  { name: "Epirus",           logo: "/logos/mvp/epirus.svg",      darkBg: true, founded: "2018", valuation: ">$1B (mar 2025)" },
+  { name: "Epirus",           logo: "/logos/mvp/epirus.png",      founded: "2018", valuation: ">$1B (mar 2025)" },
 ];
 
 const companyTextsEs: Record<string, CompanyTexts> = {
