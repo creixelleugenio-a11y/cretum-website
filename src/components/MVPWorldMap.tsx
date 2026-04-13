@@ -41,7 +41,7 @@ const cities: City[] = [
     tx: -21, ty: 3, anchor: "end",
   },
   {
-    name: "New York", info: "Global Headquarters", address: null, type: "hq",
+    name: "New York", info: "Global Headquarters", address: "152 Madison Ave\n7th Floor\nNew York, NY 10016", type: "hq",
     coords: [-74.006, 40.713],
     lx1: 6, ly1: 0, lx2: 20, ly2: 0,
     tx: 23, ty: 3, anchor: "start",
