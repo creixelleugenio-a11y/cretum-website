@@ -21,10 +21,10 @@ interface City {
 
 const cities: City[] = [
   {
-    name: "San Francisco", info: "West Coast Headquarters", type: "hq",
+    name: "San Francisco", info: "West Coast Headquarters", type: "office",
     coords: [-122.419, 37.775],
-    lx1: -6, ly1: 0, lx2: -24, ly2: 0,
-    tx: -27, ty: 3, anchor: "end",
+    lx1: -5, ly1: -3, lx2: -22, ly2: -13,
+    tx: -25, ty: -16, anchor: "end",
   },
   {
     name: "Los Angeles", info: "West Coast Office", type: "office",
