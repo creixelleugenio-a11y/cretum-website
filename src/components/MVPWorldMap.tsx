@@ -5,6 +5,7 @@ import {
   Geography,
   Marker,
 } from "react-simple-maps";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const GEO_URL = "/world-110m.json";
 
@@ -12,7 +13,7 @@ type CityType = "hq" | "office";
 
 interface City {
   name: string;
-  info: string;
+  infoKey: string;
   address: string | null;
   type: CityType;
   coords: [number, number];
@@ -22,56 +23,56 @@ interface City {
 
 const cities: City[] = [
   {
-    name: "San Francisco", info: "West Coast Headquarters", address: null, type: "office",
+    name: "San Francisco", infoKey: "mvp.map.sf.info", address: null, type: "office",
     coords: [-122.419, 37.775],
     lx1: -5, ly1: -3, lx2: -22, ly2: -13,
     tx: -25, ty: -16, anchor: "end",
   },
   {
-    name: "Los Angeles", info: "West Coast Office", address: null, type: "office",
+    name: "Los Angeles", infoKey: "mvp.map.la.info", address: null, type: "office",
     coords: [-118.244, 34.052],
     lx1: -5, ly1: 0, lx2: -18, ly2: 0,
     tx: -21, ty: 3, anchor: "end",
   },
   {
-    name: "Mexico City", info: "Latam Operations", type: "office",
+    name: "Mexico City", infoKey: "mvp.map.mexico.info", type: "office",
     address: "Av. Prol. Paseo de la Reforma 1015\nEdificio Punta Santa Fe, Piso 22\nCol. Desarrollo Santa Fe 01376\nCiudad de México",
     coords: [-99.133, 19.433],
     lx1: -5, ly1: 0, lx2: -18, ly2: 0,
     tx: -21, ty: 3, anchor: "end",
   },
   {
-    name: "New York", info: "Global Headquarters", address: "152 Madison Ave\n7th Floor\nNew York, NY 10016", type: "hq",
+    name: "New York", infoKey: "mvp.map.ny.info", address: "152 Madison Ave\n7th Floor\nNew York, NY 10016", type: "hq",
     coords: [-74.006, 40.713],
     lx1: 6, ly1: 0, lx2: 20, ly2: 0,
     tx: 23, ty: 3, anchor: "start",
   },
   {
-    name: "London", info: "European Operations", address: null, type: "office",
+    name: "London", infoKey: "mvp.map.london.info", address: null, type: "office",
     coords: [-0.128, 51.507],
     lx1: -3, ly1: -5, lx2: -12, ly2: -18,
     tx: -15, ty: -21, anchor: "end",
   },
   {
-    name: "Milan", info: "European Office", address: null, type: "office",
+    name: "Milan", infoKey: "mvp.map.milan.info", address: null, type: "office",
     coords: [9.190, 45.465],
     lx1: 5, ly1: 0, lx2: 16, ly2: 0,
     tx: 19, ty: 3, anchor: "start",
   },
   {
-    name: "Istanbul", info: "European Office", address: null, type: "office",
+    name: "Istanbul", infoKey: "mvp.map.istanbul.info", address: null, type: "office",
     coords: [28.978, 41.008],
     lx1: 5, ly1: 0, lx2: 16, ly2: 0,
     tx: 19, ty: 3, anchor: "start",
   },
   {
-    name: "Paris", info: "European Office", address: null, type: "office",
+    name: "Paris", infoKey: "mvp.map.paris.info", address: null, type: "office",
     coords: [2.352, 48.857],
     lx1: -3, ly1: 4, lx2: -12, ly2: 16,
     tx: -15, ty: 20, anchor: "end",
   },
   {
-    name: "Dubai", info: "Middle East Operations", address: null, type: "office",
+    name: "Dubai", infoKey: "mvp.map.dubai.info", address: null, type: "office",
     coords: [55.271, 25.205],
     lx1: 5, ly1: 0, lx2: 20, ly2: 0,
     tx: 23, ty: 3, anchor: "start",
@@ -85,6 +86,7 @@ const LINE_COLOR   = "hsl(214,40%,55%)";
 interface Popup { city: City; x: number; y: number }
 
 export function MVPWorldMap() {
+  const { t } = useLanguage();
   const [hovered, setHovered]   = useState<string | null>(null);
   const [popup, setPopup]       = useState<Popup | null>(null);
   const containerRef            = useRef<HTMLDivElement>(null);
@@ -103,8 +105,8 @@ export function MVPWorldMap() {
   return (
     <div className="w-full">
       <div className="mb-1">
-        <h2 className="text-2xl md:text-3xl font-serif text-foreground">Alcance Global de MVP</h2>
-        <p className="text-sm text-muted-foreground mt-1">30+ Investment Professionals Worldwide</p>
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-serif text-foreground">{t("mvp.map.title")}</h2>
+        <p className="text-sm text-muted-foreground mt-1">{t("mvp.map.subtitle")}</p>
       </div>
 
       <div
@@ -115,7 +117,7 @@ export function MVPWorldMap() {
       >
         <ComposableMap
           width={800} height={380}
-          projectionConfig={{ scale: 140, center: [10, 20] }}
+          projectionConfig={{ scale: 140, center: [-20, 20] }}
           style={{ width: "100%", height: "auto", display: "block" }}
         >
           <defs>
@@ -175,7 +177,7 @@ export function MVPWorldMap() {
         {/* Click popup */}
         {popup && (
           <div
-            className="absolute z-10 bg-white border border-border rounded-lg shadow-lg px-4 py-3 w-52 pointer-events-auto"
+            className="absolute z-10 bg-white border border-border rounded-lg shadow-lg px-4 py-3 w-52 max-w-[calc(100vw-2rem)] pointer-events-auto"
             style={{
               left: Math.min(popup.x + 12, (containerRef.current?.offsetWidth ?? 800) - 220),
               top: Math.max(popup.y - 80, 8),
@@ -186,7 +188,7 @@ export function MVPWorldMap() {
               onClick={() => setPopup(null)}
             >✕</button>
             <p className="text-sm font-bold text-foreground font-serif pr-4">{popup.city.name}</p>
-            <p className="text-[11px] text-primary font-medium mt-0.5">{popup.city.info}</p>
+            <p className="text-[11px] text-primary font-medium mt-0.5">{t(popup.city.infoKey)}</p>
             {popup.city.address && (
               <p className="text-[11px] text-muted-foreground mt-2 leading-relaxed whitespace-pre-line">
                 {popup.city.address}
@@ -199,11 +201,11 @@ export function MVPWorldMap() {
         <div className="absolute bottom-4 left-4 flex items-center gap-4">
           <div className="flex items-center gap-1.5">
             <svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="white" stroke={HQ_COLOR} strokeWidth="2"/><circle cx="6" cy="6" r="3" fill={HQ_COLOR}/></svg>
-            <span className="text-[10px] text-muted-foreground font-medium">Headquarters</span>
+            <span className="text-[10px] text-muted-foreground font-medium">{t("mvp.map.hq")}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <svg width="10" height="10"><circle cx="5" cy="5" r="4" fill="white" stroke={OFFICE_COLOR} strokeWidth="1.5"/><circle cx="5" cy="5" r="2.2" fill={OFFICE_COLOR}/></svg>
-            <span className="text-[10px] text-muted-foreground font-medium">Office</span>
+            <span className="text-[10px] text-muted-foreground font-medium">{t("mvp.map.office")}</span>
           </div>
         </div>
       </div>

@@ -34,28 +34,36 @@ const annualComparison = [
   { year: "2025", gvv: 38.02, sp: 16.39 },
 ];
 
-const allocationValues = [29, 25, 11, 10, 8, 3, 3, 11];
+const allocationValues = [26.8, 24, 19, 10.5, 9.8, 3.4, 1.9, 4.6];
 
 const PIE_COLORS = ["#1e3a5f","#2563a8","#6b9dd1","#4a7fb5","#8fb8d8","#b8d4ea","#c5ddf0","#dceef8"];
 
 const currencies = [
-  { name: "USD",  value: 87.28 },
-  { name: "MXN",  value: 9.81  },
-  { name: "EUR",  value: 1.66  },
-  { name: "GBP",  value: 1.00  },
-  { name: "ASIA", value: 0.24  },
+  { name: "USD",  value: 85.5 },
+  { name: "MXN",  value: 10.6 },
+  { name: "GBP",  value: 2.2  },
+  { name: "EUR",  value: 1.6  },
+  { name: "ASIA", value: 0.2  },
 ];
 
 const monthLabelsEs = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
 const monthLabelsEn = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
 const monthlyReturns = [
+  { year:"2013", m:[null,null,null,null,null,null,2.65,-12.72,15.92,14.82,5.99,10.47],   ytd:39.61 },
+  { year:"2014", m:[-2.29,2.90,0.42,1.10,0.10,1.89,-1.51,10.32,-1.49,0.99,null,null],    ytd:12.56 },
+  { year:"2015", m:[null,null,null,null,null,null,null,null,null,null,null,null],       ytd:0     },
+  { year:"2016", m:[null,null,null,null,null,null,-0.40,3.01,-1.74,-0.97,1.77,2.31],     ytd:3.94  },
+  { year:"2017", m:[1.16,-0.61,1.92,-1.20,-5.84,5.57,1.13,3.79,-1.39,-0.86,0.78,-0.08],  ytd:3.99  },
+  { year:"2018", m:[3.05,3.20,4.38,-0.30,-2.63,1.13,1.28,0.70,-1.01,-1.01,2.47,-7.78],   ytd:2.90  },
+  { year:"2019", m:[1.60,0.98,-1.16,2.85,-5.78,4.73,-4.06,-4.49,0.37,-0.65,0.77,0.03],   ytd:-5.21 },
+  { year:"2020", m:[-0.03,-7.95,-1.11,-5.21,1.27,8.13,-7.47,4.50,15.44,-3.51,8.34,0.80], ytd:11.08 },
   { year:"2021", m:[7.70,5.16,-3.47,6.23,0.46,13.05,-8.71,-2.62,-5.46,1.57,-8.83,1.82],  ytd:4.51  },
   { year:"2022", m:[-3.17,-2.16,4.86,-9.41,3.98,-1.68,1.16,11.53,-1.94,1.94,2.76,0.22],  ytd:6.85  },
   { year:"2023", m:[4.88,1.29,1.55,-0.72,3.10,3.45,3.64,-1.53,-1.10,-3.05,5.81,3.17],    ytd:22.02 },
   { year:"2024", m:[0.29,2.88,2.76,-2.13,3.27,-2.19,0.69,2.27,4.67,-0.70,0.41,-2.46],    ytd:9.88  },
   { year:"2025", m:[5.18,0.90,-2.92,-0.27,3.19,3.06,3.88,3.03,9.13,1.49,4.35,2.11],      ytd:38.02 },
-  { year:"2026", m:[0.17,-2.70,null,null,null,null,null,null,null,null,null,null],          ytd:-2.53 },
+  { year:"2026", m:[0.17,-2.70,-2.73,7.27,2.93,null,null,null,null,null,null,null],      ytd:4.68  },
 ];
 
 const preIpoEs = [
@@ -149,6 +157,8 @@ const cumulativeData = [
   { l:"Sep '25", gvv:191.12, sp:174.01 },  { l:"Oct '25", gvv:193.97, sp:179.23 },
   { l:"Nov '25", gvv:202.41, sp:189.98 },  { l:"Dic '25", gvv:206.68, sp:184.66 },
   { l:"Ene '26", gvv:207.03, sp:190.20 },  { l:"Feb '26", gvv:201.43, sp:187.35 },
+  { l:"Mar '26", gvv:195.93, sp:178.11 },  { l:"Abr '26", gvv:210.18, sp:196.83 },
+  { l:"May '26", gvv:216.34, sp:207.18 },
 ];
 
 
@@ -188,25 +198,28 @@ interface GVVModalProps {
 }
 
 export function GVVModal({ open, onOpenChange }: GVVModalProps) {
-  const [docFile, setDocFile] = useState<{ name: string; file_url: string } | null>(null);
+  const [docFile, setDocFile] = useState<{ name: string; file_url: string } | null>({
+    name: "Cretum Letter - May 2026",
+    file_url: "/docs/Cretum-Letter-May-2026.pdf",
+  });
   const { t, lang } = useLanguage();
 
   const kpis = [
-    { label: t("gvv.kpi1.label"), value: "14.57%", sub: t("gvv.kpi1.sub") },
-    { label: t("gvv.kpi2.label"), value: "3.71x",  sub: t("gvv.kpi2.sub") },
-    { label: t("gvv.kpi3.label"), value: "0.69",   sub: t("gvv.kpi3.sub") },
-    { label: t("gvv.kpi4.label"), value: "4.76%",  sub: t("gvv.kpi4.sub") },
+    { label: t("gvv.kpi1.label"), value: "12.20%", sub: t("gvv.kpi1.sub") },
+    { label: t("gvv.kpi2.label"), value: "3.98x",  sub: t("gvv.kpi2.sub") },
+    { label: t("gvv.kpi3.label"), value: "0.74",   sub: t("gvv.kpi3.sub") },
+    { label: t("gvv.kpi4.label"), value: "4.63%",  sub: t("gvv.kpi4.sub") },
   ];
 
   const allocationData = [
-    { name: "Private Equity",                  value: 29 },
-    { name: t("gvv.alloc.acciones_usa"),        value: 25 },
-    { name: "Cash",                             value: 11 },
-    { name: t("gvv.alloc.acciones_mx"),         value: 10 },
-    { name: t("gvv.alloc.bonos_mx"),            value: 8  },
-    { name: t("gvv.alloc.bonos_usa"),           value: 3  },
-    { name: "Russell Strat.",                   value: 3  },
-    { name: t("gvv.alloc.otros"),               value: 11 },
+    { name: t("gvv.alloc.private_equity"),      value: 26.8 },
+    { name: t("gvv.alloc.acciones_usa"),        value: 24   },
+    { name: t("gvv.alloc.cash"),                value: 19   },
+    { name: lang === "es" ? "Algorítmicos" : "Algorithmic", value: 10.5 },
+    { name: t("gvv.alloc.acciones_mx"),         value: 9.8  },
+    { name: t("gvv.alloc.acciones_eur"),        value: 3.4  },
+    { name: lang === "es" ? "Acciones Asia" : "Asian Shares", value: 1.9 },
+    { name: t("gvv.alloc.otros"),               value: 4.6  },
   ];
 
   const monthLabels = lang === "es" ? monthLabelsEs : monthLabelsEn;
@@ -221,11 +234,11 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
   }));
 
   const structureItems = [
-    { label: t("gvv.struct.legal"),     value: "Cretum Partners GVV Fund, LP", sub: "Ontario, Canadá"      },
-    { label: "General Partner",         value: "Cretum Advisory LLC",           sub: "Delaware, USA"         },
-    { label: t("gvv.struct.custodian"), value: "Bank of New York Mellon",       sub: "USA Custodian"         },
-    { label: t("gvv.struct.nav"),       value: "NAV Consulting",                sub: "Investment statements" },
-    { label: "Auditor",                 value: "Deloitte",                      sub: "Tax advisor & services"},
+    { label: t("gvv.struct.legal"),     value: "Cretum Partners GVV Fund, LP", sub: lang === "es" ? "Ontario, Canadá" : "Ontario, Canada" },
+    { label: t("gvv.struct.gp"),        value: "Cretum Advisory LLC",           sub: t("gvv.struct.gp.sub")  },
+    { label: t("gvv.struct.custodian"), value: "Bank of New York Mellon",       sub: t("gvv.struct.custodian.sub") },
+    { label: t("gvv.struct.nav"),       value: "NAV Consulting",                sub: t("gvv.struct.nav.sub") },
+    { label: t("gvv.struct.auditor"),   value: "Deloitte",                      sub: t("gvv.struct.auditor.sub") },
     { label: t("gvv.struct.valued"),    value: "USD",                           sub: t("gvv.struct.multicurrency") },
   ];
 
@@ -293,7 +306,7 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
           </div>
         </div>
 
-        <div className="h-56 w-full">
+        <div className="h-48 sm:h-56 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={annualComparison} barGap={4} barCategoryGap="30%">
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(214 20% 88%)" />
@@ -323,7 +336,7 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
 
         {/* ── Valor del Portafolio — 5Y vs S&P 500 ────────────────────── */}
         <SectionTitle>{t("gvv.section.port_value")}</SectionTitle>
-        <div className="h-64 w-full">
+        <div className="h-48 sm:h-56 md:h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(214 20% 88%)" />
@@ -367,7 +380,7 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
           {/* Pie */}
           <div>
             <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">{t("gvv.alloc.by_asset")}</p>
-            <div className="h-48">
+            <div className="h-40 sm:h-48">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie data={allocationData} cx="50%" cy="50%" outerRadius={75}
@@ -411,7 +424,7 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
             </div>
             <div className="bg-primary text-primary-foreground rounded-xl p-4 mt-auto">
               <p className="text-2xl font-bold">76%</p>
-              <p className="text-[10px] font-semibold uppercase tracking-wide mt-1 opacity-80">Skin in the Game</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wide mt-1 opacity-80">{t("gvv.skin.label")}</p>
               <p className="text-[11px] opacity-70 mt-1.5 leading-relaxed">{t("gvv.skin.desc")}</p>
             </div>
           </div>
@@ -431,7 +444,9 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
               </tr>
             </thead>
             <tbody>
-              {monthlyReturns.map((row) => (
+              {monthlyReturns.map((row) => {
+                const hasData = row.m.some((v) => v !== null);
+                return (
                 <tr key={row.year} className="border-t border-border hover:bg-secondary/30 transition-colors">
                   <td className="px-3 py-1.5 font-semibold text-foreground">{row.year}</td>
                   {row.m.map((v, i) => (
@@ -444,12 +459,15 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
                     </td>
                   ))}
                   <td className={`px-3 py-1.5 text-center font-bold ${
-                    row.ytd >= 0 ? "text-emerald-700 dark:text-emerald-400" : "text-red-600 dark:text-red-400"
+                    !hasData         ? "text-muted-foreground/30"
+                    : row.ytd >= 0   ? "text-emerald-700 dark:text-emerald-400"
+                                     : "text-red-600 dark:text-red-400"
                   }`}>
-                    {row.ytd > 0 ? "+" : ""}{row.ytd.toFixed(2)}%
+                    {!hasData ? "—" : `${row.ytd > 0 ? "+" : ""}${row.ytd.toFixed(2)}%`}
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -535,7 +553,7 @@ export function GVVModal({ open, onOpenChange }: GVVModalProps) {
                   <span className="text-[11px] font-bold text-primary">{s.cagr.toFixed(2)}%</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[11px] text-muted-foreground">CAGR Benchmark</span>
+                  <span className="text-[11px] text-muted-foreground">{t("gvv.algo.cagr_benchmark")}</span>
                   <span className="text-[11px] text-muted-foreground">{s.bench.toFixed(2)}%</span>
                 </div>
                 <div className="flex justify-between border-t border-border pt-1.5 mt-1">

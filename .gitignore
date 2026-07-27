@@ -23,3 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+
+# Backups y temporales (NO versionar — algunos .bak tienen creds FTP)
+*.bak
+*.pre_env.bak
+_backup_*.tar.gz
+_gvv_head_tmp.html
+_gvv_*_tmp*.html

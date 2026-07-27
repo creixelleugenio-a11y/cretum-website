@@ -1,4 +1,8 @@
 import { Award } from "lucide-react";
+import { Reveal } from "@/components/Reveal";
+import { TrendratingHero } from "@/components/TrendratingHero";
+import trDataImg from "@/assets/tr-data-analytics.jpg";
+import trCircuitImg from "@/assets/tr-circuit.jpg";
 import {
   BarChart,
   Bar,
@@ -16,8 +20,6 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 
 // ── Static data (language-independent) ───────────────────────────────────
-
-const kpiValues = ["17,000+", "300+", "8", "25 años", "350+", "6–18m"];
 
 const tcrGrades = [
   { grade: "A", border: "#15803d", bg: "rgba(21,128,61,0.06)",  text: "#15803d", labelKey: "tr.tcr.a.label", descKey: "tr.tcr.a.desc" },
@@ -72,24 +74,17 @@ const dispersionData = [
   { year: "2024", top: 56.9,  index: 25.0,  bot: -20.4 },
 ];
 
-const kpiKeys = [
-  { labelKey: "tr.kpi1.label", subKey: "tr.kpi1.sub" },
-  { labelKey: "tr.kpi2.label", subKey: "tr.kpi2.sub" },
-  { labelKey: "tr.kpi3.label", subKey: "tr.kpi3.sub" },
-  { labelKey: "tr.kpi4.label", subKey: "tr.kpi4.sub" },
-  { labelKey: "tr.kpi5.label", subKey: "tr.kpi5.sub" },
-  { labelKey: "tr.kpi6.label", subKey: "tr.kpi6.sub" },
-];
-
 // ── Helpers ───────────────────────────────────────────────────────────────
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-5 mt-16 mb-8">
-      <div className="h-[1.5px] w-5 bg-primary" />
-      <h3 className="text-[11px] font-semibold uppercase tracking-widest text-primary whitespace-nowrap">{children}</h3>
-      <div className="h-[1.5px] flex-1 bg-border" />
-    </div>
+    <Reveal>
+      <div className="flex items-center gap-5 mt-20 mb-8">
+        <div className="h-[1.5px] w-5 bg-primary" />
+        <h3 className="text-[11px] font-semibold uppercase tracking-widest text-primary whitespace-nowrap">{children}</h3>
+        <div className="h-[1.5px] flex-1 bg-border" />
+      </div>
+    </Reveal>
   );
 }
 
@@ -101,31 +96,37 @@ export default function TrendratingPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-48 pb-40 bg-background">
-        <div className="max-w-6xl mx-auto px-8">
+      <main className="min-h-screen pb-40 bg-background">
+
+        <TrendratingHero />
+
+        <div className="relative overflow-hidden">
+
+          {/* Right image: data analytics — upper half */}
+          <div className="hidden lg:block absolute right-0 top-[5%] w-[30%] h-[45%] pointer-events-none select-none">
+            <img src={trDataImg} alt="" className="w-full h-full object-cover object-center grayscale opacity-[0.08] blur-[1px]" />
+            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-background/60 to-background" />
+            <div className="absolute top-0 left-0 right-0 h-[35%]" style={{ background: "linear-gradient(to bottom, hsl(var(--background)) 0%, hsl(var(--background)) 30%, transparent 100%)" }} />
+            <div className="absolute bottom-0 left-0 right-0 h-24" style={{ background: "linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)" }} />
+          </div>
+
+          {/* Left image: circuit — lower half */}
+          <div className="hidden lg:block absolute left-0 top-[52%] w-[30%] h-[40%] pointer-events-none select-none">
+            <img src={trCircuitImg} alt="" className="w-full h-full object-cover object-center grayscale opacity-[0.07]" />
+            <div className="absolute inset-0" style={{ background: "linear-gradient(to right, transparent 0%, transparent 10%, hsl(var(--background)) 55%)" }} />
+            <div className="absolute top-0 right-0 bottom-0 w-24" style={{ background: "linear-gradient(to right, transparent 0%, hsl(var(--background)) 100%)" }} />
+            <div className="absolute top-0 left-0 right-0 h-24" style={{ background: "linear-gradient(to bottom, hsl(var(--background)) 0%, transparent 100%)" }} />
+            <div className="absolute bottom-0 left-0 right-0 h-24" style={{ background: "linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)" }} />
+          </div>
+
+          <div className="max-w-6xl mx-auto px-8 relative z-10">
           <div className="w-full min-w-0">
 
-            {/* ── Header ────────────────────────────────────────────────── */}
-            <div className="mb-8">
-              <h1 className="text-5xl md:text-6xl font-serif text-primary mb-4">{t("tr.title")}</h1>
-              <p className="text-sm font-semibold text-muted-foreground tracking-widest uppercase">{t("tr.subtitle")}</p>
-            </div>
-            <p className="text-base text-muted-foreground leading-relaxed mb-8">{t("tr.desc")}</p>
-
-            <div className="bg-primary/5 border border-primary/15 rounded-lg px-6 py-5 mb-12 text-sm text-foreground leading-relaxed">
+            <Reveal>
+            <div className="bg-primary/5 border border-primary/15 rounded-lg px-6 py-5 mt-16 mb-0 text-sm text-foreground leading-relaxed">
               {t("tr.founded")}
             </div>
-
-            {/* ── KPI Metrics ───────────────────────────────────────────── */}
-            <div className="grid grid-cols-3 lg:grid-cols-6 gap-6 mt-0">
-              {kpiKeys.map((k, i) => (
-                <div key={k.labelKey} className="border-l-2 border-primary pl-4">
-                  <p className="text-3xl font-bold text-foreground">{kpiValues[i]}</p>
-                  <p className="text-[11px] font-semibold text-primary uppercase tracking-wide mt-4">{t(k.labelKey)}</p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">{t(k.subKey)}</p>
-                </div>
-              ))}
-            </div>
+            </Reveal>
 
             {/* ── TCR Rating System ─────────────────────────────────────── */}
             <SectionTitle>{t("tr.section.tcr")}</SectionTitle>
@@ -133,13 +134,15 @@ export default function TrendratingPage() {
               {t("tr.tcr.desc")}
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
-              {tcrGrades.map((r) => (
-                <div key={r.grade} className="rounded-xl border p-4"
-                  style={{ borderColor: r.border, backgroundColor: r.bg, borderLeftWidth: 3 }}>
-                  <p className="text-4xl font-bold" style={{ color: r.text }}>{r.grade}</p>
-                  <p className="text-[10px] font-semibold uppercase tracking-wide mt-2 text-foreground">{t(r.labelKey)}</p>
-                  <p className="text-[10px] mt-2 text-muted-foreground leading-tight">{t(r.descKey)}</p>
-                </div>
+              {tcrGrades.map((r, i) => (
+                <Reveal key={r.grade} delay={i * 0.1} className="reveal-scale">
+                  <div className="rounded-xl border p-4"
+                    style={{ borderColor: r.border, backgroundColor: r.bg, borderLeftWidth: 3 }}>
+                    <p className="text-4xl font-bold" style={{ color: r.text }}>{r.grade}</p>
+                    <p className="text-[10px] font-semibold uppercase tracking-wide mt-2 text-foreground">{t(r.labelKey)}</p>
+                    <p className="text-[10px] mt-2 text-muted-foreground leading-tight">{t(r.descKey)}</p>
+                  </div>
+                </Reveal>
               ))}
             </div>
             <div className="grid grid-cols-2 gap-5 mt-6">
@@ -160,18 +163,18 @@ export default function TrendratingPage() {
             </p>
 
             <div className="grid grid-cols-3  gap-5 mb-5">
-              <div className="border-l-2 pl-4" style={{ borderColor: "#15803d" }}>
-                <p className="text-2xl font-bold text-foreground">+43.7%</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5" style={{ whiteSpace: "pre-line" }}>{t("tr.oport.spread_top.sub")}</p>
-              </div>
-              <div className="border-l-2 border-primary pl-4">
-                <p className="text-2xl font-bold text-foreground">93–95%</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5" style={{ whiteSpace: "pre-line" }}>{t("tr.oport.funds.sub")}</p>
-              </div>
-              <div className="border-l-2 pl-4" style={{ borderColor: "#b91c1c" }}>
-                <p className="text-2xl font-bold text-foreground">−27%</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5" style={{ whiteSpace: "pre-line" }}>{t("tr.oport.spread_bot.sub")}</p>
-              </div>
+              {[
+                { val: "+43.7%", sub: t("tr.oport.spread_top.sub"), borderColor: "#15803d" },
+                { val: "93–95%", sub: t("tr.oport.funds.sub"),      borderColor: "hsl(var(--primary))" },
+                { val: "−27%",   sub: t("tr.oport.spread_bot.sub"), borderColor: "#b91c1c" },
+              ].map((s, i) => (
+                <Reveal key={s.val} delay={i * 0.1}>
+                  <div className="border-l-2 pl-4" style={{ borderColor: s.borderColor }}>
+                    <p className="text-2xl font-bold text-foreground">{s.val}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5" style={{ whiteSpace: "pre-line" }}>{s.sub}</p>
+                  </div>
+                </Reveal>
+              ))}
             </div>
 
             <div className="h-80 w-full">
@@ -215,16 +218,18 @@ export default function TrendratingPage() {
               {t("tr.ind.desc")}
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-              {indicatorDefs.map((ind) => (
-                <div key={ind.abbr} className="flex items-start  gap-5 border border-border rounded-lg px-3 py-3 bg-background hover:border-primary/40 transition-colors">
-                  <div className="bg-primary text-primary-foreground rounded-md px-2 py-1 text-[10px] font-bold shrink-0 min-w-[40px] text-center">
-                    {ind.abbr}
+              {indicatorDefs.map((ind, i) => (
+                <Reveal key={ind.abbr} delay={i * 0.07} className="reveal-scale">
+                  <div className="flex items-start gap-5 border border-border rounded-lg px-3 py-3 bg-background hover:border-primary/40 transition-colors">
+                    <div className="bg-primary text-primary-foreground rounded-md px-2 py-1 text-[10px] font-bold shrink-0 min-w-[40px] text-center">
+                      {ind.abbr}
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-semibold text-foreground">{ind.name}</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5 leading-tight">{t(ind.descKey)}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[11px] font-semibold text-foreground">{ind.name}</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5 leading-tight">{t(ind.descKey)}</p>
-                  </div>
-                </div>
+                </Reveal>
               ))}
             </div>
 
@@ -270,17 +275,20 @@ export default function TrendratingPage() {
             {/* ── Recognition ───────────────────────────────────────────── */}
             <SectionTitle>{t("tr.section.reconocimientos")}</SectionTitle>
             <div className="space-y-2">
-              {awards.map((a) => (
-                <div key={a.year} className="flex items-center  gap-5 border border-border rounded-lg px-5 py-4 bg-background">
-                  <Award className="w-4 h-4 text-primary shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-[11px] font-semibold text-foreground">{a.title}</p>
+              {awards.map((a, i) => (
+                <Reveal key={a.year} delay={i * 0.1}>
+                  <div className="flex items-center gap-5 border border-border rounded-lg px-5 py-4 bg-background">
+                    <Award className="w-4 h-4 text-primary shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-[11px] font-semibold text-foreground">{a.title}</p>
+                    </div>
+                    <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-semibold shrink-0">{a.year}</span>
                   </div>
-                  <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-semibold shrink-0">{a.year}</span>
-                </div>
+                </Reveal>
               ))}
             </div>
 
+          </div>
           </div>
         </div>
       </main>

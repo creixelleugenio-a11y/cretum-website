@@ -6,38 +6,37 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 const GVVModal = lazy(() => import("@/components/GVVModal").then(m => ({ default: m.GVVModal })));
 const MVPModal = lazy(() => import("@/components/MVPModal").then(m => ({ default: m.MVPModal })));
-const TrendratingModal = lazy(() => import("@/components/TrendratingModal").then(m => ({ default: m.TrendratingModal })));
 const WealthManagementModal = lazy(() => import("@/components/WealthManagementModal").then(m => ({ default: m.WealthManagementModal })));
 
 /* ── Panel data ───────────────────────────────────────────────── */
 type PanelItem =
-  | { label: string; desc: string; href: string }
-  | { label: string; desc: string; action: string };
+  | { labelKey: string; descKey: string; href: string }
+  | { labelKey: string; descKey: string; action: string };
 
 const PANELS: Record<string, PanelItem[]> = {
   "quienes-somos": [
-    { label: "Nuestra Historia",            desc: "Fundada en 2014 en Ciudad de México",               href: "/quienes-somos/historia" },
-    { label: "Nuestro Equipo",              desc: "Conoce a los profesionales detrás de Cretum",       href: "/nuestro-equipo" },
-    { label: "Nuestros Socios Comerciales", desc: "Alianzas institucionales estratégicas globales",    href: "/quienes-somos/socios" },
+    { labelKey: "nav.panel.historia.label",     descKey: "nav.panel.historia.desc",     href: "/quienes-somos/historia" },
+    { labelKey: "nav.panel.equipo.label",       descKey: "nav.panel.equipo.desc",       href: "/nuestro-equipo" },
+    { labelKey: "nav.panel.proveedores.label",  descKey: "nav.panel.proveedores.desc",  href: "/quienes-somos/socios" },
   ],
   "que-hacemos": [
-    { label: "GVV Fund",                   desc: "Growth · Value · Volatility",                      href: "/que-hacemos/gvv"                  },
-    { label: "Manhattan Venture Partners", desc: "Pre-IPO · Tecnología de alto potencial",          href: "/que-hacemos/mvp"                  },
-    { label: "Gestión Patrimonial",        desc: "Wealth Management personalizado",                  href: "/que-hacemos/gestion-patrimonial"  },
-    { label: "Trendrating",                desc: "17,000+ activos · Señales cuantitativas",          href: "/que-hacemos/trendrating"          },
+    { labelKey: "nav.panel.gvv.label",  descKey: "nav.panel.gvv.desc",  href: "/que-hacemos/gvv" },
+    { labelKey: "nav.panel.mvp.label",  descKey: "nav.panel.mvp.desc",  href: "/que-hacemos/mvp" },
+    { labelKey: "nav.panel.wm.label",   descKey: "nav.panel.wm.desc",   href: "/que-hacemos/gestion-patrimonial" },
+    { labelKey: "nav.panel.fo.label",   descKey: "nav.panel.fo.desc",   href: "/que-hacemos/family-office" },
   ],
   "metodologia": [
-    { label: "Nuestra Visión",         desc: "El principio rector de nuestra gestión",   href: "/metodologia/vision"   },
-    { label: "Ventajas Competitivas",  desc: "Lo que nos distingue en el mercado",        href: "/metodologia/ventajas" },
+    { labelKey: "nav.panel.vision.label",   descKey: "nav.panel.vision.desc",   href: "/metodologia/vision" },
+    { labelKey: "nav.panel.ventajas.label", descKey: "nav.panel.ventajas.desc", href: "/metodologia/ventajas" },
   ],
 };
 
 type PanelKey = keyof typeof PANELS;
 
-const NAV_ITEMS = [
-  { key: "quienes-somos", label: "Quiénes Somos" },
-  { key: "que-hacemos",   label: "Qué Hacemos"   },
-  { key: "metodologia",   label: "Metodología"   },
+const NAV_ITEMS: { key: string; labelKey: string; href?: string }[] = [
+  { key: "quienes-somos", labelKey: "nav.quienes" },
+  { key: "que-hacemos",   labelKey: "nav.quehacemos", href: "/servicios" },
+  { key: "metodologia",   labelKey: "nav.metodologia" },
 ];
 
 /* ── Component ────────────────────────────────────────────────── */
@@ -46,15 +45,13 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen]   = useState(false);
   const [gvvOpen, setGvvOpen]         = useState(false);
   const [mvpOpen, setMvpOpen]         = useState(false);
-  const [trOpen,  setTrOpen]          = useState(false);
   const [wmOpen,  setWmOpen]          = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const { lang, setLang } = useLanguage();
+  const { lang, setLang, t } = useLanguage();
 
   const modalActions: Record<string, () => void> = {
     gvv: () => setGvvOpen(true),
     mvp: () => setMvpOpen(true),
-    tr:  () => setTrOpen(true),
     wm:  () => setWmOpen(true),
   };
 
@@ -82,12 +79,12 @@ export function Navbar() {
   return (
     <>
       {/* ── Navbar bar ──────────────────────────────────────── */}
-      <nav className="bg-card/95 backdrop-blur-md border-b border-border fixed top-0 left-0 right-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 flex items-center h-28">
+      <nav className="bg-card/80 backdrop-blur-md border-b border-border fixed top-0 left-0 right-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 flex items-center h-16 md:h-24">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center mr-8 shrink-0" onClick={closeAll}>
-            <img src={cretumLogo} alt="Cretum Partners" className="h-24 w-auto" />
+          <Link to="/" className="flex items-center mr-8 shrink-0" onClick={() => { closeAll(); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
+            <img src={cretumLogo} alt="Cretum Partners" className="h-14 md:h-20 w-auto" />
           </Link>
 
           {/* Nav items centered */}
@@ -97,35 +94,42 @@ export function Navbar() {
               className="flex items-center px-4 h-full text-base font-medium text-foreground/60 hover:text-primary transition-colors duration-200 relative after:absolute after:bottom-0 after:left-4 after:right-4 after:h-[2px] after:bg-primary after:scale-x-0 after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300"
               onClick={closeAll}
             >
-              Inicio
+              {t("nav.inicio")}
             </Link>
 
-            {NAV_ITEMS.map((item) => (
-              <div
-                key={item.key}
-                className="h-full flex items-center"
-                onMouseEnter={() => openPanel(item.key as PanelKey)}
-                onMouseLeave={scheduleClose}
-              >
-                <button
-                  className={`flex items-center h-full px-4 text-base font-medium transition-colors duration-200 relative after:absolute after:bottom-0 after:left-4 after:right-4 after:h-[2px] after:bg-primary after:transition-transform after:duration-300 ${
-                    activePanel === item.key
-                      ? "text-primary after:scale-x-100 after:origin-left"
-                      : "text-foreground/60 hover:text-primary after:scale-x-0 after:origin-left hover:after:scale-x-100"
-                  }`}
+            {NAV_ITEMS.map((item) => {
+              const navClass = `flex items-center h-full px-4 text-base font-medium transition-colors duration-200 relative after:absolute after:bottom-0 after:left-4 after:right-4 after:h-[2px] after:bg-primary after:transition-transform after:duration-300 ${
+                activePanel === item.key
+                  ? "text-primary after:scale-x-100 after:origin-left"
+                  : "text-foreground/60 hover:text-primary after:scale-x-0 after:origin-left hover:after:scale-x-100"
+              }`;
+              return (
+                <div
+                  key={item.key}
+                  className="h-full flex items-center"
+                  onMouseEnter={() => openPanel(item.key as PanelKey)}
+                  onMouseLeave={scheduleClose}
                 >
-                  {item.label}
-                </button>
-              </div>
-            ))}
+                  {item.href ? (
+                    <Link to={item.href} className={navClass} onClick={closeAll}>
+                      {t(item.labelKey)}
+                    </Link>
+                  ) : (
+                    <button className={navClass}>
+                      {t(item.labelKey)}
+                    </button>
+                  )}
+                </div>
+              );
+            })}
 
             {/* Contacto — plain link, no panel */}
             <a
-              href="/#contacto"
+              href="/contacto"
               className="flex items-center h-full px-4 text-base font-medium text-foreground/60 hover:text-primary transition-colors duration-200 relative after:absolute after:bottom-0 after:left-4 after:right-4 after:h-[2px] after:bg-primary after:scale-x-0 after:origin-left hover:after:scale-x-100 after:transition-transform after:duration-300"
               onClick={closeAll}
             >
-              Contacto
+              {t("nav.contacto")}
             </a>
           </div>
 
@@ -151,7 +155,7 @@ export function Navbar() {
         className={`fixed left-0 right-0 z-40 bg-card/98 backdrop-blur-md border-b border-border shadow-xl transition-all duration-200 ${
           activePanel ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-1 pointer-events-none"
         }`}
-        style={{ top: "7rem" }}
+        style={{ top: "6rem" }}
         onMouseEnter={cancelClose}
         onMouseLeave={scheduleClose}
       >
@@ -161,31 +165,31 @@ export function Navbar() {
               {PANELS[activePanel].map((item) =>
                 "href" in item ? (
                   <Link
-                    key={item.label}
+                    key={item.labelKey}
                     to={item.href}
                     className="group flex flex-col px-8 py-5 hover:bg-primary/5 transition-colors duration-200 first:pl-2"
                     onClick={closeAll}
                   >
                     <h4 className="font-semibold text-foreground text-[1.2rem] mb-2.5 group-hover:text-primary transition-colors duration-200 leading-snug">
-                      {item.label}
+                      {t(item.labelKey)}
                     </h4>
-                    <p className="text-[0.9rem] text-muted-foreground leading-relaxed flex-1">{item.desc}</p>
+                    <p className="text-[0.9rem] text-muted-foreground leading-relaxed flex-1">{t(item.descKey)}</p>
                     <span className="inline-flex items-center gap-1.5 text-[0.8rem] font-medium text-primary border border-primary/40 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200 mt-5 px-3 py-1.5 rounded-md self-start">
-                      Ver más <ArrowRight className="w-3.5 h-3.5" />
+                      {t("nav.cta.vermas")} <ArrowRight className="w-3.5 h-3.5" />
                     </span>
                   </Link>
                 ) : (
                   <button
-                    key={item.label}
+                    key={item.labelKey}
                     onClick={() => { modalActions[item.action]?.(); closeAll(); }}
                     className="group flex flex-col w-full text-left px-8 py-5 hover:bg-primary/5 transition-colors duration-200 first:pl-2"
                   >
                     <h4 className="font-semibold text-foreground text-[1.2rem] mb-2.5 group-hover:text-primary transition-colors duration-200 leading-snug">
-                      {item.label}
+                      {t(item.labelKey)}
                     </h4>
-                    <p className="text-[0.9rem] text-muted-foreground leading-relaxed flex-1">{item.desc}</p>
+                    <p className="text-[0.9rem] text-muted-foreground leading-relaxed flex-1">{t(item.descKey)}</p>
                     <span className="inline-flex items-center gap-1.5 text-[0.8rem] font-medium text-primary border border-primary/40 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200 mt-5 px-3 py-1.5 rounded-md self-start">
-                      Ver más <ArrowRight className="w-3.5 h-3.5" />
+                      {t("nav.cta.vermas")} <ArrowRight className="w-3.5 h-3.5" />
                     </span>
                   </button>
                 )
@@ -197,52 +201,51 @@ export function Navbar() {
 
       {/* ── Mobile menu ─────────────────────────────────────── */}
       <div
-        className={`md:hidden fixed inset-x-0 bottom-0 z-[100] bg-[hsl(215,60%,30%)] px-8 py-10 flex flex-col gap-6 overflow-y-auto transition-all duration-300 ease-out ${
+        className={`md:hidden fixed inset-x-0 bottom-0 z-[100] bg-[hsl(215,60%,30%)] px-6 py-6 flex flex-col gap-4 overflow-y-auto transition-all duration-300 ease-out ${
           mobileOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none"
         }`}
-        style={{ top: "7rem" }}
+        style={{ top: "4rem" }}
       >
-        <Link to="/" className="block py-2 text-lg font-semibold text-white" onClick={closeAll}>Inicio</Link>
+        <Link to="/" className="block py-2 text-lg font-semibold text-white" onClick={closeAll}>{t("nav.inicio")}</Link>
 
         <div>
-          <p className="py-2 text-lg font-semibold text-white">Quiénes Somos</p>
+          <p className="py-2 text-lg font-semibold text-white">{t("nav.quienes")}</p>
           <div className="pl-5 mt-1 space-y-2 border-l-2 border-white/30">
-            <Link to="/quienes-somos/historia" className="block py-1.5 text-sm text-white/80 hover:text-white" onClick={closeAll}>Nuestra Historia</Link>
-            <Link to="/nuestro-equipo"          className="block py-1.5 text-sm text-white/80 hover:text-white" onClick={closeAll}>Nuestro Equipo</Link>
-            <Link to="/quienes-somos/socios"    className="block py-1.5 text-sm text-white/80 hover:text-white" onClick={closeAll}>Nuestros Socios Comerciales</Link>
+            <Link to="/quienes-somos/historia" className="block py-1.5 text-sm text-white/80 hover:text-white" onClick={closeAll}>{t("nav.panel.historia.label")}</Link>
+            <Link to="/nuestro-equipo"          className="block py-1.5 text-sm text-white/80 hover:text-white" onClick={closeAll}>{t("nav.panel.equipo.label")}</Link>
+            <Link to="/quienes-somos/socios"    className="block py-1.5 text-sm text-white/80 hover:text-white" onClick={closeAll}>{t("nav.panel.proveedores.label")}</Link>
           </div>
         </div>
 
         <div>
-          <p className="py-2 text-lg font-semibold text-white">Qué Hacemos</p>
+          <p className="py-2 text-lg font-semibold text-white">{t("nav.quehacemos")}</p>
           <div className="pl-5 mt-1 space-y-2 border-l-2 border-white/30">
-            <button className="block py-1.5 text-sm text-white/80 hover:text-white w-full text-left" onClick={() => { setMvpOpen(true); closeAll(); }}>Manhattan Venture Partners</button>
-            <button className="block py-1.5 text-sm text-white/80 hover:text-white w-full text-left" onClick={() => { setGvvOpen(true); closeAll(); }}>GVV Fund</button>
-            <button className="block py-1.5 text-sm text-white/80 hover:text-white w-full text-left" onClick={() => { setWmOpen(true);  closeAll(); }}>Gestión Patrimonial</button>
-            <button className="block py-1.5 text-sm text-white/80 hover:text-white w-full text-left" onClick={() => { setTrOpen(true);  closeAll(); }}>Trendrating</button>
+            <Link to="/que-hacemos/gvv" className="block py-1.5 text-sm text-white/80 hover:text-white" onClick={closeAll}>{t("nav.panel.gvv.label")}</Link>
+            <Link to="/que-hacemos/mvp" className="block py-1.5 text-sm text-white/80 hover:text-white" onClick={closeAll}>{t("nav.panel.mvp.label")}</Link>
+            <Link to="/que-hacemos/gestion-patrimonial" className="block py-1.5 text-sm text-white/80 hover:text-white" onClick={closeAll}>{t("nav.panel.wm.label")}</Link>
+            <Link to="/que-hacemos/family-office" className="block py-1.5 text-sm text-white/80 hover:text-white" onClick={closeAll}>{t("nav.panel.fo.label")}</Link>
           </div>
         </div>
 
         <div>
-          <p className="py-2 text-lg font-semibold text-white">Metodología</p>
+          <p className="py-2 text-lg font-semibold text-white">{t("nav.metodologia")}</p>
           <div className="pl-5 mt-1 space-y-2 border-l-2 border-white/30">
-            <Link to="/metodologia/vision"   className="block py-1.5 text-sm text-white/80 hover:text-white" onClick={closeAll}>Nuestra Visión</Link>
-            <Link to="/metodologia/ventajas" className="block py-1.5 text-sm text-white/80 hover:text-white" onClick={closeAll}>Ventajas Competitivas</Link>
+            <Link to="/metodologia/vision"   className="block py-1.5 text-sm text-white/80 hover:text-white" onClick={closeAll}>{t("nav.panel.vision.label")}</Link>
+            <Link to="/metodologia/ventajas" className="block py-1.5 text-sm text-white/80 hover:text-white" onClick={closeAll}>{t("nav.panel.ventajas.label")}</Link>
           </div>
         </div>
 
-        <a href="/#contacto" className="block py-2 text-lg font-semibold text-white" onClick={closeAll}>Contacto</a>
+        <a href="/contacto" className="block py-2 text-lg font-semibold text-white" onClick={closeAll}>{t("nav.contacto")}</a>
 
         <div className="flex gap-3 pt-4 border-t border-white/20 mt-auto">
-          <button onClick={() => setLang("en")} className={`w-10 h-10 rounded-full border border-white/50 text-sm font-semibold ${lang === "en" ? "bg-white text-[hsl(215,60%,30%)]" : "text-white"}`}>EN</button>
-          <button onClick={() => setLang("es")} className={`w-10 h-10 rounded-full border border-white/50 text-sm font-semibold ${lang === "es" ? "bg-white text-[hsl(215,60%,30%)]" : "text-white"}`}>ES</button>
+          <button onClick={() => setLang("en")} className={`w-11 h-11 rounded-full border border-white/50 text-sm font-semibold ${lang === "en" ? "bg-white text-[hsl(215,60%,30%)]" : "text-white"}`}>EN</button>
+          <button onClick={() => setLang("es")} className={`w-11 h-11 rounded-full border border-white/50 text-sm font-semibold ${lang === "es" ? "bg-white text-[hsl(215,60%,30%)]" : "text-white"}`}>ES</button>
         </div>
       </div>
 
       <Suspense fallback={null}>
         <GVVModal open={gvvOpen} onOpenChange={setGvvOpen} />
         <MVPModal open={mvpOpen} onOpenChange={setMvpOpen} />
-        <TrendratingModal open={trOpen} onOpenChange={setTrOpen} />
         <WealthManagementModal open={wmOpen} onOpenChange={setWmOpen} />
       </Suspense>
     </>

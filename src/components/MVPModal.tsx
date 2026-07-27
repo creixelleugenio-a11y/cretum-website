@@ -21,8 +21,6 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 // ── Static data (numbers, logos — not translated) ─────────────────────────
 
-const kpiValues = ["$1.7B", "70+", "~2.2x", "<4 años", "$2.7B", "1,100+"];
-
 const kpiKeys = [
   { labelKey: "mvp.kpi1.label", subKey: "mvp.kpi1.sub" },
   { labelKey: "mvp.kpi2.label", subKey: "mvp.kpi2.sub" },
@@ -189,6 +187,7 @@ export function MVPModal({ open, onOpenChange }: MVPModalProps) {
   const allCompanies = [...companies, ...companies];
 
   const platforms = platformDefs.map((p) => ({ ...p, desc: t(p.descKey) }));
+  const kpiValues = ["$2.6B", "70+", "~2.2x", t("mvp.kpi4.value"), "$2.7B", "1,100+"];
 
   return (
     <>
@@ -385,7 +384,7 @@ export function MVPModal({ open, onOpenChange }: MVPModalProps) {
 
           {/* ── Tech Sector Returns ───────────────────────────────────── */}
           <SectionTitle>{t("mvp.section.returns")}</SectionTitle>
-          <div className="h-48 w-full">
+          <div className="h-40 sm:h-48 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={sectorReturns} layout="vertical" barCategoryGap="20%">
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(214 20% 88%)" horizontal={false} />

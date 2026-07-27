@@ -14,6 +14,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { Landmark, GraduationCap, PiggyBank, Briefcase, HandHeart } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface WealthManagementModalProps {
@@ -35,7 +36,7 @@ const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?:
         <p className="font-semibold mb-1">{label}</p>
         {payload.map((p) => (
           <p key={p.name} style={{ color: p.name === "cretum" ? "#1d4ed8" : "#94a3b8" }}>
-            {p.name === "cretum" ? "Cretum" : "AFORES"}: {p.value > 0 ? "+" : ""}{p.value.toFixed(2)}%
+            {p.name === "cretum" ? "Cretum" : "Benchmark"}: {p.value > 0 ? "+" : ""}{p.value.toFixed(2)}%
           </p>
         ))}
       </div>
@@ -75,6 +76,14 @@ export function WealthManagementModal({ open, onOpenChange }: WealthManagementMo
     { title: t("wm.mon.performance.title"), desc: t("wm.mon.performance.desc") },
   ];
 
+  const clientesInstitucionales = [
+    { icon: Landmark,       label: t("wm.cliente.gobierno.label"),      desc: t("wm.cliente.gobierno.desc")      },
+    { icon: GraduationCap,  label: t("wm.cliente.universidades.label"), desc: t("wm.cliente.universidades.desc") },
+    { icon: PiggyBank,      label: t("wm.cliente.pensiones.label"),     desc: t("wm.cliente.pensiones.desc")     },
+    { icon: Briefcase,      label: t("wm.cliente.tesorerias.label"),    desc: t("wm.cliente.tesorerias.desc")    },
+    { icon: HandHeart,      label: t("wm.cliente.fundaciones.label"),   desc: t("wm.cliente.fundaciones.desc")   },
+  ];
+
   const structureNodes = [
     { label: t("wm.node.cliente.label"),    sub: t("wm.node.cliente.sub")    },
     { label: t("wm.node.fiduciaria.label"), sub: t("wm.node.fiduciaria.sub") },
@@ -110,7 +119,7 @@ export function WealthManagementModal({ open, onOpenChange }: WealthManagementMo
           {/* Metodología de Ejecución */}
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">{t("wm.section.ejecucion")}</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
               {execSteps.map((s) => (
                 <div key={s.step} className="bg-muted/40 border border-border rounded-lg p-3">
                   <p className="text-[10px] font-bold text-primary/60 mb-1">{s.step}</p>
@@ -124,7 +133,7 @@ export function WealthManagementModal({ open, onOpenChange }: WealthManagementMo
           {/* Monitoreo de Riesgos */}
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">{t("wm.section.monitoreo")}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
               {monItems.map((item) => (
                 <div key={item.title} className="border-l-2 border-primary/30 pl-3">
                   <p className="text-[11px] font-semibold text-foreground mb-0.5">{item.title}</p>
@@ -138,7 +147,7 @@ export function WealthManagementModal({ open, onOpenChange }: WealthManagementMo
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-1">{t("wm.section.afores")}</h3>
             <p className="text-[10px] text-muted-foreground mb-4">{t("wm.afores.subtitle")}</p>
-            <div className="h-52">
+            <div className="h-44 sm:h-52">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={aforesData} barCategoryGap="30%" barGap={4}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
@@ -153,7 +162,7 @@ export function WealthManagementModal({ open, onOpenChange }: WealthManagementMo
                   <Tooltip content={<CustomTooltip />} />
                   <Legend
                     formatter={(value) => (
-                      <span className="text-[10px]">{value === "cretum" ? "Cretum" : "AFORES"}</span>
+                      <span className="text-[10px]">{value === "cretum" ? "Cretum" : "Benchmark"}</span>
                     )}
                     wrapperStyle={{ fontSize: 10 }}
                   />
@@ -181,11 +190,30 @@ export function WealthManagementModal({ open, onOpenChange }: WealthManagementMo
           {/* Ventajas Competitivas */}
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">{t("wm.section.ventajas")}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
               {ventajas.map((v) => (
                 <div key={v.title} className="bg-primary/5 border border-primary/15 rounded-lg p-3">
                   <p className="text-xs font-bold text-primary mb-1">{v.title}</p>
                   <p className="text-[10px] text-muted-foreground leading-relaxed">{v.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Clientes Institucionales */}
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">{t("wm.section.clientes")}</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+              {clientesInstitucionales.map(({ icon: Icon, label, desc }) => (
+                <div
+                  key={label}
+                  className="group bg-background border border-border rounded-lg p-3 flex flex-col items-center text-center transition-all duration-200 hover:border-primary/40 hover:shadow-sm hover:-translate-y-0.5"
+                >
+                  <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center mb-2 transition-colors group-hover:bg-primary/15">
+                    <Icon className="w-4 h-4 text-primary" strokeWidth={1.75} />
+                  </div>
+                  <p className="text-[11px] font-semibold text-foreground leading-tight mb-1">{label}</p>
+                  <p className="text-[10px] text-muted-foreground leading-snug">{desc}</p>
                 </div>
               ))}
             </div>
@@ -211,7 +239,7 @@ export function WealthManagementModal({ open, onOpenChange }: WealthManagementMo
               ))}
             </div>
             <div className="mt-4 bg-primary/5 border border-primary/15 rounded-lg px-4 py-3 text-center">
-              <p className="text-xs font-semibold text-primary">Cretum Advisory Partners</p>
+              <p className="text-xs font-semibold text-primary">Cretum Capital & Advisory</p>
               <p className="text-[10px] text-muted-foreground mt-0.5">{t("wm.cretum.role")}</p>
             </div>
           </div>

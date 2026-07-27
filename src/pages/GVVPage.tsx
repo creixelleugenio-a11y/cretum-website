@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { TrendingUp, Shield, BarChart3, Download } from "lucide-react";
+import { GVVEngine } from "@/components/GVVEngine";
+import { GVVHero } from "@/components/GVVHero";
+import { Reveal } from "@/components/Reveal";
+import { Download } from "lucide-react";
+import gvvMarketImg from "@/assets/gvv-market-data.jpg";
+import gvvTowerImg from "@/assets/gvv-glass-tower.jpg";
 import {
   LineChart,
   Line,
@@ -19,6 +24,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { track } from "@/lib/analytics";
 
 // ── Static data (language-independent) ───────────────────────────────────
 
@@ -30,28 +36,36 @@ const annualComparison = [
   { year: "2025", gvv: 38.02, sp: 16.39 },
 ];
 
-const allocationValues = [29, 25, 11, 10, 8, 3, 3, 11];
+const allocationValues = [26.8, 24, 19, 10.5, 9.8, 3.4, 1.9, 4.6];
 
 const PIE_COLORS = ["#1e3a5f","#2563a8","#6b9dd1","#4a7fb5","#8fb8d8","#b8d4ea","#c5ddf0","#dceef8"];
 
 const currencies = [
-  { name: "USD",  value: 87.28 },
-  { name: "MXN",  value: 9.81  },
-  { name: "EUR",  value: 1.66  },
-  { name: "GBP",  value: 1.00  },
-  { name: "ASIA", value: 0.24  },
+  { name: "USD",  value: 85.5 },
+  { name: "MXN",  value: 10.6 },
+  { name: "GBP",  value: 2.2  },
+  { name: "EUR",  value: 1.6  },
+  { name: "ASIA", value: 0.2  },
 ];
 
 const monthLabelsEs = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
 const monthLabelsEn = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
 const monthlyReturns = [
+  { year:"2013", m:[null,null,null,null,null,null,2.65,-12.72,15.92,14.82,5.99,10.47],   ytd:39.61 },
+  { year:"2014", m:[-2.29,2.90,0.42,1.10,0.10,1.89,-1.51,10.32,-1.49,0.99,null,null],    ytd:12.56 },
+  { year:"2015", m:[null,null,null,null,null,null,null,null,null,null,null,null],       ytd:0     },
+  { year:"2016", m:[null,null,null,null,null,null,-0.40,3.01,-1.74,-0.97,1.77,2.31],     ytd:3.94  },
+  { year:"2017", m:[1.16,-0.61,1.92,-1.20,-5.84,5.57,1.13,3.79,-1.39,-0.86,0.78,-0.08],  ytd:3.99  },
+  { year:"2018", m:[3.05,3.20,4.38,-0.30,-2.63,1.13,1.28,0.70,-1.01,-1.01,2.47,-7.78],   ytd:2.90  },
+  { year:"2019", m:[1.60,0.98,-1.16,2.85,-5.78,4.73,-4.06,-4.49,0.37,-0.65,0.77,0.03],   ytd:-5.21 },
+  { year:"2020", m:[-0.03,-7.95,-1.11,-5.21,1.27,8.13,-7.47,4.50,15.44,-3.51,8.34,0.80], ytd:11.08 },
   { year:"2021", m:[7.70,5.16,-3.47,6.23,0.46,13.05,-8.71,-2.62,-5.46,1.57,-8.83,1.82],  ytd:4.51  },
   { year:"2022", m:[-3.17,-2.16,4.86,-9.41,3.98,-1.68,1.16,11.53,-1.94,1.94,2.76,0.22],  ytd:6.85  },
   { year:"2023", m:[4.88,1.29,1.55,-0.72,3.10,3.45,3.64,-1.53,-1.10,-3.05,5.81,3.17],    ytd:22.02 },
   { year:"2024", m:[0.29,2.88,2.76,-2.13,3.27,-2.19,0.69,2.27,4.67,-0.70,0.41,-2.46],    ytd:9.88  },
   { year:"2025", m:[5.18,0.90,-2.92,-0.27,3.19,3.06,3.88,3.03,9.13,1.49,4.35,2.11],      ytd:38.02 },
-  { year:"2026", m:[0.17,-2.70,null,null,null,null,null,null,null,null,null,null],          ytd:-2.53 },
+  { year:"2026", m:[0.17,-2.70,-2.73,7.27,2.93,null,null,null,null,null,null,null],      ytd:4.68  },
 ];
 
 const preIpoEs = [
@@ -145,6 +159,8 @@ const cumulativeData = [
   { l:"Sep '25", gvv:191.12, sp:174.01 },  { l:"Oct '25", gvv:193.97, sp:179.23 },
   { l:"Nov '25", gvv:202.41, sp:189.98 },  { l:"Dic '25", gvv:206.68, sp:184.66 },
   { l:"Ene '26", gvv:207.03, sp:190.20 },  { l:"Feb '26", gvv:201.43, sp:187.35 },
+  { l:"Mar '26", gvv:195.93, sp:178.11 },  { l:"Abr '26", gvv:210.18, sp:196.83 },
+  { l:"May '26", gvv:216.34, sp:207.18 },
 ];
 
 
@@ -168,36 +184,41 @@ function PieLabel({ cx, cy, midAngle, innerRadius, outerRadius, value }: {
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-5 mt-16 mb-8">
-      <div className="h-[1.5px] w-5 bg-primary" />
-      <h3 className="text-[11px] font-semibold uppercase tracking-widest text-primary whitespace-nowrap">{children}</h3>
-      <div className="h-[1.5px] flex-1 bg-border" />
-    </div>
+    <Reveal>
+      <div className="flex items-center gap-5 mt-20 mb-8">
+        <div className="h-[1.5px] w-5 bg-primary" />
+        <h3 className="text-[11px] font-semibold uppercase tracking-widest text-primary whitespace-nowrap">{children}</h3>
+        <div className="h-[1.5px] flex-1 bg-border" />
+      </div>
+    </Reveal>
   );
 }
 
 // ── Component ─────────────────────────────────────────────────────────────
 
 export default function GVVPage() {
-  const [docFile, setDocFile] = useState<{ name: string; file_url: string } | null>(null);
+  const [docFile, setDocFile] = useState<{ name: string; file_url: string } | null>({
+    name: "Cretum Letter - May 2026",
+    file_url: "/docs/Cretum-Letter-May-2026.pdf",
+  });
   const { t, lang } = useLanguage();
 
   const kpis = [
-    { label: t("gvv.kpi1.label"), value: "14.57%", sub: t("gvv.kpi1.sub") },
-    { label: t("gvv.kpi2.label"), value: "3.71x",  sub: t("gvv.kpi2.sub") },
-    { label: t("gvv.kpi3.label"), value: "0.69",   sub: t("gvv.kpi3.sub") },
-    { label: t("gvv.kpi4.label"), value: "4.76%",  sub: t("gvv.kpi4.sub") },
+    { label: t("gvv.kpi1.label"), value: "12.20%", sub: t("gvv.kpi1.sub") },
+    { label: t("gvv.kpi2.label"), value: "3.98x",  sub: t("gvv.kpi2.sub") },
+    { label: t("gvv.kpi3.label"), value: "0.74",   sub: t("gvv.kpi3.sub") },
+    { label: t("gvv.kpi4.label"), value: "4.63%",  sub: t("gvv.kpi4.sub") },
   ];
 
   const allocationData = [
-    { name: "Private Equity",                  value: 29 },
-    { name: t("gvv.alloc.acciones_usa"),        value: 25 },
-    { name: "Cash",                             value: 11 },
-    { name: t("gvv.alloc.acciones_mx"),         value: 10 },
-    { name: t("gvv.alloc.bonos_mx"),            value: 8  },
-    { name: t("gvv.alloc.bonos_usa"),           value: 3  },
-    { name: "Russell Strat.",                   value: 3  },
-    { name: t("gvv.alloc.otros"),               value: 11 },
+    { name: "Private Equity",                   value: 26.8 },
+    { name: t("gvv.alloc.acciones_usa"),        value: 24   },
+    { name: "Cash",                             value: 19   },
+    { name: lang === "es" ? "Algorítmicos" : "Algorithmic", value: 10.5 },
+    { name: t("gvv.alloc.acciones_mx"),         value: 9.8  },
+    { name: t("gvv.alloc.acciones_eur"),        value: 3.4  },
+    { name: lang === "es" ? "Acciones Asia" : "Asian Shares", value: 1.9 },
+    { name: t("gvv.alloc.otros"),               value: 4.6  },
   ];
 
   const monthLabels = lang === "es" ? monthLabelsEs : monthLabelsEn;
@@ -212,11 +233,11 @@ export default function GVVPage() {
   }));
 
   const structureItems = [
-    { label: t("gvv.struct.legal"),     value: "Cretum Partners GVV Fund, LP", sub: "Ontario, Canadá"      },
-    { label: "General Partner",         value: "Cretum Advisory LLC",           sub: "Delaware, USA"         },
-    { label: t("gvv.struct.custodian"), value: "Bank of New York Mellon",       sub: "USA Custodian"         },
-    { label: t("gvv.struct.nav"),       value: "NAV Consulting",                sub: "Investment statements" },
-    { label: "Auditor",                 value: "Deloitte",                      sub: "Tax advisor & services"},
+    { label: t("gvv.struct.legal"),     value: "Cretum Partners GVV Fund, LP", sub: lang === "es" ? "Ontario, Canadá" : "Ontario, Canada" },
+    { label: t("gvv.struct.gp"),        value: "Cretum Advisory LLC",           sub: "Delaware, USA"         },
+    { label: t("gvv.struct.custodian"), value: "Bank of New York Mellon",       sub: t("gvv.struct.custodian.sub") },
+    { label: t("gvv.struct.nav"),       value: "NAV Consulting",                sub: t("gvv.struct.nav.sub") },
+    { label: t("gvv.struct.auditor"),   value: "Deloitte",                      sub: t("gvv.struct.auditor.sub") },
     { label: t("gvv.struct.valued"),    value: "USD",                           sub: t("gvv.struct.multicurrency") },
   ];
 
@@ -229,61 +250,44 @@ export default function GVVPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-48 pb-40 bg-background">
-        <div className="max-w-6xl mx-auto px-8">
+      <main className="min-h-screen pb-40 bg-background">
 
-          {/* ── Header ──────────────────────────────────────────────────── */}
-          <div className="mb-6">
-            <h1 className="text-5xl md:text-6xl font-serif text-primary mb-4">{t("gvv.title")}</h1>
-            <p className="text-sm font-semibold text-muted-foreground tracking-widest uppercase">{t("gvv.subtitle")}</p>
+        {/* ── Visual Hero ─────────────────────────────────────────────── */}
+        <div data-track-section="gvv-hero"><GVVHero /></div>
+
+        {/* ── GVV Engine ──────────────────────────────────────────────── */}
+        <div className="max-w-6xl mx-auto px-8" data-track-section="gvv-engine">
+          <GVVEngine />
+        </div>
+
+        {/* ══ Group 1: Annual + Portfolio Value — right image ═══════════ */}
+        <div className="relative overflow-hidden" data-track-section="gvv-rendimientos">
+          <div className="hidden lg:block absolute right-0 top-20 w-[30%] h-[calc(100%-5rem)] pointer-events-none select-none">
+            <img src={gvvMarketImg} alt="" className="w-full h-full object-cover object-center grayscale opacity-[0.08] blur-[1px]" />
+            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-background/60 to-background" />
+            <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-background to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
           </div>
-          <p className="text-base text-muted-foreground leading-relaxed mt-6 mb-10">{t("gvv.desc")}</p>
+          <div className="max-w-6xl mx-auto px-8 relative z-10">
 
-          {/* ── 3 Strategy Pillars ──────────────────────────────────────── */}
-          <div className="flex flex-col sm:flex-row gap-4 mt-0">
-            {[
-              { icon: TrendingUp, title: t("gvv.growth"), desc: t("gvv.growth.desc") },
-              { icon: BarChart3,  title: t("gvv.value"),  desc: t("gvv.value.desc")  },
-              { icon: Shield,     title: t("gvv.hedge"),  desc: t("gvv.hedge.desc")  },
-            ].map((s) => (
-              <div key={s.title} className="flex items-center  gap-5 bg-secondary/60 border border-border rounded-md px-5 py-4 flex-1">
-                <s.icon className="w-5 h-5 text-primary shrink-0" />
-                <div>
-                  <p className="text-xs font-semibold text-foreground">{s.title}</p>
-                  <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">{s.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* ── KPI Metrics ─────────────────────────────────────────────── */}
-          <div className="grid grid-cols-4 gap-4 mt-10">
-            {kpis.map((k) => (
-              <div key={k.label} className="border-l-2 border-primary pl-5 py-3">
-                <p className="text-[30px] font-bold text-primary leading-none">{k.value}</p>
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mt-3 leading-snug">{k.label}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* ── Rendimiento Anual vs S&P 500 ────────────────────────────── */}
-          <SectionTitle>{t("gvv.section.annual")}</SectionTitle>
-
-          <div className="grid grid-cols-3 gap-4 mb-6">
-            <div className="bg-primary/5 border border-primary/15 rounded-lg px-5 py-4">
-              <p className="text-xl font-bold text-primary">+38.02%</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">GVV 2025 vs S&P +16.39%</p>
+            {/* ── Rendimiento Anual vs S&P 500 ──────────────────────────── */}
+            <SectionTitle>{t("gvv.section.annual")}</SectionTitle>
+            <div className="grid grid-cols-3 gap-4 mb-6">
+              {[
+                { val: "+38.02%", sub: "GVV 2025 vs S&P +16.39%" },
+                { val: "+6.85%",  sub: "GVV 2022 vs S&P −19.44%" },
+                { val: "~130%",   sub: t("gvv.hl3.sub") },
+              ].map((h, i) => (
+                <Reveal key={h.val} delay={i * 0.1} className="reveal-scale">
+                  <div className="bg-primary/5 border border-primary/15 rounded-lg px-5 py-4">
+                    <p className="text-xl font-bold text-primary">{h.val}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">{h.sub}</p>
+                  </div>
+                </Reveal>
+              ))}
             </div>
-            <div className="bg-primary/5 border border-primary/15 rounded-lg px-5 py-4">
-              <p className="text-xl font-bold text-primary">+6.85%</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">GVV 2022 vs S&P −19.44%</p>
-            </div>
-            <div className="bg-primary/5 border border-primary/15 rounded-lg px-5 py-4">
-              <p className="text-xl font-bold text-primary">~130%</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">{t("gvv.hl3.sub")}</p>
-            </div>
-          </div>
 
+          <Reveal>
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={annualComparison} barGap={4} barCategoryGap="30%">
@@ -311,9 +315,11 @@ export default function GVVPage() {
               <span className="w-3 h-3 rounded-sm inline-block" style={{ background: "hsl(214,30%,72%)" }} />S&P 500
             </span>
           </div>
+          </Reveal>
 
           {/* ── Valor del Portafolio — 5Y vs S&P 500 ────────────────────── */}
           <SectionTitle>{t("gvv.section.port_value")}</SectionTitle>
+          <Reveal>
           <div className="h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>
@@ -350,10 +356,26 @@ export default function GVVPage() {
               <span className="w-5 h-[2px] inline-block rounded" style={{ background: "hsl(214,30%,68%)", borderTop: "2px dashed hsl(214,30%,68%)" }} />S&P 500
             </span>
           </div>
+          </Reveal>
+
+          </div>{/* end max-w-6xl group 1 */}
+        </div>{/* end group 1 relative */}
+
+        {/* ══ Group 2: Portfolio Structure + Monthly + Institutional — left image ═ */}
+        <div className="relative overflow-hidden" data-track-section="gvv-composicion">
+          <div className="hidden lg:block absolute left-0 top-0 w-[30%] h-full pointer-events-none select-none">
+            <img src={gvvTowerImg} alt="" className="w-full h-full object-cover object-center grayscale opacity-[0.07]" />
+            <div className="absolute inset-0" style={{ background: "linear-gradient(to right, transparent 0%, transparent 10%, var(--background, white) 55%)" }} />
+            <div className="absolute top-0 right-0 bottom-0 w-24 bg-gradient-to-r from-transparent to-background" />
+            <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-background to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
+          </div>
+          <div className="max-w-6xl mx-auto px-8 relative z-10">
 
           {/* ── Portfolio Structure ──────────────────────────────────────── */}
           <SectionTitle>{t("gvv.section.port_struct")}</SectionTitle>
 
+          <Reveal>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Pie */}
             <div>
@@ -407,9 +429,11 @@ export default function GVVPage() {
               </div>
             </div>
           </div>
+          </Reveal>
 
           {/* ── Monthly Returns Table ────────────────────────────────────── */}
           <SectionTitle>{t("gvv.section.monthly")}</SectionTitle>
+          <Reveal>
           <div className="overflow-x-auto rounded-lg border border-border">
             <table className="w-full text-[11px]">
               <thead>
@@ -422,7 +446,9 @@ export default function GVVPage() {
                 </tr>
               </thead>
               <tbody>
-                {monthlyReturns.map((row) => (
+                {monthlyReturns.map((row) => {
+                  const hasData = row.m.some((v) => v !== null);
+                  return (
                   <tr key={row.year} className="border-t border-border hover:bg-secondary/30 transition-colors">
                     <td className="px-3 py-1.5 font-semibold text-foreground">{row.year}</td>
                     {row.m.map((v, i) => (
@@ -435,148 +461,57 @@ export default function GVVPage() {
                       </td>
                     ))}
                     <td className={`px-3 py-1.5 text-center font-bold ${
-                      row.ytd >= 0 ? "text-emerald-700 dark:text-emerald-400" : "text-red-600 dark:text-red-400"
+                      !hasData            ? "text-muted-foreground/30"
+                      : row.ytd >= 0      ? "text-emerald-700 dark:text-emerald-400"
+                                          : "text-red-600 dark:text-red-400"
                     }`}>
-                      {row.ytd > 0 ? "+" : ""}{row.ytd.toFixed(2)}%
+                      {!hasData ? "—" : `${row.ytd > 0 ? "+" : ""}${row.ytd.toFixed(2)}%`}
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
+          </Reveal>
           <p className="text-[10px] text-muted-foreground mt-1.5">{t("gvv.table.disclaimer")}</p>
 
-          {/* ── Growth: Pre-IPO ──────────────────────────────────────────── */}
-          <SectionTitle>{t("gvv.section.preipo")}</SectionTitle>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {preIpo.map((p) => (
-              <div key={p.name} className="border border-border rounded-xl p-6 bg-background hover:border-primary/40 transition-colors">
-                <p className="text-base font-bold text-foreground">{p.name}</p>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wide mt-0.5">{t("gvv.preipo.founded")} {p.year}</p>
-                <div className="mt-2 space-y-1">
-                  <p className="text-[11px] text-muted-foreground"><span className="font-semibold text-foreground">{t("gvv.preipo.focus")}</span> {p.focus}</p>
-                  <p className="text-[11px] text-muted-foreground"><span className="font-semibold text-foreground">{t("gvv.preipo.product")}</span> {p.product}</p>
-                  <p className="text-[11px] text-muted-foreground"><span className="font-semibold text-foreground">{t("gvv.preipo.diff")}</span> {p.diff}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-4">
-            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">{t("gvv.preipo.success")}</p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {successStories.map((s) => (
-                <div key={s.name} className="bg-secondary/40 rounded-lg p-5 text-center border border-border">
-                  <p className="font-bold text-sm text-foreground">{s.name}</p>
-                  <div className="mt-1.5 space-y-0.5">
-                    <p className="text-[10px] text-muted-foreground">{t("gvv.preipo.entry")} <span className="font-semibold text-foreground">{s.entry}</span></p>
-                    <p className="text-[10px] text-muted-foreground">IPO: <span className="font-semibold text-foreground">{s.ipo}</span></p>
-                    <p className="text-[10px] text-muted-foreground">{t("gvv.preipo.cap")} <span className="font-semibold text-primary">{s.cap}</span></p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* ── Value: Realized + Active ─────────────────────────────────── */}
-          <SectionTitle>{t("gvv.section.realized")}</SectionTitle>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-            {realizedReturns.map((r) => (
-              <div key={r.name} className="border border-border rounded-lg p-5 text-center bg-background">
-                <p className="text-xl font-bold text-primary">{r.ret}</p>
-                <p className="text-[11px] text-muted-foreground mt-4">{r.name}</p>
-                <p className="text-[10px] text-emerald-600 font-medium mt-0.5">{t("gvv.realized.label")}</p>
-              </div>
-            ))}
-          </div>
-
-          <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">{t("gvv.active.title")}</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {activePositions.map((p) => (
-              <div key={p.name} className="border border-border rounded-xl p-6">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="font-bold text-sm text-foreground">{p.name}</p>
-                  <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-semibold">{t("gvv.active.badge")}</span>
-                </div>
-                <p className="text-[11px] text-muted-foreground leading-relaxed mb-2">{p.thesis}</p>
-                <div className="grid grid-cols-3 gap-1">
-                  {p.metrics.map(([k, v]) => (
-                    <div key={k} className="bg-secondary/50 rounded-md px-2 py-1.5 text-center">
-                      <p className="text-[10px] text-muted-foreground">{k}</p>
-                      <p className="text-[11px] font-semibold text-foreground">{v}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* ── Volatility: Algorithmic Strategies ──────────────────────── */}
-          <SectionTitle>{t("gvv.section.algo")}</SectionTitle>
-          <div className="bg-primary/5 border border-primary/15 rounded-lg px-6 py-5 mb-3 text-[12px] text-foreground leading-relaxed">
-            {t("gvv.algo.desc")}
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {algoStrategies.map((s) => (
-              <div key={s.name} className="border border-border rounded-xl p-6 bg-background">
-                <p className="font-bold text-sm text-foreground mb-5">{s.name}</p>
-                <div className="space-y-1.5">
-                  <div className="flex justify-between">
-                    <span className="text-[11px] text-muted-foreground">{t("gvv.algo.strategy_cagr")}</span>
-                    <span className="text-[11px] font-bold text-primary">{s.cagr.toFixed(2)}%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[11px] text-muted-foreground">CAGR Benchmark</span>
-                    <span className="text-[11px] text-muted-foreground">{s.bench.toFixed(2)}%</span>
-                  </div>
-                  <div className="flex justify-between border-t border-border pt-1.5 mt-4">
-                    <span className="text-[11px] font-semibold text-foreground">{t("gvv.algo.alpha")}</span>
-                    <span className="text-[11px] font-bold text-emerald-600">{s.alpha}</span>
-                  </div>
-                </div>
-                <div className="grid grid-cols-3 gap-1 mt-6">
-                  {[["2024", s.y24],["2025", s.y25],["2026 YTD", s.y26]].map(([yr, val]) => (
-                    <div key={yr} className="bg-secondary/50 rounded-md px-1 py-1.5 text-center">
-                      <p className="text-[9px] text-muted-foreground">{yr}</p>
-                      <p className="text-[10px] font-semibold text-foreground">{val}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
           {/* ── Institutional Structure ──────────────────────────────────── */}
+
           <SectionTitle>{t("gvv.section.inst")}</SectionTitle>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {structureItems.map((item) => (
-              <div key={item.label} className="border border-border rounded-lg px-3 py-3 bg-background">
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{item.label}</p>
-                <p className="text-sm font-semibold text-foreground mt-0.5">{item.value}</p>
-                <p className="text-[11px] text-muted-foreground">{item.sub}</p>
-              </div>
+            {structureItems.map((item, i) => (
+              <Reveal key={item.label} delay={i * 0.08} className="reveal-scale">
+                <div className="border border-border rounded-lg px-3 py-3 bg-background">
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{item.label}</p>
+                  <p className="text-sm font-semibold text-foreground mt-0.5">{item.value}</p>
+                  <p className="text-[11px] text-muted-foreground">{item.sub}</p>
+                </div>
+              </Reveal>
             ))}
           </div>
 
-          {/* ── Philosophy + Download ────────────────────────────────────── */}
-          <div className="bg-primary/5 rounded-lg px-5 py-4 border border-primary/15 mt-5">
-            <p className="text-sm text-foreground leading-relaxed italic">{t("gvv.philosophy")}</p>
-          </div>
+          </div>{/* end max-w-6xl group 2 */}
+        </div>{/* end group 2 relative */}
 
+        {/* ── Philosophy + Download ────────────────────────────────────── */}
+        <div className="max-w-6xl mx-auto px-8" data-track-section="gvv-descarga">
+          <Reveal>
           {docFile ? (
             <a href={docFile.file_url} target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-md text-sm font-semibold hover:opacity-90 transition-opacity w-full justify-center mt-4">
+              onClick={() => track("descarga-gvv", { documento: docFile.name })}
+              className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-md text-sm font-semibold hover:opacity-90 transition-opacity w-full justify-center mt-16">
               <Download className="w-4 h-4" />
               {t("gvv.download")}
             </a>
           ) : (
             <button disabled
-              className="flex items-center gap-2 px-6 py-3 bg-muted text-muted-foreground rounded-md text-sm font-medium w-full justify-center cursor-not-allowed mt-4">
+              className="flex items-center gap-2 px-6 py-3 bg-muted text-muted-foreground rounded-md text-sm font-medium w-full justify-center cursor-not-allowed mt-16">
               <Download className="w-4 h-4" />
               {t("gvv.noDoc")}
             </button>
           )}
-
+          </Reveal>
         </div>
       </main>
       <Footer />

@@ -1,9 +1,13 @@
 import { useState, useRef } from "react";
+import mvpTechImg from "@/assets/mvp-tech-globe.jpg";
+import mvpCityImg from "@/assets/mvp-financial-city.jpg";
+import { MVPHero } from "@/components/MVPHero";
+import { Reveal } from "@/components/Reveal";
 import {
   Dialog,
   DialogContent,
 } from "@/components/ui/dialog";
-import { Building2, Globe, FileText, TrendingUp, Shield, Search, Briefcase, ChevronDown, X } from "lucide-react";
+import { Building2, Globe, FileText, TrendingUp, Search, Briefcase, ChevronDown, X } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -19,19 +23,9 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { MVPWorldMap } from "@/components/MVPWorldMap";
+import { track } from "@/lib/analytics";
 
 // ── Static data (numbers, logos — not translated) ─────────────────────────
-
-const kpiValues = ["$1.7B", "70+", "~2.2x", "<4 años", "$2.7B", "1,100+"];
-
-const kpiKeys = [
-  { labelKey: "mvp.kpi1.label", subKey: "mvp.kpi1.sub" },
-  { labelKey: "mvp.kpi2.label", subKey: "mvp.kpi2.sub" },
-  { labelKey: "mvp.kpi3.label", subKey: "mvp.kpi3.sub" },
-  { labelKey: "mvp.kpi4.label", subKey: "mvp.kpi4.sub" },
-  { labelKey: "mvp.kpi5.label", subKey: "mvp.kpi5.sub" },
-  { labelKey: "mvp.kpi6.label", subKey: "mvp.kpi6.sub" },
-];
 
 const platformDefs = [
   { icon: Briefcase,  title: "Principal", descKey: "mvp.platform.principal.desc" },
@@ -117,7 +111,7 @@ const companiesBase: CompanyBase[] = [
   { section: "current", name: "Addepar",           logo: "/logos/mvp/addepar.png",         founded: "2009", services: ["Portfolio Analytics", "Reporting", "Data Aggregation", "Client Portal", "Risk Analysis"] },
   { section: "current", name: "Agility Robotics",  logo: "/logos/mvp/agility-robotics.png",founded: "2015", services: ["Bipedal Robots", "Warehouse Automation", "Robot-as-a-Service", "Manufacturing", "Logistics"] },
   { section: "current", name: "Automattic",        logo: "/logos/mvp/automattic.png",      founded: "2005", services: ["WordPress.com", "WooCommerce", "Tumblr", "Jetpack", "Akismet"] },
-  { section: "current", name: "Base Power",        logo: "/logos/mvp/base-power.png",      founded: "2022", services: ["Home Batteries", "Grid Services", "Energy Storage", "Virtual Power Plant", "Demand Response"] },
+  { section: "current", name: "Base Power",        logo: "/logos/mvp/base-power-v2.png",      founded: "2022", services: ["Home Batteries", "Grid Services", "Energy Storage", "Virtual Power Plant", "Demand Response"] },
   { section: "current", name: "BlueVoyant",        logo: "/logos/mvp/bluevoyant.png",      founded: "2017", services: ["Supply Chain Defense", "Internal Defense", "MSSP", "Threat Intelligence", "SOC-as-a-Service"] },
   { section: "current", name: "Bolt",              logo: "/logos/mvp/bolt.png",            founded: "2014", services: ["One-Click Checkout", "Fraud Detection", "Payment Processing", "Merchant Network", "SSO Commerce"] },
   { section: "current", name: "Capella Space",     logo: "/logos/mvp/capella-space.png",   founded: "2016", services: ["SAR Imagery", "Satellite Tasking", "Geospatial Analytics", "Defense Intelligence", "Environmental Monitoring"] },
@@ -307,19 +301,20 @@ const companyTextsEn: Record<string, CompanyTexts> = {
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 
-function AccordionSection({ title, subtitle, index, children, defaultOpen = false, className = "mt-4" }: {
+function AccordionSection({ title, subtitle, index, children, defaultOpen = false, className = "mt-4", "data-track-section": trackSection }: {
   title: React.ReactNode;
   subtitle?: React.ReactNode;
   index?: number;
   children: React.ReactNode;
   defaultOpen?: boolean;
   className?: string;
+  "data-track-section"?: string;
 }) {
   const [open, setOpen] = useState(defaultOpen);
   const contentRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className={className}>
+    <div className={className} data-track-section={trackSection}>
       <button
         onClick={() => setOpen((v) => !v)}
         className={`w-full flex items-center gap-4 py-4 px-5 rounded-lg border transition-colors duration-200 hover:bg-muted/30 ${open ? "border-primary bg-white" : "border-border bg-secondary/40"}`}
@@ -348,43 +343,58 @@ function AccordionSection({ title, subtitle, index, children, defaultOpen = fals
   );
 }
 
+const PREVIEW = 8;
+
 function CompanyGrid({ companies, onSelect }: { companies: SelectedCompany[]; onSelect: (c: SelectedCompany) => void }) {
+  const [expanded, setExpanded] = useState(false);
   const COLS = 4;
-  const remainder = companies.length % COLS || COLS;
-  const lastRowStart = companies.length - remainder;
+  const visible = expanded ? companies : companies.slice(0, PREVIEW);
+  const remainder = visible.length % COLS || COLS;
+  const lastRowStart = visible.length - remainder;
   return (
-    <div className="border border-border/40 rounded-2xl overflow-hidden">
-      <div className="grid grid-cols-2 md:grid-cols-4">
-        {companies.map((company, i) => {
-          const isLastCol = (i + 1) % COLS === 0 || i === companies.length - 1;
-          const isLastRow = i >= lastRowStart;
-          return (
-            <button
-              key={company.name}
-              onClick={() => onSelect(company)}
-              className={[
-                "text-left group cursor-pointer",
-                !isLastCol ? "border-r border-border/40" : "",
-                !isLastRow ? "border-b border-border/40" : "",
-              ].join(" ")}
-            >
-              <div
-                className="flex items-center justify-center h-36 px-10 group-hover:bg-muted/30 transition-colors duration-200"
-                style={{ backgroundColor: company.darkBg ? "#111827" : "transparent" }}
+    <div>
+      <div className="border border-border/40 rounded-2xl overflow-hidden">
+        <div className="grid grid-cols-2 md:grid-cols-4">
+          {visible.map((company, i) => {
+            const isLastCol = (i + 1) % COLS === 0 || i === visible.length - 1;
+            const isLastRow = i >= lastRowStart;
+            return (
+              <button
+                key={company.name}
+                onClick={() => onSelect(company)}
+                className={[
+                  "text-left group cursor-pointer",
+                  !isLastCol ? "border-r border-border/40" : "",
+                  !isLastRow ? "border-b border-border/40" : "",
+                ].join(" ")}
               >
-                <img
-                  src={company.logo}
-                  alt={company.name}
-                  className="w-36 h-10 object-contain"
-                />
-              </div>
-              <div className="border-t border-border/40 px-6 py-5 bg-muted/20 group-hover:bg-muted/40 transition-colors duration-200 flex items-center justify-center">
-                <p className="text-[0.95rem] font-semibold text-foreground/70 text-center">{company.name}</p>
-              </div>
-            </button>
-          );
-        })}
+                <div
+                  className="flex items-center justify-center h-36 px-10 group-hover:bg-muted/30 transition-colors duration-200"
+                  style={{ backgroundColor: company.darkBg ? "#111827" : "transparent" }}
+                >
+                  <img
+                    src={company.logo}
+                    alt={company.name}
+                    className="w-36 h-10 object-contain"
+                  />
+                </div>
+                <div className="border-t border-border/40 px-6 py-5 bg-muted/20 group-hover:bg-muted/40 transition-colors duration-200 flex items-center justify-center">
+                  <p className="text-[0.95rem] font-semibold text-foreground/70 text-center">{company.name}</p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
+      {companies.length > PREVIEW && (
+        <button
+          onClick={() => setExpanded((v) => !v)}
+          className="mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-lg border border-border/40 text-sm text-muted-foreground hover:bg-muted/30 hover:text-foreground transition-colors duration-200"
+        >
+          <span>{expanded ? `Ver menos` : `Ver ${companies.length - PREVIEW} más`}</span>
+          <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`} />
+        </button>
+      )}
     </div>
   );
 }
@@ -401,6 +411,7 @@ const gpTeam: GPMember[] = [
   { name: "Bradley Fishman", role: "Managing Partner & General Partner", img: "/team/mvp-bradley-fishman.png", bio: "En Manhattan Venture Partners lidera desarrollo de negocio en el lado comprador y vendedor. Anteriormente fue Partner en Citizen VC y VP en Gentry Financial Holding Group, donde captó capital para oportunidades de venture capital primario y secundario. Fue CEO y fundador de una startup de tecnología móvil empresarial. Inició su carrera en Morgan Stanley Smith Barney. Es licenciado en Marketing Empresarial por la Universidad de Maryland y posee licencias FINRA Series 7, 66 y 31." },
   { name: "Adam Ingram",     role: "Chief Operating Officer",            img: "/team/mvp-adam-ingram.png",     bio: "Con más de 15 años liderando operaciones, finanzas e iniciativas estratégicas en venture capital, startups tecnológicas y servicios financieros. Antes de MVP fue VP de Operaciones en EquityBee, donde supervisó administración de fondos, operaciones de inversión y cumplimiento normativo. Inició su carrera en PwC. Es licenciado en Contabilidad por la Universidad de Tel Aviv y cuenta con un Executive MBA de la Haas School of Business de UC Berkeley." },
   { name: "SooMan Wolffs",   role: "General Partner",                    img: "/team/mvp-sooman-wolffs.png",   bio: "Se incorporó a Manhattan Venture Partners en 2019 desde San Francisco, enfocado en due diligence, estructuración de inversiones y el negocio de Secondary as a Service. Anteriormente fue miembro fundador del equipo de valuaciones de Carta, convirtiéndola en el mayor proveedor de valuaciones en mercados privados. Previamente trabajó en Smartbiz Loans, fintech especializada en préstamos SBA. Es licenciado en Finanzas por Santa Clara University, cuenta con un MS en Finanzas de la Universidad de San Francisco y posee licencias FINRA Series 7, 63 y 79." },
+  { name: "Alejandro Creixell", role: "Latam Representative",            img: "/team/d1.jpg",                  bio: "25 años en el sector financiero al frente de Cretum Partners, firma que administra ~$2B USD. Fundó Pretmex y Lendera, y co-fundó Bulltick, destacado broker dealer en Latinoamérica. Representación de MVP para Latam desde 2016. Estudios en Columbia e Instituto de Finanzas de Nueva York. Consejero en Afore Pensionissste y Afianzadora Aserta." },
 ];
 
 export default function MVPPage() {
@@ -422,48 +433,60 @@ export default function MVPPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-48 pb-40 bg-background">
-        <div className="max-w-6xl mx-auto px-8">
+      <main className="min-h-screen pb-40 bg-background relative overflow-hidden">
+
+        {/* ── Visual Hero ──────────────────────────────────────────────── */}
+        <div data-track-section="mvp-hero"><MVPHero /></div>
+
+        {/* Right image: tech globe */}
+        <div className="hidden lg:block absolute right-0 top-[30%] w-[30%] h-[40%] pointer-events-none select-none">
+          <img src={mvpTechImg} alt="" className="w-full h-full object-cover object-center grayscale opacity-[0.08] blur-[1px]" />
+          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-background/60 to-background" />
+          <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-background to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
+        </div>
+
+        {/* Left image: financial city */}
+        <div className="hidden lg:block absolute left-0 top-[58%] w-[30%] h-[35%] pointer-events-none select-none">
+          <img src={mvpCityImg} alt="" className="w-full h-full object-cover object-center grayscale opacity-[0.07]" />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to right, transparent 0%, transparent 10%, var(--background, white) 55%)" }} />
+          <div className="absolute top-0 right-0 bottom-0 w-24 bg-gradient-to-r from-transparent to-background" />
+          <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-background to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
+        </div>
+
+        <div className="max-w-6xl mx-auto px-8 relative z-10">
           <div className="w-full min-w-0">
 
-            {/* ── Header ────────────────────────────────────────────────── */}
-            <h1 className="text-5xl md:text-6xl font-serif text-primary mb-4">{t("mvp.title")}</h1>
-            <p className="text-sm font-semibold text-muted-foreground tracking-widest uppercase mb-6">{t("mvp.subtitle")}</p>
-            <p className="text-base text-muted-foreground leading-relaxed mb-10">{t("mvp.desc")}</p>
-
-            {/* ── KPI Metrics ───────────────────────────────────────────── */}
-            <div className="grid grid-cols-3 lg:grid-cols-6 gap-4">
-              {kpiKeys.map((k, i) => (
-                <div key={k.labelKey} className="border-l-2 border-primary pl-5 py-3">
-                  <p className="text-[30px] font-bold text-primary leading-none">{kpiValues[i]}</p>
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mt-3 leading-snug">{t(k.labelKey)}</p>
-                </div>
-              ))}
-            </div>
 
             {/* ── Leadership Team ───────────────────────────────────────── */}
-            <div className="mt-16">
-              <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground mb-10">{t("mvp.leadership.title")}</h2>
-              <div className="grid grid-cols-5 gap-6">
-                {gpTeam.map((gp) => (
-                  <div key={gp.name} className="flex flex-col items-center text-center cursor-pointer" onClick={() => setSelectedGP(gp)}>
-                    <div className="w-36 h-36 rounded-full overflow-hidden border-2 border-primary/20 mb-4 shrink-0">
-                      <img src={gp.img} alt={gp.name} className="w-full h-full object-cover object-top" />
+            <div className="mt-20" data-track-section="mvp-equipo">
+              <Reveal><h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground mb-10">{t("mvp.leadership.title")}</h2></Reveal>
+              <div className="grid grid-cols-3 lg:grid-cols-6 gap-6">
+                {gpTeam.map((gp, i) => (
+                  <Reveal key={gp.name} delay={i * 0.1} className="reveal-scale">
+                    <div className="flex flex-col items-center text-center cursor-pointer" onClick={() => setSelectedGP(gp)}>
+                      <div className="w-36 h-36 rounded-full overflow-hidden border-2 border-primary/20 mb-4 shrink-0">
+                        <img src={gp.img} alt={gp.name} className="w-full h-full object-cover object-top" />
+                      </div>
+                      <h4 className="font-bold text-foreground text-sm md:text-base leading-tight">{gp.name}</h4>
+                      <p className="text-xs text-muted-foreground/70 mt-1">{gp.role}</p>
                     </div>
-                    <h4 className="font-bold text-foreground text-sm md:text-base leading-tight">{gp.name}</h4>
-                    <p className="text-xs text-muted-foreground/70 mt-1">{gp.role}</p>
-                  </div>
+                  </Reveal>
                 ))}
               </div>
             </div>
 
             {/* ── Global Reach Map ──────────────────────────────────────── */}
-            <div className="mt-16">
+            <Reveal>
+            <div className="mt-20" data-track-section="mvp-mapa">
               <MVPWorldMap />
             </div>
+            </Reveal>
 
             {/* ── Recognition ───────────────────────────────────────────── */}
-            <AccordionSection index={1} title={t("mvp.section.recognition")} subtitle={t("mvp.section.recognition.sub")} className="mt-16">
+            <Reveal>
+            <AccordionSection index={1} title={t("mvp.section.recognition")} subtitle={t("mvp.section.recognition.sub")} className="mt-20">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className="border border-border rounded-xl p-6 bg-background">
                   <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">Bloomberg</p>
@@ -500,9 +523,11 @@ export default function MVPPage() {
                 </div>
               </div>
             </AccordionSection>
+            </Reveal>
 
             {/* ── Fund Performance ──────────────────────────────────────── */}
-            <AccordionSection index={2} title={t("mvp.section.trackrecord")} subtitle={t("mvp.section.trackrecord.sub")}>
+            <Reveal>
+            <AccordionSection data-track-section="mvp-track-record" index={2} title={t("mvp.section.trackrecord")} subtitle={t("mvp.section.trackrecord.sub")}>
               <div className="bg-primary/5 border border-primary/15 rounded-lg px-4 py-2.5 mb-4 text-[12px] text-foreground">
                 {t("mvp.trackrecord.desc")}
               </div>
@@ -569,9 +594,11 @@ export default function MVPPage() {
                 </div>
               </div>
             </AccordionSection>
+            </Reveal>
 
             {/* ── Secondary Market Volume ────────────────────────────────── */}
-            <AccordionSection index={3} title={t("mvp.section.secondary")} subtitle={t("mvp.section.secondary.sub")}>
+            <Reveal>
+            <AccordionSection data-track-section="mvp-mercado-secundario" index={3} title={t("mvp.section.secondary")} subtitle={t("mvp.section.secondary.sub")}>
               <div className="grid grid-cols-3 gap-4 mb-6">
                 <div className="bg-primary/5 border border-primary/15 rounded-lg px-5 py-4">
                   <p className="text-xl font-bold text-primary">$69B</p>
@@ -607,8 +634,10 @@ export default function MVPPage() {
               </div>
               <p className="text-[10px] text-muted-foreground mt-4">{t("mvp.source.iv")}</p>
             </AccordionSection>
+            </Reveal>
 
             {/* ── Tech Sector Returns ───────────────────────────────────── */}
+            <Reveal>
             <AccordionSection index={4} title={t("mvp.section.returns")} subtitle={t("mvp.section.returns.sub")}>
               <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -631,19 +660,24 @@ export default function MVPPage() {
               </div>
               <p className="text-[10px] text-muted-foreground mt-4">{t("mvp.source.spdr")}</p>
             </AccordionSection>
+            </Reveal>
 
             {/* ── Portfolio — Current ────────────────────────────────────── */}
-            <div className="mt-8">
+            <Reveal>
+            <div className="mt-20" data-track-section="mvp-portafolio">
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary mb-2">{t("mvp.section.portfolio")}</p>
               <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-5">{t("mvp.section.portfolio.current")}</p>
-              <CompanyGrid companies={currentCompanies} onSelect={setSelected} />
+              <CompanyGrid companies={currentCompanies} onSelect={(c) => { track("mvp-empresa", { empresa: c.name, grupo: "current" }); setSelected(c); }} />
             </div>
+            </Reveal>
 
             {/* ── Portfolio — Exits ──────────────────────────────────────── */}
-            <div className="mt-10">
+            <Reveal>
+            <div className="mt-10" data-track-section="mvp-exits">
               <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-5">{t("mvp.section.portfolio.exits")}</p>
-              <CompanyGrid companies={exitCompanies} onSelect={setSelected} />
+              <CompanyGrid companies={exitCompanies} onSelect={(c) => { track("mvp-empresa", { empresa: c.name, grupo: "exits" }); setSelected(c); }} />
             </div>
+            </Reveal>
 
           </div>
         </div>

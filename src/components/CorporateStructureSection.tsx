@@ -5,14 +5,32 @@ import { TrendingUp, Landmark, Activity, Rocket, ArrowRight } from "lucide-react
 import buildingImg from "@/assets/building-corporate.jpg";
 
 /* ── Card data ────────────────────────────────────────────────── */
-const CARDS = [
+type Bilingual = { es: string; en: string };
+type CardBullet = { label: Bilingual; text: Bilingual };
+type Card = {
+  icon: typeof Rocket;
+  name: string;
+  split: boolean;
+  span?: number;
+  subgrid?: boolean;
+  nameMb?: string;
+  bullets: CardBullet[];
+};
+
+const CARDS: Card[] = [
   {
     icon: Rocket,
     name: "Manhattan Venture Partners",
     split: false,
     nameMb: "mb-10",
     bullets: [
-      { label: "",    text: "Invirtiendo en empresas tecnológicas de alto potencial en etapas pre-IPO, aprovechando nuestra red para identificar tendencias clave de forma anticipada" },
+      {
+        label: { es: "", en: "" },
+        text: {
+          es: "Invirtiendo en empresas tecnológicas de alto potencial en etapas pre-IPO, aprovechando nuestra red para identificar tendencias clave de forma anticipada.",
+          en: "Investing in high-potential technology companies at pre-IPO stages, leveraging our network to identify key trends ahead of the market.",
+        },
+      },
     ],
   },
   {
@@ -22,28 +40,52 @@ const CARDS = [
     span: 2,
     subgrid: true,
     bullets: [
-      { label: "Growth",     text: "Late-Stage Secondaries & Pre-IPO Investments" },
-      { label: "Value",      text: "Value Investing Thesis with Margin of Safety" },
-      { label: "Volatility", text: "Delta Hedging and Alpha Generation Strategies" },
+      {
+        label: { es: "Growth", en: "Growth" },
+        text: {
+          es: "Inversiones en secundarios de etapa tardía y pre-IPO.",
+          en: "Late-stage secondaries & pre-IPO investments.",
+        },
+      },
+      {
+        label: { es: "Value", en: "Value" },
+        text: {
+          es: "Tesis de value investing con margen de seguridad.",
+          en: "Value investing thesis with margin of safety.",
+        },
+      },
+      {
+        label: { es: "Volatility", en: "Volatility" },
+        text: {
+          es: "Estrategias de delta hedging y generación de alpha.",
+          en: "Delta hedging and alpha generation strategies.",
+        },
+      },
     ],
   },
   {
     icon: Landmark,
-    name: "Gestión Patrimonial",
+    name: "Wealth Management",
     split: false,
     nameMb: "mb-10",
     bullets: [
-      { label: "", text: "Construyendo portafolios estructurados a partir de análisis macro y fundamental, con ejecución disciplinada y cobertura en periodos de volatilidad." },
+      {
+        label: { es: "", en: "" },
+        text: {
+          es: "Construyendo portafolios estructurados a partir de análisis macro y fundamental, con ejecución disciplinada y cobertura en periodos de volatilidad.",
+          en: "Building structured portfolios based on macro and fundamental analysis, with disciplined execution and hedging during periods of volatility.",
+        },
+      },
     ],
   },
 ];
 
 /* ── Main section ─────────────────────────────────────────────── */
 export function CorporateStructureSection() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   return (
-    <section id="estructura" className="pt-16 pb-40 bg-background relative overflow-hidden">
+    <section id="estructura" className="pt-10 md:pt-16 pb-20 md:pb-40 bg-background relative overflow-hidden">
       {/* Building image — right edge of section, behind everything */}
       <div className="hidden lg:block absolute inset-0 pointer-events-none select-none">
         <img src={buildingImg} alt="" className="absolute left-0 top-0 w-[35%] h-full object-cover object-center grayscale opacity-[0.07]" style={{ WebkitMaskImage: "radial-gradient(ellipse 80% 80% at 20% 50%, black 30%, transparent 100%)", maskImage: "radial-gradient(ellipse 80% 80% at 20% 50%, black 30%, transparent 100%)" }} />
@@ -53,7 +95,7 @@ export function CorporateStructureSection() {
       <div className="max-w-7xl mx-auto px-8 relative">
 
         <Reveal>
-          <h2 className="text-3xl md:text-4xl font-serif text-foreground mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-foreground mb-12">
             {t("about.structure.title")}
           </h2>
         </Reveal>
@@ -69,7 +111,8 @@ export function CorporateStructureSection() {
             · "Privado" heading inside left box, "Público" inside right box
             · CTA at bottom-left inside Privado region
         ══════════════════════════════════════════════════════════ */}
-        <div className="hidden lg:block relative overflow-visible">
+        <div className="overflow-x-auto -mx-8 px-8 lg:mx-0 lg:px-0 lg:overflow-visible pb-3 lg:pb-0">
+        <div className="relative min-w-[900px] lg:min-w-0">
 
           {/* Left — Privado (covers 0–37 % from right) */}
           <div
@@ -87,10 +130,10 @@ export function CorporateStructureSection() {
           <div className="absolute z-20" style={{ top: "4rem", left: "2rem" }}>
             <Reveal>
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary mb-2 block">
-                Capital Privado
+                {lang === "es" ? "Capital Privado" : "Private Markets"}
               </p>
-              <h3 className="text-[2.2rem] font-serif text-foreground leading-none">
-                Privado
+              <h3 className="text-2xl lg:text-[2.2rem] font-serif text-foreground leading-none">
+                {lang === "es" ? "Privado" : "Private"}
               </h3>
             </Reveal>
           </div>
@@ -99,19 +142,19 @@ export function CorporateStructureSection() {
           <div className="absolute z-20 text-right" style={{ top: "1.25rem", right: "2rem" }}>
             <Reveal delay={0.15}>
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary mb-2 block">
-                Mercados Públicos
+                {lang === "es" ? "Mercados Públicos" : "Public Markets"}
               </p>
-              <h3 className="text-[2.2rem] font-serif text-foreground leading-none">
-                Público
+              <h3 className="text-2xl lg:text-[2.2rem] font-serif text-foreground leading-none">
+                {lang === "es" ? "Público" : "Public"}
               </h3>
             </Reveal>
           </div>
 
           {/* Spacer: clears both labels before the card row */}
-          <div style={{ height: "7rem" }} aria-hidden />
+          <div className="h-20 lg:h-28" aria-hidden />
 
           {/* Cards — 4 equal columns, z above both boxes */}
-          <div className="relative z-10 grid gap-6 px-8 pt-8 pb-0 items-stretch" style={{ gridTemplateColumns: "3fr 2fr 2fr 3fr" }}>
+          <div className="relative z-10 grid gap-4 lg:gap-6 px-6 lg:px-8 pt-6 lg:pt-8 pb-0 items-stretch" style={{ gridTemplateColumns: "3fr 2fr 2fr 3fr" }}>
             {CARDS.map((card, i) => (
               <div key={i} style={"span" in card ? { gridColumn: `span ${card.span}` } : undefined} className="h-full">
               <Reveal delay={i * 0.08} className="h-full">
@@ -119,26 +162,26 @@ export function CorporateStructureSection() {
                   /* GVV card: title centered inside, horizontal divider, 3 columns */
                   <div className="border border-border/40 rounded-xl flex flex-col h-full overflow-hidden" style={{ background: "hsl(215,60%,95%)" }}>
                     {/* Header: icon + title centered */}
-                    <div className="flex items-center justify-center gap-3 px-8 pt-7 pb-5">
+                    <div className="flex items-center justify-center gap-3 px-6 lg:px-8 pt-5 lg:pt-7 pb-4 lg:pb-5">
                       <card.icon className="w-8 h-8 text-primary shrink-0" strokeWidth={1.4} />
                       <p className="font-semibold text-[1.05rem] text-foreground leading-snug">{card.name}</p>
                     </div>
                     {/* Horizontal divider */}
                     <div className="h-px bg-foreground/15 mx-6" />
                     {/* 3 columns */}
-                    <div className="grid grid-cols-3 flex-1 pt-2 pb-16">
+                    <div className="grid grid-cols-3 flex-1 pt-2 pb-8 lg:pb-16">
                       {card.bullets.map((b, bi) => (
-                        <div key={b.label} className="relative px-6 flex flex-col gap-9">
+                        <div key={b.label[lang]} className="relative px-6 flex flex-col gap-9">
                           {bi > 0 && <div className="absolute left-0 top-0 bottom-0 w-px bg-foreground/15" />}
-                          <span className="font-semibold text-[1rem] text-foreground/80">{b.label}</span>
-                          <span className="text-[0.85rem] text-muted-foreground leading-relaxed">{b.text}</span>
+                          <span className="font-semibold text-[1rem] text-foreground/80">{b.label[lang]}</span>
+                          <span className="text-[0.85rem] text-muted-foreground leading-relaxed">{b.text[lang]}</span>
                         </div>
                       ))}
                     </div>
                   </div>
                 ) : (
                 <div
-                  className="border border-border/40 rounded-xl px-8 pt-8 pb-16 flex flex-col h-full"
+                  className="border border-border/40 rounded-xl px-6 lg:px-8 pt-6 lg:pt-8 pb-8 lg:pb-16 flex flex-col h-full"
                   style={{ background: "var(--background)" }}
                 >
                   {card.split ? (
@@ -146,9 +189,9 @@ export function CorporateStructureSection() {
                       {/* Left side: Growth */}
                       <ul className="space-y-2.5 flex-1 pt-[5.5rem]">
                         <li className="text-[0.8rem] text-muted-foreground leading-snug">
-                          <span className="font-semibold text-foreground/70">{card.bullets[0].label}</span>
+                          <span className="font-semibold text-foreground/70">{card.bullets[0].label[lang]}</span>
                           {" · "}
-                          {card.bullets[0].text}
+                          {card.bullets[0].text[lang]}
                         </li>
                       </ul>
                       {/* Right side: Icon + Name + Value + Volatility */}
@@ -157,10 +200,10 @@ export function CorporateStructureSection() {
                         <p className="font-semibold text-[1rem] text-foreground leading-snug mb-4">{card.name}</p>
                         <ul className="space-y-2.5 mt-20">
                           {card.bullets.slice(1).map((b) => (
-                            <li key={b.label} className="text-[0.8rem] text-muted-foreground leading-snug">
-                              <span className="font-semibold text-foreground/70">{b.label}</span>
+                            <li key={b.label[lang]} className="text-[0.8rem] text-muted-foreground leading-snug">
+                              <span className="font-semibold text-foreground/70">{b.label[lang]}</span>
                               {" · "}
-                              {b.text}
+                              {b.text[lang]}
                             </li>
                           ))}
                         </ul>
@@ -174,10 +217,10 @@ export function CorporateStructureSection() {
                       </div>
                       <div className="grid grid-cols-3 flex-1">
                         {card.bullets.map((b, bi) => (
-                          <div key={b.label} className="relative px-5 flex flex-col gap-2">
+                          <div key={b.label[lang]} className="relative px-5 flex flex-col gap-2">
                             {bi > 0 && <div className="absolute left-0 top-2 bottom-2 w-px bg-foreground/15" />}
-                            <span className="font-semibold text-[1rem] text-foreground/80">{b.label}</span>
-                            <span className="text-[0.85rem] text-muted-foreground leading-relaxed">{b.text}</span>
+                            <span className="font-semibold text-[1rem] text-foreground/80">{b.label[lang]}</span>
+                            <span className="text-[0.85rem] text-muted-foreground leading-relaxed">{b.text[lang]}</span>
                           </div>
                         ))}
                       </div>
@@ -187,10 +230,10 @@ export function CorporateStructureSection() {
                       <card.icon className="w-8 h-8 text-primary mb-5" strokeWidth={1.4} />
                       <p className={`font-semibold text-[1.05rem] text-foreground leading-snug ${"nameMb" in card ? card.nameMb : "mb-4"}`}>{card.name}</p>
                       <ul className="space-y-3">
-                        {card.bullets.map((b) => (
-                          <li key={b.label} className="text-[0.85rem] text-muted-foreground leading-relaxed">
-                            {b.label && <><span className="font-semibold text-foreground/70">{b.label}</span>{" · "}</>}
-                            {b.text}
+                        {card.bullets.map((b, bi) => (
+                          <li key={bi} className="text-[0.85rem] text-muted-foreground leading-relaxed">
+                            {b.label[lang] && <><span className="font-semibold text-foreground/70">{b.label[lang]}</span>{" · "}</>}
+                            {b.text[lang]}
                           </li>
                         ))}
                       </ul>
@@ -216,62 +259,6 @@ export function CorporateStructureSection() {
             </Reveal>
           </div>
         </div>
-
-        {/* ══ TABLET ══════════════════════════════════════════════ */}
-        <div className="hidden md:grid lg:hidden grid-cols-2 gap-5">
-          <div className="border-2 border-dashed border-foreground/20 rounded-2xl p-6 space-y-4">
-            <p className="text-[9px] font-bold uppercase tracking-widest text-primary">Capital Privado</p>
-            {CARDS.slice(0, 3).map((card, i) => (
-              <div key={i} className="border border-border/40 rounded-xl p-4 flex flex-col gap-3">
-                <card.icon className="w-5 h-5 text-primary" strokeWidth={1.4} />
-                <p className="font-semibold text-sm text-foreground">{card.name}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">{t(card.descKey)}</p>
-              </div>
-            ))}
-          </div>
-          <div className="border-2 border-dashed border-foreground/20 rounded-2xl p-6 space-y-4">
-            <p className="text-[9px] font-bold uppercase tracking-widest text-primary">Mercados Públicos</p>
-            {CARDS.slice(3).map((card, i) => (
-              <div key={i} className="border border-border/40 rounded-xl p-4 flex flex-col gap-3">
-                <card.icon className="w-5 h-5 text-primary" strokeWidth={1.4} />
-                <p className="font-semibold text-sm text-foreground">{card.name}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">{t(card.descKey)}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ══ MOBILE ══════════════════════════════════════════════ */}
-        <div className="md:hidden space-y-3">
-          <div className="border-2 border-dashed border-foreground/20 rounded-2xl p-5 space-y-3">
-            <p className="text-[9px] font-bold uppercase tracking-widest text-primary">Capital Privado</p>
-            {CARDS.slice(0, 3).map((card, i) => (
-              <div key={i} className="border border-border/40 rounded-xl p-4 flex flex-col gap-2">
-                <card.icon className="w-5 h-5 text-primary" strokeWidth={1.4} />
-                <p className="font-semibold text-sm text-foreground">{card.name}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">{t(card.descKey)}</p>
-              </div>
-            ))}
-          </div>
-          <div className="border-2 border-dashed border-foreground/20 rounded-2xl p-5 space-y-3">
-            <p className="text-[9px] font-bold uppercase tracking-widest text-primary">Mercados Públicos</p>
-            {CARDS.slice(3).map((card, i) => (
-              <div key={i} className="border border-border/40 rounded-xl p-4 flex flex-col gap-2">
-                <card.icon className="w-5 h-5 text-primary" strokeWidth={1.4} />
-                <p className="font-semibold text-sm text-foreground">{card.name}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">{t(card.descKey)}</p>
-              </div>
-            ))}
-          </div>
-          <div className="flex justify-start pt-1">
-            <Link
-              to="/servicios"
-              className="inline-flex items-center gap-2 text-xs text-foreground/35 hover:text-primary transition-colors duration-200"
-            >
-              <ArrowRight className="w-3.5 h-3.5" />
-              {t("home.kpi.cta")}
-            </Link>
-          </div>
         </div>
 
       </div>

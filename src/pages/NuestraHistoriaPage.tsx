@@ -3,13 +3,14 @@ import { Footer } from "@/components/Footer";
 import { Reveal } from "@/components/Reveal";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import buildingImg from "@/assets/building-corporate.jpg";
 
 const aumDataBase = [
-  { nameKey: null,                    staticName: "Venture Capital US", value: 25000 },
-  { nameKey: "aum.mandatos_gov",      staticName: "",                   value: 5900  },
-  { nameKey: "aum.credito_privado",   staticName: "",                   value: 550   },
-  { nameKey: null,                    staticName: "HF GVV",             value: 350   },
-  { nameKey: "aum.mandatos_familias", staticName: "",                   value: 310   },
+  { nameKey: null,                    staticName: "MVP",                value: 2600 },
+  { nameKey: "aum.tesorerias",        staticName: "",                   value: 150  },
+  { nameKey: "aum.credito_privado",   staticName: "",                   value: 40   },
+  { nameKey: "aum.mandatos_familias", staticName: "",                   value: 25   },
+  { nameKey: null,                    staticName: "GVV",                value: 20   },
 ];
 
 const COLORS = ["hsl(214,60%,65%)", "hsl(214,50%,72%)", "hsl(214,40%,78%)", "hsl(214,30%,84%)", "hsl(214,20%,90%)"];
@@ -25,8 +26,16 @@ export default function NuestraHistoriaPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-56 pb-40 bg-background">
-        <div className="max-w-6xl mx-auto px-8">
+      <main className="min-h-screen pt-16 sm:pt-32 md:pt-56 pb-16 md:pb-40 bg-background relative overflow-hidden">
+        {/* Decorative image — right side */}
+        <div className="hidden lg:block absolute right-0 top-[5%] w-[28%] h-[85%] pointer-events-none select-none">
+          <img src={buildingImg} alt="" className="w-full h-full object-cover object-center grayscale opacity-[0.13]" />
+          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-background/60 to-background" />
+          <div className="absolute top-0 left-0 right-0 h-32" style={{ background: "linear-gradient(to bottom, hsl(var(--background)) 0%, transparent 100%)" }} />
+          <div className="absolute bottom-0 left-0 right-0 h-32" style={{ background: "linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)" }} />
+        </div>
+
+        <div className="max-w-6xl mx-auto px-8 relative z-10">
           <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start">
 
             {/* Left: label + title + description + mission */}
@@ -37,7 +46,7 @@ export default function NuestraHistoriaPage() {
                 </p>
               </Reveal>
               <Reveal delay={0.15}>
-                <h1 className="text-5xl md:text-6xl font-serif text-foreground mb-8 leading-tight">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-foreground mb-8 leading-tight">
                   {t("about.title")}
                 </h1>
               </Reveal>
@@ -71,7 +80,7 @@ export default function NuestraHistoriaPage() {
                     {t("tr_section.aum.title")}
                   </h3>
                   <div className="flex gap-6 items-center">
-                    <div className="w-32 h-32 shrink-0">
+                    <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 shrink-0">
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                           <Pie data={aumData} cx="50%" cy="50%" innerRadius={30} outerRadius={58} dataKey="value" stroke="none">
@@ -80,7 +89,7 @@ export default function NuestraHistoriaPage() {
                           <Tooltip
                             contentStyle={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, color: "#1e293b", fontSize: 12 }}
                             separator=""
-                            formatter={(v: number) => [`$${v.toLocaleString("es-MX")} MDP`, ""]}
+                            formatter={(v: number) => [`$${v.toLocaleString("es-MX")} M USD`, ""]}
                           />
                         </PieChart>
                       </ResponsiveContainer>
@@ -90,7 +99,7 @@ export default function NuestraHistoriaPage() {
                         <div key={d.name} className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: COLORS[i] }} />
                           <p className="text-xs text-white/50 leading-tight flex-1">{d.name}</p>
-                          <p className="text-xs font-bold text-white shrink-0">${d.value.toLocaleString("es-MX")} MDP</p>
+                          <p className="text-xs font-bold text-white shrink-0">${d.value.toLocaleString("es-MX")} M USD</p>
                         </div>
                       ))}
                     </div>
@@ -100,8 +109,8 @@ export default function NuestraHistoriaPage() {
                 {/* Stats grid */}
                 <div className="grid grid-cols-2 gap-x-0 gap-y-6 mt-6">
                   {[
-                    { num: "+12",      desc: t("about.stat.years")    },
-                    { num: "+$32,110", desc: t("about.stat.aum")      },
+                    { num: "+25",      desc: t("about.stat.years")    },
+                    { num: "+$2,835",  desc: t("about.stat.aum")      },
                     { num: "+400",     desc: t("about.stat.investors") },
                     { num: t("about.stat.one"), desc: t("about.stat.philosophy") },
                   ].map((s, i) => (
@@ -119,7 +128,7 @@ export default function NuestraHistoriaPage() {
             </div>
 
           </div>
-        </div>
+        </div>{/* end max-w-6xl */}
       </main>
       <Footer />
     </>

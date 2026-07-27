@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Cretum Partners — Contactos</title>
+<link rel="icon" href="/favicon.ico">
+<style>
+  :root {
+    --navy: #20446b;
+    --navy-light: #2d5a8a;
+    --bg: #f7f8fa;
+    --card: #ffffff;
+    --text: #1a2332;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 520px; margin: 0 auto; padding: 28px 18px 60px; }
+  .header { text-align: center; margin-bottom: 28px; }
+  .brand { font-family: "Times New Roman", Times, serif; font-size: 28px; letter-spacing: 8px; color: var(--navy); font-weight: 700; }
+  .sub { font-size: 11px; letter-spacing: 6px; color: var(--navy-light); margin-top: 6px; text-transform: uppercase; }
+  .divider { height: 2px; background: var(--navy); opacity: .15; margin: 18px auto 22px; max-width: 200px; border-radius: 2px; }
+  .label { text-align: center; font-size: 13px; letter-spacing: 4px; color: var(--navy); text-transform: uppercase; margin-bottom: 22px; font-weight: 500; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 3px rgba(15,30,60,0.04), 0 1px 2px rgba(15,30,60,0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .row { display: flex; gap: 14px; align-items: center; }
+  .avatar {
+    width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0;
+    background: #e5e7eb center/cover no-repeat;
+    box-shadow: inset 0 0 0 2px rgba(32,68,107,0.15);
+  }
+  .ident { flex: 1; min-width: 0; }
+  .name { font-size: 17px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .role { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .actions.full { grid-template-columns: 1fr; }
+  .btn {
+    appearance: none; -webkit-appearance: none;
+    border: 1px solid var(--border);
+    background: #fff; color: var(--navy);
+    padding: 11px 12px;
+    border-radius: 10px;
+    font-size: 13px; font-weight: 600;
+    text-decoration: none;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .15s, border-color .15s;
+  }
+  .btn:active { background: #f3f4f6; }
+  .btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .btn-primary {
+    background: var(--navy); color: #fff; border-color: var(--navy);
+  }
+  .btn-primary:active { background: var(--navy-light); }
+
+  .footer { text-align: center; color: var(--muted); font-size: 11px; margin-top: 32px; letter-spacing: .5px; }
+  .footer a { color: var(--navy); text-decoration: none; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="brand">CRETUM</div>
+      <div class="sub">Partners</div>
+      <div class="divider"></div>
+      <div class="label">Contactos</div>
+    </div>
+
+    <div id="contacts"></div>
+
+    <div class="footer">
+      <a href="https://cretumpartners.com">cretumpartners.com</a>
+    </div>
+  </div>
+
+<script>
+const CONTACTS = [
+  { id: "creixell",   name: "Alejandro Creixell",   role: "Founder & CEO",          email: "acreixell@cretumpartners.com",  tel: "5591998054",   photo: "https://cretumpartners.com/team/d1.jpg" },
+  { id: "ontiveros",  name: "Alejandro Ontiveros",  role: "Chief Sales Officer",    email: "aontiveros@cretumpartners.com", tel: "5585749717",   photo: "https://cretumpartners.com/team/o1.jpg" },
+  { id: "magana",     name: "Alejandro Magaña",     role: "Sales Executive Latam",  email: "amagana@cretumpartners.com",    tel: "5554368825",   photo: "https://cretumpartners.com/team/o5.jpg" },
+  { id: "samaniego",  name: "Melissa Samaniego",    role: "Head of Sales",          email: "msamaniego@cretumpartners.com", tel: "5548908509",   photo: "https://cretumpartners.com/team/o7.jpg" },
+  { id: "narchi",     name: "Armando Narchi",       role: "Sales Executive Latam",  email: "anarchi@cretumpartners.com",    tel: "5613006500",   photo: "https://cretumpartners.com/team/o4.jpg" },
+];
+
+function fmtTel(d) {
+  return d.replace(/(\d{2})(\d{4})(\d{4})/, "$1 $2 $3");
+}
+function telLink(d) { return "+52" + d; }
+
+function vcard(c) {
+  const [first, ...rest] = c.name.split(" ");
+  const last = rest.join(" ");
+  return [
+    "BEGIN:VCARD",
+    "VERSION:3.0",
+    "N:" + last + ";" + first + ";;;",
+    "FN:" + c.name,
+    "ORG:Cretum Partners",
+    "TITLE:" + c.role,
+    "EMAIL;TYPE=WORK:" + c.email,
+    "TEL;TYPE=CELL:+52" + c.tel,
+    "PHOTO;VALUE=URI:" + c.photo,
+    "URL:https://cretumpartners.com",
+    "END:VCARD",
+    ""
+  ].join("\r\n");
+}
+
+function downloadVcard(c) {
+  const blob = new Blob([vcard(c)], { type: "text/vcard;charset=utf-8" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href = url;
+  a.download = c.id + ".vcf";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 0);
+}
+
+const ICONS = {
+  mail:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
+  phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92Z"/></svg>',
+  save:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>'
+};
+
+const container = document.getElementById("contacts");
+CONTACTS.forEach(c => {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `
+    <div class="row">
+      <div class="avatar" style="background-image:url('${c.photo}')"></div>
+      <div class="ident">
+        <div class="name">${c.name}</div>
+        <div class="role">${c.role}</div>
+      </div>
+    </div>
+    <div class="actions">
+      <a class="btn" href="mailto:${c.email}">${ICONS.mail} Email</a>
+      <a class="btn" href="tel:${telLink(c.tel)}">${ICONS.phone} ${fmtTel(c.tel)}</a>
+    </div>
+    <div class="actions full">
+      <button class="btn btn-primary" data-id="${c.id}">${ICONS.save} Guardar contacto</button>
+    </div>
+  `;
+  card.querySelector("button[data-id]").addEventListener("click", () => downloadVcard(c));
+  container.appendChild(card);
+});
+</script>
+</body>
+</html>

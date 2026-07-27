@@ -12,11 +12,11 @@ const aforesData = [
 ];
 
 const aumDataBase = [
-  { nameKey: null,                    staticName: "Venture Capital US", value: 25000, pct: "77.8%" },
-  { nameKey: "aum.mandatos_gov",      staticName: "",                   value: 5900,  pct: "18.4%" },
-  { nameKey: "aum.credito_privado",   staticName: "",                   value: 550,   pct: "1.7%"  },
-  { nameKey: null,                    staticName: "HF GVV",             value: 350,   pct: "1.1%"  },
-  { nameKey: "aum.mandatos_familias", staticName: "",                   value: 310,   pct: "1.0%"  },
+  { nameKey: null,                    staticName: "MVP",                value: 2600, pct: "91.7%" },
+  { nameKey: "aum.tesorerias",        staticName: "",                   value: 150,  pct: "5.3%"  },
+  { nameKey: "aum.credito_privado",   staticName: "",                   value: 40,   pct: "1.4%"  },
+  { nameKey: "aum.mandatos_familias", staticName: "",                   value: 25,   pct: "0.9%"  },
+  { nameKey: null,                    staticName: "GVV",                value: 20,   pct: "0.7%"  },
 ];
 
 const COLORS = ["hsl(214,60%,65%)", "hsl(214,50%,72%)", "hsl(214,40%,78%)", "hsl(214,30%,84%)", "hsl(214,20%,90%)"];
@@ -108,13 +108,13 @@ export function TrackRecordSection() {
           {/* Stats principales */}
           <div className="grid grid-cols-2 gap-8 items-center">
             <Stat target={3802}  suffix="%"      label={t("tr_section.stat3.label")} delay={0.9} />
-            <Stat prefix="+$" target={32110} suffix=" MDP" label={t("tr_section.stat1.label")} delay={0.75} />
+            <Stat prefix="+$" target={1860} suffix=" M USD" label={t("tr_section.stat1.label")} delay={0.75} />
           </div>
         </div>
 
         {/* ── Fila 2: Stats secundarios ───────────────────── */}
         <div className="grid grid-cols-3 gap-6 py-8 border-y border-white/10 mb-8">
-          <Stat prefix="+" target={12}  suffix={t("tr_section.stat2.suffix")} label={t("tr_section.stat2.label")} delay={0.9}  size="sm" />
+          <Stat prefix="+" target={25}  suffix={t("tr_section.stat2.suffix")} label={t("tr_section.stat2.label")} delay={0.9}  size="sm" />
           <Stat prefix="+$" target={370} suffix=" MDD"  label={t("tr_section.stat4.label")} delay={0.9}  size="sm" />
           <Stat prefix="+" target={400} suffix=""       label={t("tr_section.stat5.label")} delay={0.9}  size="sm" />
         </div>
@@ -162,7 +162,7 @@ export function TrackRecordSection() {
                       </Pie>
                       <Tooltip
                         contentStyle={{ background: "#1e293b", border: "none", borderRadius: 8, color: "#fff", fontSize: 12 }}
-                        formatter={(v: number) => [`$${v.toLocaleString("es-MX")} MDP`, ""]}
+                        formatter={(v: number) => [`$${v.toLocaleString("es-MX")} M USD`, ""]}
                       />
                     </PieChart>
                   </ResponsiveContainer>

@@ -7,12 +7,12 @@ import { Footer } from "@/components/Footer";
 
 const Index = () => {
   return (
-    <div className="h-screen overflow-y-auto [scroll-padding-top:7rem]">
+    <div className="h-screen overflow-y-auto [scroll-padding-top:4rem] md:[scroll-padding-top:7rem]">
       <Navbar />
-      <HeroSection />
-      <HomeKPIsSection />
-      <MethodologySection />
-      <CorporateStructureSection />
+      <div data-track-section="inicio-hero"><HeroSection /></div>
+      <div data-track-section="inicio-kpis"><HomeKPIsSection /></div>
+      <div data-track-section="inicio-metodologia"><MethodologySection /></div>
+      <div data-track-section="inicio-estructura"><CorporateStructureSection /></div>
       <Footer />
     </div>
   );

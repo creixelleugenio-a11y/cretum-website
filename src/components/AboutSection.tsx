@@ -3,11 +3,11 @@ import { Reveal } from "@/components/Reveal";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
 const aumDataBase = [
-  { nameKey: null,                    staticName: "Venture Capital US", value: 25000, pct: "77.8%" },
-  { nameKey: "aum.mandatos_gov",      staticName: "",                   value: 5900,  pct: "18.4%" },
-  { nameKey: "aum.credito_privado",   staticName: "",                   value: 550,   pct: "1.7%"  },
-  { nameKey: null,                    staticName: "HF GVV",             value: 350,   pct: "1.1%"  },
-  { nameKey: "aum.mandatos_familias", staticName: "",                   value: 310,   pct: "1.0%"  },
+  { nameKey: null,                    staticName: "MVP",                value: 2600, pct: "91.7%" },
+  { nameKey: "aum.tesorerias",        staticName: "",                   value: 150,  pct: "5.3%"  },
+  { nameKey: "aum.credito_privado",   staticName: "",                   value: 40,   pct: "1.4%"  },
+  { nameKey: "aum.mandatos_familias", staticName: "",                   value: 25,   pct: "0.9%"  },
+  { nameKey: null,                    staticName: "GVV",                value: 20,   pct: "0.7%"  },
 ];
 
 const COLORS = ["hsl(214,60%,65%)", "hsl(214,50%,72%)", "hsl(214,40%,78%)", "hsl(214,30%,84%)", "hsl(214,20%,90%)"];
@@ -21,7 +21,7 @@ export function AboutSection() {
   }));
 
   return (
-    <section id="nosotros" className="pt-28 pb-40 bg-muted/20">
+    <section id="nosotros" className="pt-16 md:pt-28 pb-20 md:pb-40 bg-muted/20">
       <div className="max-w-6xl mx-auto px-6 w-full">
 
           <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start">
@@ -34,7 +34,7 @@ export function AboutSection() {
                 </p>
               </Reveal>
               <Reveal delay={0.45}>
-                <h2 className="text-5xl md:text-6xl font-serif text-foreground mb-8 max-w-xl leading-tight">
+                <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif text-foreground mb-8 max-w-xl leading-tight">
                   {t("about.title")}
                 </h2>
               </Reveal>
@@ -66,8 +66,8 @@ export function AboutSection() {
                   <h3 className="font-serif text-base text-white mb-5">
                     {t("tr_section.aum.title")}
                   </h3>
-                  <div className="flex gap-6 items-center">
-                    <div className="w-32 h-32 shrink-0">
+                  <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-center">
+                    <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 shrink-0">
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                           <Pie data={aumData} cx="50%" cy="50%" innerRadius={30} outerRadius={58} dataKey="value" stroke="none">
@@ -76,7 +76,7 @@ export function AboutSection() {
                           <Tooltip
                             contentStyle={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, color: "#1e293b", fontSize: 12 }}
                             separator=""
-                            formatter={(v: number) => [`$${v.toLocaleString("es-MX")} MDP`, ""]}
+                            formatter={(v: number) => [`$${v.toLocaleString("es-MX")} M USD`, ""]}
                           />
                         </PieChart>
                       </ResponsiveContainer>
@@ -86,7 +86,7 @@ export function AboutSection() {
                         <div key={d.name} className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: COLORS[i] }} />
                           <p className="text-xs text-white/50 leading-tight flex-1">{d.name}</p>
-                          <p className="text-xs font-bold text-white shrink-0">${d.value.toLocaleString("es-MX")} MDP</p>
+                          <p className="text-xs font-bold text-white shrink-0">${d.value.toLocaleString("es-MX")} M USD</p>
                         </div>
                       ))}
                     </div>

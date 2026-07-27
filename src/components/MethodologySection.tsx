@@ -1,6 +1,6 @@
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useEffect, useRef, useState } from "react";
-import heroImage from "@/assets/hero-skyline.jpg";
+import heroImage from "@/assets/methodology-boardroom.jpg";
 
 const steps = [
   { num: 1, titleKey: "method.s1.title", descKey: "method.s1.desc" },
@@ -33,13 +33,13 @@ export function MethodologySection() {
   }, []);
 
   return (
-    <section id="metodologia" className="min-h-screen flex overflow-hidden bg-background">
+    <section id="metodologia" className="min-h-screen flex flex-col md:flex-row overflow-hidden bg-background">
 
       {/* Main: timeline left + image right */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
 
         {/* Left: timeline content */}
-        <div className="flex flex-col pt-16 pb-12 px-10 md:px-16 w-full md:w-3/5">
+        <div className="flex flex-col pt-10 md:pt-16 pb-8 md:pb-12 px-6 md:px-10 lg:px-16 w-full md:w-3/5">
           <p className="text-xs font-semibold tracking-[0.15em] text-muted-foreground uppercase mb-3">
             {t("method.label")}
           </p>
@@ -60,13 +60,13 @@ export function MethodologySection() {
                   key={step.num}
                   ref={(el) => { refs.current[i] = el; }}
                   data-idx={i}
-                  className={`grid grid-cols-[52px_1fr] transition-all duration-[2200ms] ${
+                  className={`grid grid-cols-[40px_1fr] md:grid-cols-[52px_1fr] transition-all duration-[2200ms] ${
                     isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
                   }`}
                   style={{ transitionDelay: `${i * 320}ms` }}
                 >
                   <div className="flex flex-col items-center">
-                    <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold shrink-0">
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold shrink-0">
                       {step.num}
                     </div>
                     {!isLast && <div className="w-[1.5px] flex-1 bg-border my-1.5" />}
@@ -90,7 +90,7 @@ export function MethodologySection() {
           <img
             src={heroImage}
             alt=""
-            className="absolute inset-0 w-full h-full object-cover object-center scale-105"
+            className="absolute inset-0 w-full h-full object-cover object-right scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/20 to-transparent" />
           <div className="absolute inset-0 bg-foreground/10" />

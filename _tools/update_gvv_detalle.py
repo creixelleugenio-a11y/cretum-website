@@ -1,14 +1,22 @@
 #!/usr/bin/env python3
-"""Actualiza public/gvv-detalle.html con un Excel nuevo de tickers GVV.
+"""Actualiza el bundle gvv-detalle.html con un Excel nuevo de tickers GVV.
 Uso: python3 _tools/update_gvv_detalle.py "/ruta/Actualización Tickers GVV ....xlsx"
 Solo reemplaza __G.D (snapshot del portafolio); deja intacto el resto (TRACK histórico, etc.).
 Ver memoria gvv_dashboard_update.md para detalles.
+
+CANÓNICO (2026-07-08): el dashboard vive ahora en el repo de cretumdesk
+(`/Users/air/cretum_dashboard_coworker/public/gvv-detalle.html`), servido en
+cretumdesk.com/gvv-detalle.html y embebido en #cretum/ventas. Tras correr este script:
+  cd /Users/air/cretum_dashboard_coworker && git add public/gvv-detalle.html && git commit && git push
+Vercel auto-deploya. (Ya NO se usa cretumpartners.com ni el deploy FTP para este dashboard.)
+Override opcional de ruta: env var GVV_HTML.
 """
 import json, sys, os
 sys.path.insert(0, os.path.dirname(__file__))
 from gvv_gen import build  # build(excel_path) -> __G.D nuevo (holdings+options+agregaciones)
 
-HTML = os.path.join(os.path.dirname(__file__), '..', 'public', 'gvv-detalle.html')
+HTML = os.environ.get('GVV_HTML',
+    '/Users/air/cretum_dashboard_coworker/public/gvv-detalle.html')
 
 def _balanced(s, start_token):
     i = s.find(start_token); j = s.find('{', i)
@@ -28,7 +36,7 @@ def _balanced(s, start_token):
         k+=1
     return j,k
 
-def main(xlsx):
+def main(xlsx, publish=False):
     newD = build(xlsx)
     lines = open(HTML).read().split('\n')
     inner = json.loads(lines[192])           # línea 193: HTML standalone codificado como JSON string
@@ -37,7 +45,16 @@ def main(xlsx):
     lines[192] = json.dumps(new_inner, ensure_ascii=True).replace('/', '\\u002f')  # GOTCHA: escapar / como /
     open(HTML,'w').write('\n'.join(lines))
     print(f"OK. total ${newD['total']:,.0f} | {newD['n_lines']} holdings | {newD['opt_n']} opciones")
-    print("Ahora: npm run build && python3 _ftp_deploy.py")
+    if publish:
+        # Un solo comando: publica el ESPEJO en ambos (cretumdesk git push + cretumpartners FTP).
+        import subprocess
+        subprocess.run(['python3', os.path.join(os.path.dirname(__file__), 'deploy_gvv_mirror.py'),
+                        '-m', f"GVV: snapshot {newD['n_lines']}h/{newD['opt_n']}op (${newD['total']:,.0f})"], check=True)
+    else:
+        print("Para publicar en AMBOS espejos (cretumdesk + cretumpartners):")
+        print("  python3 _tools/deploy_gvv_mirror.py    (o corre update con --publish)")
 
 if __name__=='__main__':
-    main(sys.argv[1])
+    args = [a for a in sys.argv[1:] if a != '--publish']
+    publish = '--publish' in sys.argv
+    main(args[0], publish=publish)

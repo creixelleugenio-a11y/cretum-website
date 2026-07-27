@@ -2,9 +2,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { lazy, Suspense, useEffect } from "react";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { initEngagement, onRouteChange } from "@/lib/analytics";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
@@ -20,9 +21,25 @@ const VentajasPage = lazy(() => import("./pages/VentajasPage"));
 const MVPPage = lazy(() => import("./pages/MVPPage"));
 const GVVPage = lazy(() => import("./pages/GVVPage"));
 const GestionPatrimonialPage = lazy(() => import("./pages/GestionPatrimonialPage"));
-const TrendratingPage = lazy(() => import("./pages/TrendratingPage"));
+const FamilyOfficePage = lazy(() => import("./pages/FamilyOfficePage"));
+const ContactoPage = lazy(() => import("./pages/ContactoPage"));
 
 const queryClient = new QueryClient();
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
+function Analytics() {
+  const { pathname } = useLocation();
+  useEffect(() => { initEngagement(); }, []);
+  useEffect(() => { onRouteChange(pathname); }, [pathname]);
+  return null;
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -31,6 +48,8 @@ const App = () => (
       <Sonner />
       <LanguageProvider>
         <BrowserRouter>
+          <ScrollToTop />
+          <Analytics />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/nosotros" element={<Suspense fallback={null}><NosotrosPage /></Suspense>} />
@@ -43,7 +62,8 @@ const App = () => (
             <Route path="/que-hacemos/mvp" element={<Suspense fallback={null}><MVPPage /></Suspense>} />
             <Route path="/que-hacemos/gvv" element={<Suspense fallback={null}><GVVPage /></Suspense>} />
             <Route path="/que-hacemos/gestion-patrimonial" element={<Suspense fallback={null}><GestionPatrimonialPage /></Suspense>} />
-            <Route path="/que-hacemos/trendrating" element={<Suspense fallback={null}><TrendratingPage /></Suspense>} />
+            <Route path="/que-hacemos/family-office" element={<Suspense fallback={null}><FamilyOfficePage /></Suspense>} />
+            <Route path="/contacto" element={<Suspense fallback={null}><ContactoPage /></Suspense>} />
             <Route path="/admin/login" element={<Suspense fallback={null}><AdminLogin /></Suspense>} />
             <Route path="/admin" element={<Suspense fallback={null}><AdminPanel /></Suspense>} />
             <Route path="*" element={<NotFound />} />

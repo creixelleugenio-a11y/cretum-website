@@ -23,7 +23,7 @@ function useCountUp(target: number, active: boolean, duration = 1800) {
 function KpiNum({ prefix = "", target, suffix = "", active }: { prefix?: string; target: number; suffix?: string; active: boolean }) {
   const count = useCountUp(target, active);
   return (
-    <span className="text-5xl md:text-6xl lg:text-7xl font-light text-foreground leading-none tabular-nums">
+    <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-foreground leading-none tabular-nums">
       {prefix}{count.toLocaleString("es-MX")}{suffix}
     </span>
   );
@@ -43,21 +43,21 @@ export function HomeKPIsSection() {
   }, []);
 
   const kpis = [
-    { prefix: "+$", target: 32110, suffix: " MDP", label: t("about.stat.aum") },
-    { prefix: "+",  target: 12,    suffix: "",      label: t("about.stat.years") },
+    { prefix: "+$", target: 2835, suffix: " M USD", label: t("about.stat.aum") },
+    { prefix: "+",  target: 25,    suffix: "",      label: t("about.stat.years") },
     { prefix: "+",  target: 400,   suffix: "",      label: t("about.stat.investors") },
   ];
 
   return (
     <section className="bg-background" ref={ref}>
-      <div className="max-w-6xl mx-auto px-6 pt-20 pb-16">
+      <div className="max-w-6xl mx-auto px-6 pt-12 md:pt-20 pb-10 md:pb-16">
         <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
           {kpis.map((kpi, i) => (
-            <div key={i} className="px-6 md:px-10 py-10 flex flex-col items-center text-center">
+            <div key={i} className="px-6 md:px-10 py-6 md:py-10 flex flex-col items-center text-center">
               <Reveal delay={i * 0.15}>
                 <div>
                   <KpiNum prefix={kpi.prefix} target={kpi.target} suffix={kpi.suffix} active={active} />
-                  <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mt-5 max-w-[180px] mx-auto leading-relaxed">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mt-3 md:mt-5 max-w-[140px] md:max-w-[180px] mx-auto leading-relaxed">
                     {kpi.label}
                   </p>
                 </div>
@@ -67,10 +67,10 @@ export function HomeKPIsSection() {
         </div>
       </div>
 
-      <div className="bg-muted/30 py-28 px-6 text-center">
+      <div className="bg-muted/30 py-16 md:py-28 px-6 text-center">
         <div className="max-w-2xl mx-auto">
           <Reveal>
-            <h2 className="text-3xl md:text-4xl font-serif text-foreground mb-5">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif text-foreground mb-5">
               {t("home.kpi.tagline")}
             </h2>
           </Reveal>
