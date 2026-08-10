@@ -45,6 +45,10 @@
       "areaServed": ["MX", "LATAM"]
     }
     </script>
+    <!-- Datos GVV en vivo (el robot de la Mini reescribe /gvv-data.js del Excel+carta+Finnhub).
+         Script SÍNCRONO y antes del bundle: window.__GVVDATA queda listo antes de renderizar.
+         Si 404/falla, la página usa los valores de respaldo horneados (nunca se ve peor). -->
+    <script src="/gvv-data.js"></script>
     <!-- Analítica sin cookies (Umami self-hosted, Mac Mini vía Tailscale Funnel) -->
     <script defer src="https://mac-mini-cretum-1.tail4eeacb.ts.net/script.js" data-website-id="ccd15f98-8a67-4bc3-822d-777894fa383a"></script>
   </head>

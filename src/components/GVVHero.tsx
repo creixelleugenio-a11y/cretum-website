@@ -1,5 +1,6 @@
 import tradingImage from "@/assets/gvv-glass-tower.jpg";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { kpis } from "@/lib/gvvData";
 
 export function GVVHero() {
   const { t } = useLanguage();
@@ -52,10 +53,10 @@ export function GVVHero() {
           style={{ animationDelay: "0.4s", animationFillMode: "both" }}
         >
           {[
-            { val: "11.93%", label: t("gvv.kpi1.label") },
-            { val: "3.87x",  label: t("gvv.kpi2.label") },
-            { val: "0.71",   label: t("gvv.kpi3.label") },
-            { val: "4.65%",  label: t("gvv.kpi4.label") },
+            { val: kpis.cagr5,  label: t("gvv.kpi1.label") },
+            { val: kpis.hist,   label: t("gvv.kpi2.label") },
+            { val: kpis.sharpe, label: t("gvv.kpi3.label") },
+            { val: kpis.vol,    label: t("gvv.kpi4.label") },
           ].map((s) => (
             <div key={s.val} className="border-l-2 border-primary pl-5 py-3">
               <p className="text-xl sm:text-2xl md:text-[30px] font-bold text-primary leading-none">{s.val}</p>
