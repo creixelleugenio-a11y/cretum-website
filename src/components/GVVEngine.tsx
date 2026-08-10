@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Reveal } from "@/components/Reveal";
+import { pillarChips } from "@/lib/gvvData";
 
 type Pillar = "growth" | "value" | "volatility";
 
@@ -158,7 +159,14 @@ const DATA: Record<"es" | "en", PillarData[]> = {
 export function GVVEngine() {
   const { lang } = useLanguage();
   const [active, setActive] = useState<Pillar | null>(null);
-  const pillars = DATA[lang as "es" | "en"];
+  const pillars = DATA[lang as "es" | "en"].map((p) => {
+    if (!pillarChips) return p;
+    const chips = pillarChips[p.id] ?? p.chips;
+    const chipsLabel = p.id === "volatility"
+      ? (lang === "es" ? pillarChips.volatilityLabelEs : pillarChips.volatilityLabelEn) ?? p.chipsLabel
+      : p.chipsLabel;
+    return { ...p, chips, chipsLabel };
+  });
   const activePillar = pillars.find((p) => p.id === active) ?? null;
 
   const handleClick = (id: Pillar) => setActive(active === id ? null : id);

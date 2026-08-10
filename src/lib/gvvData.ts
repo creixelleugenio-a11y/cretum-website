@@ -120,6 +120,16 @@ export const algoStrategies = ov("algoStrategies", [
 // ── Skin in the game (carta) ────────────────────────────────────────────────
 export const skinPct = ov<number>("skinPct", 76);
 
+// ── Chips de los pilares (GVVEngine) — mismas empresas que el dashboard ──────
+// null => se usan las listas horneadas en GVVEngine. El robot inyecta:
+// { growth: [{name,sector}], value: [...], volatility: [...],
+//   volatilityLabelEs/En: string } (el diseño del chip NO cambia).
+export type PillarChip = { name: string; sector: string; logo?: string };
+export const pillarChips = ov<{
+  growth?: PillarChip[]; value?: PillarChip[]; volatility?: PillarChip[];
+  volatilityLabelEs?: string; volatilityLabelEn?: string;
+} | null>("pillarChips", null);
+
 // ── Carta mensual (descargable) — el robot sube el PDF y actualiza este link ─
 export const letterDoc = ov<{ name: string; file_url: string } | null>("letterDoc", {
   name: "Cretum Letter - May 2026",
