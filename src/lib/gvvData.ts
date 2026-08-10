@@ -120,6 +120,12 @@ export const algoStrategies = ov("algoStrategies", [
 // ── Skin in the game (carta) ────────────────────────────────────────────────
 export const skinPct = ov<number>("skinPct", 76);
 
+// ── Carta mensual (descargable) — el robot sube el PDF y actualiza este link ─
+export const letterDoc = ov<{ name: string; file_url: string } | null>("letterDoc", {
+  name: "Cretum Letter - May 2026",
+  file_url: "/docs/Cretum-Letter-May-2026.pdf",
+});
+
 // ── Valor acumulado 5Y (base 100 = Ene 2021) GVV vs S&P ─────────────────────
 export const cumulativeData = ov("cumulativeData", [
   { l:"Ene '21", gvv:107.70, sp:99.00 },  { l:"Feb '21", gvv:113.26, sp:101.97 },

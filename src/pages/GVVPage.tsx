@@ -37,6 +37,7 @@ import {
   activePositionsEs, activePositionsEn,
   algoStrategies,
   skinPct,
+  letterDoc,
   cumulativeData,
 } from "@/lib/gvvData";
 
@@ -80,10 +81,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 // ── Component ─────────────────────────────────────────────────────────────
 
 export default function GVVPage() {
-  const [docFile, setDocFile] = useState<{ name: string; file_url: string } | null>({
-    name: "Cretum Letter - May 2026",
-    file_url: "/docs/Cretum-Letter-May-2026.pdf",
-  });
+  const [docFile, setDocFile] = useState<{ name: string; file_url: string } | null>(letterDoc);
   const { t, lang } = useLanguage();
 
   const kpis = [
@@ -125,6 +123,8 @@ export default function GVVPage() {
   ];
 
   useEffect(() => {
+    // Si el robot ya inyecto la carta vigente via gvv-data.js, esa manda.
+    if ((window as unknown as { __GVVDATA?: { letterDoc?: unknown } }).__GVVDATA?.letterDoc) return;
     supabase.from("gvv_documents").select("name, file_url")
       .order("created_at", { ascending: false }).limit(1).maybeSingle()
       .then(({ data }) => { if (data) setDocFile(data); });
