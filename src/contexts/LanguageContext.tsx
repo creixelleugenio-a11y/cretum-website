@@ -209,7 +209,7 @@ const translations: Record<string, Record<Lang, string>> = {
   "gvv.algo.cagr_benchmark":  { es: "CAGR Referencia", en: "CAGR Benchmark" },
   "gvv.struct.gp.sub":        { es: "Delaware, EUA", en: "Delaware, USA" },
   "gvv.currency.label":     { es: "Concentración de divisas", en: "Currency Concentration" },
-  "gvv.skin.desc":          { es: "Las inversiones del equipo de Cretum Capital Partners representan el 76% de los activos del fondo, alineando sus intereses directamente con sus socios.", en: "Investments by the Cretum Capital Partners team represent 76% of the fund's assets, directly aligning their interests with their partners." },
+  "gvv.skin.desc":          { es: "Las inversiones del equipo de Cretum Capital Partners representan el 61% de los activos del fondo, alineando sus intereses directamente con sus socios.", en: "Investments by the Cretum Capital Partners team represent 61% of the fund's assets, directly aligning their interests with their partners." },
 
   // GVV Modal — monthly table
   "gvv.table.year":        { es: "Año", en: "Year" },
