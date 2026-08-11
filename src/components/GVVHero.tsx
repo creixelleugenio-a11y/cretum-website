@@ -77,7 +77,7 @@ export function GVVHero() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => track("dashboard-gvv", { origen: "hero" })}
-            className="inline-flex items-center gap-2.5 px-6 py-3 bg-primary text-primary-foreground rounded-md text-sm font-semibold hover:opacity-90 transition-opacity shadow-md"
+            className="inline-flex items-center gap-2.5 px-6 py-3 bg-[#1e3a5f] text-white rounded-md text-sm font-semibold hover:bg-[#274a77] transition-colors shadow-md"
           >
             <BarChart3 className="w-4 h-4" />
             {t("gvv.fullDash")}
