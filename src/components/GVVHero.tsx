@@ -1,6 +1,8 @@
 import tradingImage from "@/assets/gvv-glass-tower.jpg";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { kpis } from "@/lib/gvvData";
+import { track } from "@/lib/analytics";
+import { BarChart3 } from "lucide-react";
 
 export function GVVHero() {
   const { t } = useLanguage();
@@ -63,6 +65,23 @@ export function GVVHero() {
               <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mt-3 leading-snug">{s.label}</p>
             </div>
           ))}
+        </div>
+
+        {/* CTA: dashboard interactivo del fondo */}
+        <div
+          className="mt-12 animate-fade-in"
+          style={{ animationDelay: "0.55s", animationFillMode: "both" }}
+        >
+          <a
+            href="/gvv-detalle.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => track("dashboard-gvv", { origen: "hero" })}
+            className="inline-flex items-center gap-2.5 px-6 py-3 bg-primary text-primary-foreground rounded-md text-sm font-semibold hover:opacity-90 transition-opacity shadow-md"
+          >
+            <BarChart3 className="w-4 h-4" />
+            {t("gvv.fullDash")}
+          </a>
         </div>
       </div>
     </section>

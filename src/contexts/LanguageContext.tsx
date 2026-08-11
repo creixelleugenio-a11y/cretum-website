@@ -180,6 +180,7 @@ const translations: Record<string, Record<Lang, string>> = {
   "gvv.kpi3.sub":   { es: "Ajustado al riesgo", en: "Risk-adjusted" },
   "gvv.kpi4.label": { es: "Vol. anualizada", en: "Ann. Volatility" },
   "gvv.kpi4.sub":   { es: "Últimos 5 años", en: "Last 5 years" },
+  "gvv.fullDash":           { es: "Dashboard Completo: GVV Fund", en: "Full Dashboard: GVV Fund" },
 
   // GVV Modal — Section titles
   "gvv.section.annual":     { es: "Rendimiento anual vs S&P 500", en: "Annual Return vs S&P 500" },
