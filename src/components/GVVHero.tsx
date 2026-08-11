@@ -73,7 +73,7 @@ export function GVVHero() {
           style={{ animationDelay: "0.55s", animationFillMode: "both" }}
         >
           <a
-            href="/gvv-detalle.html"
+            href={`/gvv-detalle.html?v=${Date.now()}`}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => track("dashboard-gvv", { origen: "hero" })}
