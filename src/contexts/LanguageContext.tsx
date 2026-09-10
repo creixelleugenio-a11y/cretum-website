@@ -66,7 +66,7 @@ const translations: Record<string, Record<Lang, string>> = {
   },
 
   // Metrics Bar
-  "metrics.stat1.value": { es: "$1,860", en: "$1,860" },
+  "metrics.stat1.value": { es: "$2,835", en: "$2,835" },
   "metrics.stat1.label": { es: "M USD en activos gestionados", en: "M USD in managed assets" },
   "metrics.stat2.value": { es: "+25", en: "+25" },
   "metrics.stat2.label": { es: "años de trayectoria en mercados", en: "years of market track record" },
@@ -109,7 +109,7 @@ const translations: Record<string, Record<Lang, string>> = {
     en: "Based in Mexico City, our firm combines proven expertise, deep market knowledge, and personalized solutions for government treasuries, high-net-worth individuals, pension funds, private mandates, and families.",
   },
   "about.desc3.pre": { es: "A lo largo de nuestra trayectoria, hemos gestionado un total acumulado de activos que supera los", en: "Throughout our track record, we have successfully managed a cumulative total of assets exceeding" },
-  "about.desc3.bold": { es: "1.85 mil millones de dólares,", en: "1.85 billion dollars," },
+  "about.desc3.bold": { es: "2.83 mil millones de dólares,", en: "2.83 billion dollars," },
   "about.desc3.post": {
     es: "diversificados estratégicamente entre mercados públicos y privados, estrategias de cobertura y crédito privado.",
     en: "strategically diversified across public and private markets, hedging strategies, and private credit.",
@@ -561,7 +561,7 @@ const translations: Record<string, Record<Lang, string>> = {
     es: "Más de una década de resultados comprobados gestionando activos institucionales.",
     en: "Over a decade of proven results managing institutional assets.",
   },
-  "tr_section.stat1.value": { es: "+$1,860M USD", en: "+$1,860M USD" },
+  "tr_section.stat1.value": { es: "+$2,835M USD", en: "+$2,835M USD" },
   "tr_section.stat1.label": { es: "en activos gestionados", en: "in managed assets" },
   "tr_section.stat2.value": { es: "+25 años", en: "+25 years" },
   "tr_section.stat2.label": { es: "de trayectoria", en: "of track record" },
@@ -932,7 +932,7 @@ const translations: Record<string, Record<Lang, string>> = {
   "org.mvp.feat1":{ es: "IRR 56% (Fund III) vs 12% benchmark VC", en: "IRR 56% (Fund III) vs 12% VC benchmark" },
   "org.mvp.feat2":{ es: "Portfolio: SpaceX, Anthropic, Groq, Figure AI", en: "Portfolio: SpaceX, Anthropic, Groq, Figure AI" },
   "org.mvp.feat3":{ es: "#9 Global Top Secondaries Buyer (PitchBook)", en: "#9 Global Top Secondaries Buyer (PitchBook)" },
-  "org.gvv.stat": { es: "+14.57% anualizado · 3.71x Sharpe · 76% skin-in-game", en: "+14.57% annualized · 3.71x Sharpe · 76% skin-in-game" },
+  "org.gvv.stat": { es: "+14.76% anualizado · 0.77 Sharpe · 61% skin-in-game", en: "+14.76% annualized · 0.77 Sharpe · 61% skin-in-game" },
   "org.gvv.growth.label": { es: "Growth", en: "Growth" },
   "org.gvv.growth.desc":  { es: "Posiciones pre-IPO: Anthropic, SpaceX, Groq — 29% del portafolio vía co-inversión con Manhattan VP.", en: "Pre-IPO positions: Anthropic, SpaceX, Groq — 29% of portfolio via co-investment with Manhattan VP." },
   "org.gvv.value.label":  { es: "Value", en: "Value" },
