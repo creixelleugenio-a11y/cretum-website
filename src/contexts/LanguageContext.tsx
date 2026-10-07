@@ -210,7 +210,7 @@ const translations: Record<string, Record<Lang, string>> = {
   "gvv.algo.cagr_benchmark":  { es: "CAGR Referencia", en: "CAGR Benchmark" },
   "gvv.struct.gp.sub":        { es: "Delaware, EUA", en: "Delaware, USA" },
   "gvv.currency.label":     { es: "Concentración de divisas", en: "Currency Concentration" },
-  "gvv.skin.desc":          { es: "Las inversiones del equipo de Cretum Capital Partners representan el 61% de los activos del fondo, alineando sus intereses directamente con sus socios.", en: "Investments by the Cretum Capital Partners team represent 61% of the fund's assets, directly aligning their interests with their partners." },
+  "gvv.skin.desc":          { es: "Las inversiones del equipo de Cretum Capital Partners representan el 58.38% de los activos del fondo, alineando sus intereses directamente con sus socios.", en: "Investments by the Cretum Capital Partners team represent 58.38% of the fund's assets, directly aligning their interests with their partners." },
 
   // GVV Modal — monthly table
   "gvv.table.year":        { es: "Año", en: "Year" },
@@ -932,7 +932,7 @@ const translations: Record<string, Record<Lang, string>> = {
   "org.mvp.feat1":{ es: "IRR 56% (Fund III) vs 12% benchmark VC", en: "IRR 56% (Fund III) vs 12% VC benchmark" },
   "org.mvp.feat2":{ es: "Portfolio: SpaceX, Anthropic, Groq, Figure AI", en: "Portfolio: SpaceX, Anthropic, Groq, Figure AI" },
   "org.mvp.feat3":{ es: "#9 Global Top Secondaries Buyer (PitchBook)", en: "#9 Global Top Secondaries Buyer (PitchBook)" },
-  "org.gvv.stat": { es: "+14.76% anualizado · 0.77 Sharpe · 61% skin-in-game", en: "+14.76% annualized · 0.77 Sharpe · 61% skin-in-game" },
+  "org.gvv.stat": { es: "+14.76% anualizado · 0.77 Sharpe · 58.38% skin-in-game", en: "+14.76% annualized · 0.77 Sharpe · 58.38% skin-in-game" },
   "org.gvv.growth.label": { es: "Growth", en: "Growth" },
   "org.gvv.growth.desc":  { es: "Posiciones pre-IPO: Anthropic, SpaceX, Groq — 29% del portafolio vía co-inversión con Manhattan VP.", en: "Pre-IPO positions: Anthropic, SpaceX, Groq — 29% of portfolio via co-investment with Manhattan VP." },
   "org.gvv.value.label":  { es: "Value", en: "Value" },

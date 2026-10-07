@@ -118,7 +118,7 @@ export const algoStrategies = ov("algoStrategies", [
 ]);
 
 // ── Skin in the game (carta) ────────────────────────────────────────────────
-export const skinPct = ov<number>("skinPct", 61);
+export const skinPct = ov<number>("skinPct", 58.38);
 
 // ── Chips de los pilares (GVVEngine) — mismas empresas que el dashboard ──────
 // null => se usan las listas horneadas en GVVEngine. El robot inyecta:
