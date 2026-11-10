@@ -30,3 +30,8 @@ dist-ssr
 _backup_*.tar.gz
 _gvv_head_tmp.html
 _gvv_*_tmp*.html
+
+# secretos y entorno local: nunca al repo (orden-semanal 2026-11-10)
+.env
+.env.*
+!.env.example
